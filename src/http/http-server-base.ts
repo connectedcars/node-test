@@ -69,7 +69,7 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
     })
   }
 
-  public getJsonRequests(): HttpJsonRequest[] {
+  public getJsonRequests<T>(): HttpJsonRequest<T>[] {
     return this.requests.map(req => {
       return { ...req, body: JSON.parse(req.body.toString('utf8')) }
     })

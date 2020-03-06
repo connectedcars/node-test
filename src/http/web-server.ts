@@ -63,7 +63,7 @@ export class WebServer {
     return HttpsServer.getDefaultClientCerts()
   }
 
-  public getJsonRequests(): HttpJsonRequest[] {
+  public getJsonRequests<T>(): HttpJsonRequest<T>[] {
     return this.httpServer.getJsonRequests()
   }
 

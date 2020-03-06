@@ -1,7 +1,5 @@
 import http from 'http'
 
-import { Json } from '../common'
-
 export type HttpIncomingMessage = http.IncomingMessage & Required<Pick<http.IncomingMessage, 'method' | 'url'>>
 
 export type HttpRequestListener = (req: HttpIncomingMessage, res: http.ServerResponse) => void
@@ -17,8 +15,8 @@ export interface HttpRequest {
   body: Buffer
 }
 
-export type HttpJsonRequest = Omit<HttpRequest, 'body'> & {
-  body: Json
+export type HttpJsonRequest<T> = Omit<HttpRequest, 'body'> & {
+  body: T
 }
 
 export type HttpTextRequest = Omit<HttpRequest, 'body'> & {
