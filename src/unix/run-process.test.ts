@@ -193,7 +193,5 @@ describe('run-process', () => {
       await expect(matchPromiseMany).toMatchObject({ 0: `${i}` })
       cmd.deleteEvents('data')
     }
-
-    await cmd.stop()
   })
 })
