@@ -136,16 +136,18 @@ export class RunProcess {
 
       let data = ''
       for (const output of outputs) {
-        this[output]?.on('data', (chunk: Buffer) => {
+        const matchListener = (chunk: Buffer): void => {
           data += chunk.toString('utf8')
           const match = data.match(regex)
           if (match) {
             if (timeoutHandle) {
               clearTimeout(timeoutHandle)
             }
+            this[output]?.removeListener('data', matchListener)
             resolve(match)
           }
-        })
+        }
+        this[output]?.on('data', matchListener)
       }
       // Throw if the process exist before finding the output
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -153,15 +155,6 @@ export class RunProcess {
         reject(this.stopReason ? this.stopReason : new ExitBeforeOutputMatchError(data))
       })
     })
-  }
-
-  /**
-   * When expecting a bunch of inputs, the event emitter will memory leak, call this manually to clean up the non needed event
-   */
-  public deleteEvents(eventName = 'data', outputs: Array<'stdout' | 'stderr'> = ['stdout', 'stderr']): void {
-    for (const output of outputs) {
-      this[output]?.removeAllListeners(eventName)
-    }
   }
 
   public on(event: 'close', listener: (code: number, signal: NodeJS.Signals) => void): this
