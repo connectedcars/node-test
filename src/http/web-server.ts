@@ -41,7 +41,7 @@ export class WebServer {
     return HttpsServer.getDefaultClientCerts()
   }
 
-  public on(event: string, listener: (...args: any[]) => void): this {
+  public on(event: string, listener: (...args: unknown[]) => void): this {
     this.httpServer.on(event, listener)
     this.httpsServer.on(event, listener)
     return this

@@ -28,7 +28,7 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
     this.requests = requests
   }
 
-  public on(event: string, listener: (...args: any[]) => void): this {
+  public on(event: string, listener: (...args: unknown[]) => void): this {
     this.httpServer.on(event, listener)
     return this
   }

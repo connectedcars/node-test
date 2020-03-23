@@ -163,6 +163,7 @@ describe('run-process', () => {
       setTimeout(() => {
         // Make sure the process keeps running
       }, 100000)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       process.stdin.on('data', chunk => {
         process.stdout.write(`${counter}`)
         counter++
