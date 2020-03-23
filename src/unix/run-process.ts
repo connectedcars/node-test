@@ -155,6 +155,15 @@ export class RunProcess {
     })
   }
 
+  /**
+   * When expecting a bunch of inputs, the event emitter will memory leak, call this manually to clean up the non needed event
+   */
+  public deleteEvents(eventName = 'data', outputs: Array<'stdout' | 'stderr'> = ['stdout', 'stderr']): void {
+    for (const output of outputs) {
+      this[output]?.removeAllListeners(eventName)
+    }
+  }
+
   public on(event: 'close', listener: (code: number, signal: NodeJS.Signals) => void): this
   public on(event: 'disconnect', listener: () => void): this
   public on(event: 'error', listener: (err: Error) => void): this

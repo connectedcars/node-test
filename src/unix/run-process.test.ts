@@ -156,4 +156,43 @@ describe('run-process', () => {
       cmd.kill()
     }).toThrow(ProcessNotRunningError)
   })
+
+  it(`should wait for multiple outputs, and delete the eventlisteners`, async () => {
+    await commandEmulation.registerCommand('my-hello', () => {
+      let counter = 0
+      setTimeout(() => {
+        // Make sure the process keeps running
+      }, 100000)
+      process.stdin.on('data', chunk => {
+        process.stdout.write(`${counter}`)
+        counter++
+      })
+    })
+
+    const cmd = new RunProcess('my-hello')
+    processCleanup.push(cmd)
+
+    // 2 Manual examples
+    cmd.stdin?.write(Buffer.from('00', 'hex'))
+    const matchPromise1 = await cmd.waitForOutput(/0/)
+    await expect(matchPromise1).toMatchObject({ 0: '0' })
+    cmd.deleteEvents('data')
+
+    cmd.stdin?.write(Buffer.from('00', 'hex'))
+    const matchPromise2 = await cmd.waitForOutput(/1/)
+    await expect(matchPromise2).toMatchObject({ 0: '1' })
+    cmd.deleteEvents('data')
+
+    // And 250 more
+    for (let i = 2; i <= 250; i++) {
+      // Write anything, so we get a response
+      cmd.stdin?.write(Buffer.from('FF', 'hex'))
+      const regex = new RegExp(`${i}`)
+      const matchPromiseMany = await cmd.waitForOutput(regex)
+      await expect(matchPromiseMany).toMatchObject({ 0: `${i}` })
+      cmd.deleteEvents('data')
+    }
+
+    await cmd.stop()
+  })
 })
