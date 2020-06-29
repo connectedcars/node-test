@@ -5,7 +5,7 @@ export interface TscInput {
   data: TscData[]
 }
 
-export const tscCheck = ({ data }: TscInput): CheckResult => {
+export function tscCheck({ data }: TscInput): CheckResult {
   const result: CheckResult = {
     conclusion: 'success',
     output: {

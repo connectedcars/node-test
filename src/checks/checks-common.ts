@@ -30,7 +30,7 @@ export interface Annotation {
 
 export type Level = 'success' | 'failure' | 'neutral' | 'notice' | 'warning'
 
-export const printSummary = (checkResult: CheckResult, ci?: boolean): void => {
+export function printSummary(checkResult: CheckResult, ci?: boolean): void {
   console.log(JSON.stringify(checkResult, null, 2))
 
   const { output } = checkResult

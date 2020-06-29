@@ -6,7 +6,7 @@ export interface AuditInput {
   data: AuditData
 }
 
-const getSummary = (problems: Vulnerabilities, totalDependencies: number): string => {
+function getSummary(problems: Vulnerabilities, totalDependencies: number): string {
   let summary = `Found **${problems.all}** vulnerabilities`
   if (problems.all > 0) {
     const details = []
@@ -36,7 +36,7 @@ const severities: SeverityMap = {
   info: 1
 }
 
-const getText = (data: AuditData): string => {
+function getText(data: AuditData): string {
   const advisories = Object.values(data.advisories)
   advisories.sort((a: Advisory, b: Advisory) => severities[b.severity] - severities[a.severity])
   const entries: string[] = []
@@ -62,7 +62,7 @@ const getText = (data: AuditData): string => {
   return entries.join('\n\n')
 }
 
-export const auditCheck = ({ data }: AuditInput): CheckResult => {
+export function auditCheck({ data }: AuditInput): CheckResult {
   const problems = {
     all: 0,
     info: 0,

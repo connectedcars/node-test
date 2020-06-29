@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { CheckResult } from '../checks-common'
 import { mochaCheck } from './mocha'
 import { mochaFailedOutput, mochaSuccesfulOutput } from './resources/mocha-help-text'
 

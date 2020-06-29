@@ -5,7 +5,7 @@ export interface MochaInput extends GitData {
   data: MochaData
 }
 
-export const mochaCheck = ({ data, org, repo, sha }: MochaInput): CheckResult => {
+export function mochaCheck({ data, org, repo, sha }: MochaInput): CheckResult {
   const annotations: Annotation[] = []
 
   // This happens when a test logs something to stdout while running
