@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* eslint-disable @typescript-eslint/camelcase */
 
-import args from 'args'
+import yargs from 'yargs'
 
 import { printSummary } from '../src/checks/checks-common'
 import { eslintCheck, EslintInput } from '../src/checks/eslint/eslint'
@@ -19,22 +19,17 @@ const { REPO_NAME, COMMIT_SHA } = process.env
 process.env.PATH = `./node_modules/.bin:${process.env.PATH}`
 
 async function main() {
-  args.options([
-    {
-      name: 'ci',
-      description: 'Only output json'
-    }
-  ])
-
-  const commands: {
-    [key: string]: {
-      desc: string
-      fn: (name: string, sub: string[], options: { [key: string]: any }) => void
-    }
-  } = {
-    'jest-ci': {
-      desc: 'Runs Jest with CI output',
-      fn: async (name, sub, options) => {
+  yargs
+    .options({
+      ci: {
+        describe: 'Only output json',
+        boolean: true
+      }
+    })
+    .command({
+      command: 'jest-ci',
+      describe: 'Runs Jest with CI output',
+      handler: async args => {
         try {
           const result = await runJest()
           const jestInput: JestInput = {
@@ -45,15 +40,36 @@ async function main() {
           }
           const checkOutput = jestCheck(jestInput)
           console.log(JSON.stringify(checkOutput, null, 2))
-          printSummary(checkOutput, options.ci)
+          printSummary(checkOutput, args.ci as boolean)
         } catch (error) {
           console.error(error)
         }
       }
-    },
-    'jest-cra-ci': {
-      desc: 'Runs Jest with CI output',
-      fn: async (name, sub, options) => {
+    })
+    .command({
+      command: 'eslint-ci',
+      describe: 'Runs Eslint with CI output',
+      handler: async args => {
+        try {
+          const result = await runEslint()
+          const eslintInput: EslintInput = {
+            data: result,
+            org: 'connectedcars', // TODO: Can we extact this from current env vars?
+            repo: REPO_NAME || '',
+            sha: COMMIT_SHA || ''
+          }
+          const checkOutput = eslintCheck(eslintInput)
+          console.log(JSON.stringify(checkOutput, null, 2))
+          printSummary(checkOutput, args.ci as boolean)
+        } catch (error) {
+          console.error(error)
+        }
+      }
+    })
+    .command({
+      command: 'jest-cra-ci',
+      describe: 'Runs Jest with CI output',
+      handler: async args => {
         try {
           const result = await runReactScriptsTest()
           const jestInput: JestInput = {
@@ -65,15 +81,16 @@ async function main() {
           console.log(result)
           const checkOutput = jestCheck(jestInput)
           console.log(JSON.stringify(checkOutput, null, 2))
-          printSummary(checkOutput, options.ci)
+          printSummary(checkOutput, args.ci as boolean)
         } catch (error) {
           console.error(error)
         }
       }
-    },
-    'mocha-ci': {
-      desc: 'Runs Mocha with CI output',
-      fn: async (name, sub, options) => {
+    })
+    .command({
+      command: 'mocha-ci',
+      describe: 'Runs Mocha with CI output',
+      handler: async args => {
         try {
           const result = await runMocha()
           const mochaInput: MochaInput = {
@@ -85,34 +102,16 @@ async function main() {
           console.log(result)
           const checkOutput = mochaCheck(mochaInput)
           console.log(JSON.stringify(checkOutput, null, 2))
-          printSummary(checkOutput, options.ci)
+          printSummary(checkOutput, args.ci as boolean)
         } catch (error) {
           console.error(error)
         }
       }
-    },
-    'eslint-ci': {
-      desc: 'Runs Eslint with CI output',
-      fn: async (name, sub, options) => {
-        try {
-          const result = await runEslint()
-          const eslintInput: EslintInput = {
-            data: result,
-            org: 'connectedcars', // TODO: Can we extact this from current env vars?
-            repo: REPO_NAME || '',
-            sha: COMMIT_SHA || ''
-          }
-          const checkOutput = eslintCheck(eslintInput)
-          console.log(JSON.stringify(checkOutput, null, 2))
-          printSummary(checkOutput, options.ci)
-        } catch (error) {
-          console.error(error)
-        }
-      }
-    },
-    'audit-ci': {
-      desc: 'Runs audit with CI output',
-      fn: async (name, sub, options) => {
+    })
+    .command({
+      command: 'audit-ci',
+      describe: 'Runs audit with CI output',
+      handler: async args => {
         try {
           const result = await runNpmAudit()
           const auditInput: AuditInput = {
@@ -120,37 +119,27 @@ async function main() {
           }
           const checkOutput = auditCheck(auditInput)
           console.log(JSON.stringify(checkOutput, null, 2))
-          printSummary(checkOutput, options.ci)
+          printSummary(checkOutput, args.ci as boolean)
         } catch (error) {
           console.error(error)
         }
       }
-    },
-    'tsc-ci': {
-      desc: 'Runs tsc with CI output',
-      fn: async (name, sub, options) => {
+    })
+    .command({
+      command: 'tsc-ci',
+      describe: 'Runs tsc with CI output',
+      handler: async args => {
         try {
           const result = await runTsc()
           const checkOutput = tscCheck({ data: result })
           console.log(JSON.stringify(checkOutput, null, 2))
-          printSummary(checkOutput, options.ci)
+          printSummary(checkOutput, args.ci as boolean)
         } catch (error) {
           console.error(error)
         }
       }
-    }
-  }
-  for (const cmd in commands) {
-    const { desc, fn } = commands[cmd]
-    args.command(cmd, desc, fn)
-  }
-
-  args.parse(process.argv)
-
-  if (args.sub.length === 0 || !commands[args.sub[0]]) {
-    console.log(`Unknown command: "${args.sub[0] || ''}"`)
-    process.exit(255)
-  }
+    })
+    .help().argv
 }
 
 main().catch(e => {

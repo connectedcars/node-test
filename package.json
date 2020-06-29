@@ -45,7 +45,6 @@
     "@babel/preset-typescript": "7.8.3",
     "@connectedcars/setup": "^0.8.3",
     "@jest/test-result": "^25.2.6",
-    "@types/args": "^3.0.0",
     "@types/jest": "25.1.4",
     "@types/lodash": "^4.14.149",
     "@types/node": "^13.9.1",
@@ -53,7 +52,6 @@
     "@types/yargs": "^15.0.4",
     "@typescript-eslint/eslint-plugin": "2.24.0",
     "@typescript-eslint/parser": "2.24.0",
-    "args": "^5.0.1",
     "axios": "^0.19.2",
     "babel-jest": "25.1.0",
     "eslint": "6.8.0",
@@ -66,8 +64,6 @@
   },
   "dependencies": {
     "@types/mysql": "*",
-    "@types/node": "*",
-    "@types/sinon": "*",
     "mysql": "^2.18.1",
     "sinon": "^9.0.1",
     "yargs": "^15.3.0"
