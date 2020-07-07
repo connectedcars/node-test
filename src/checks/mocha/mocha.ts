@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { Annotation, CheckResult, GitData } from '../checks-common'
 
 export interface MochaInput extends GitData {

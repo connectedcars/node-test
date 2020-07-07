@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 export interface GitData {
   org: string
   repo: string

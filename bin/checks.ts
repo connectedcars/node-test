@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-/* eslint-disable @typescript-eslint/camelcase */
 
+import { exit } from 'process'
 import yargs from 'yargs'
 
 import { printSummary } from '../src/checks/checks-common'
@@ -14,11 +14,24 @@ import { auditCheck, AuditInput } from '../src/checks/npm-audit/audit'
 import { runNpmAudit } from '../src/checks/npm-audit/run-audit'
 import { runTsc } from '../src/checks/tsc/run-tsc'
 import { tscCheck } from '../src/checks/tsc/tsc'
-const { REPO_NAME, COMMIT_SHA } = process.env
+const { REPO_NAME, COMMIT_SHA, ORG_NAME } = process.env
 
 process.env.PATH = `./node_modules/.bin:${process.env.PATH}`
 
 async function main() {
+  if (!REPO_NAME) {
+    console.error('Missing enviroment variable "REPO_NAME"')
+    exit(1)
+  }
+  if (!COMMIT_SHA) {
+    console.error('Missing enviroment variable "COMMIT_SHA"')
+    exit(1)
+  }
+  if (!ORG_NAME) {
+    console.error('Missing enviroment variable "ORG_NAME"')
+    exit(1)
+  }
+
   yargs
     .options({
       ci: {
@@ -34,9 +47,9 @@ async function main() {
           const result = await runJest()
           const jestInput: JestInput = {
             data: result,
-            org: 'connectedcars', // TODO: Can we extact this from current env vars?
-            repo: REPO_NAME || '',
-            sha: COMMIT_SHA || ''
+            org: ORG_NAME,
+            repo: REPO_NAME,
+            sha: COMMIT_SHA
           }
           const checkOutput = jestCheck(jestInput)
           console.log(JSON.stringify(checkOutput, null, 2))
@@ -54,9 +67,9 @@ async function main() {
           const result = await runEslint()
           const eslintInput: EslintInput = {
             data: result,
-            org: 'connectedcars', // TODO: Can we extact this from current env vars?
-            repo: REPO_NAME || '',
-            sha: COMMIT_SHA || ''
+            org: ORG_NAME,
+            repo: REPO_NAME,
+            sha: COMMIT_SHA
           }
           const checkOutput = eslintCheck(eslintInput)
           console.log(JSON.stringify(checkOutput, null, 2))
@@ -74,9 +87,9 @@ async function main() {
           const result = await runReactScriptsTest()
           const jestInput: JestInput = {
             data: result,
-            org: 'connectedcars', // TODO: Can we extact this from current env vars?
-            repo: REPO_NAME || '',
-            sha: COMMIT_SHA || ''
+            org: ORG_NAME,
+            repo: REPO_NAME,
+            sha: COMMIT_SHA
           }
           console.log(result)
           const checkOutput = jestCheck(jestInput)
@@ -95,9 +108,9 @@ async function main() {
           const result = await runMocha()
           const mochaInput: MochaInput = {
             data: result,
-            org: 'connectedcars', // TODO: Can we extact this from current env vars?
-            repo: REPO_NAME || '',
-            sha: COMMIT_SHA || ''
+            org: ORG_NAME,
+            repo: REPO_NAME,
+            sha: COMMIT_SHA
           }
           console.log(result)
           const checkOutput = mochaCheck(mochaInput)

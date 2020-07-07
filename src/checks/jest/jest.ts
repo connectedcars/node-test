@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { AssertionResult, FormattedTestResults } from '@jest/test-result/build/types'
 import _ from 'lodash'
 
