@@ -76,26 +76,27 @@ describe('MySQLServer', () => {
   })
 
   it('should handle starting more mysql servers from the same basedir', async () => {
+    let mySqlServer: MySQLServer | null = null
     const oldPath = process.env.PATH
     try {
-      const mySqlServer1 = new MySQLServer({ mysqlBaseDir: tmpDir })
+      mySqlServer = new MySQLServer({ mysqlBaseDir: tmpDir })
       const mySqlServer2 = new MySQLServer({ mysqlBaseDir: tmpDir })
       const mySqlServer3 = new MySQLServer({ mysqlBaseDir: tmpDir })
       const mySqlServer4 = new MySQLServer({ mysqlBaseDir: tmpDir })
       await expect(
         Promise.all([
-          mySqlServer1.waitForStarted(),
+          mySqlServer.waitForStarted(),
           mySqlServer2.waitForStarted(),
           mySqlServer3.waitForStarted(),
           mySqlServer4.waitForStarted()
         ])
       ).resolves.not.toThrow()
-
-      console.log(await mySqlServer1.getTimings())
+      console.log(await mySqlServer.getTimings())
       console.log(await mySqlServer2.getTimings())
       console.log(await mySqlServer3.getTimings())
       console.log(await mySqlServer4.getTimings())
     } finally {
+      await mySqlServer?.kill()
       process.env.PATH = oldPath
     }
   }, 20000)
