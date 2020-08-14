@@ -57,9 +57,7 @@ export class CommandEmulation {
 
     // Handle JS function
     if (typeof script === 'function') {
-      const dataString = JSON.stringify(data)
-        .replace(/\\/gs, '\\\\')
-        .replace(/`/gs, '\\`')
+      const dataString = JSON.stringify(data).replace(/\\/gs, '\\\\').replace(/`/gs, '\\`')
       const scriptLines = [
         `const jsonData = JSON.parse(\`${dataString}\`)`,
         `const main = ${script.toString()}`,

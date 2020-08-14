@@ -217,6 +217,7 @@ export class RunProcess {
     return this
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-types
   public listeners(event: string | symbol): Function[] {
     return this.cmd.listeners(event)
   }
