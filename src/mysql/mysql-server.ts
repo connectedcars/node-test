@@ -137,9 +137,12 @@ export class MySQLServer {
     if (this.options.mysqlBaseDir) {
       // TODO: Drop mysqlBaseDir if the version of configuration has changed.
       this.mysqlBaseDir = path.resolve(this.options.mysqlBaseDir)
+
       // Do simple locking to avoid race condition on startup from existing folder
+      const startingLockTime = process.hrtime()
       startingPidFile = path.join(this.mysqlBaseDir, 'starting.pid')
       await writePidFile(startingPidFile, 100)
+      this.timings.push(formatHrDiff('startingLock', process.hrtime(startingLockTime)))
 
       // Check if the mysqld is already running from this folder
       const mysqldPidFile = path.join(this.mysqlBaseDir, 'mysqld.pid')
@@ -150,6 +153,9 @@ export class MySQLServer {
           this.mysqldPid = pid
           this.listenPort = listenPort
           this.initStatus = 'resumed'
+          await unlinkAsync(startingPidFile).catch(() => {
+            /* Ignore */
+          })
           return
         }
         // Kill the pid if we did not read a listen port
@@ -172,19 +178,13 @@ export class MySQLServer {
       }
       if (process.platform === 'darwin') {
         // Work around issue with mysql 5.7 running out of FD on macOSX: https://bugs.mysql.com/bug.php?id=79125
-        // eslint-disable-next-line @typescript-eslint/camelcase
         myCnf.mysqld.table_open_cache = '250'
-        // eslint-disable-next-line @typescript-eslint/camelcase
         myCnf.mysqld.open_files_limit = '800'
-        // eslint-disable-next-line @typescript-eslint/camelcase
         myCnf.mysqld.max_connections = '500'
 
         // Set limits higher for 8.x
-        // eslint-disable-next-line @typescript-eslint/camelcase
         myCnf['mysqld-8.0'].max_connections = '2000'
-        // eslint-disable-next-line @typescript-eslint/camelcase
         myCnf['mysqld-8.0'].open_files_limit = '5000'
-        // eslint-disable-next-line @typescript-eslint/camelcase
         myCnf['mysqld-8.0'].table_open_cache = '2000'
       }
 
