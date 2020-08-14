@@ -143,7 +143,7 @@ export class MySQLServer {
       // Do simple locking to avoid race condition on startup from existing folder
       const startingLockTime = process.hrtime()
       startingPidFile = path.join(this.mysqlBaseDir, 'starting.pid')
-      await writePidFile(startingPidFile, 100)
+      await writePidFile(startingPidFile, 300)
       this.timings.push(formatHrDiff('startingLock', process.hrtime(startingLockTime)))
 
       // Check if the mysqld is already running from this folder
