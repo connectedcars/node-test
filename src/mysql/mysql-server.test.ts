@@ -90,6 +90,7 @@ describe('MySQLServer', () => {
           mySqlServer4.waitForStarted()
         ])
       ).resolves.not.toThrow()
+
       console.log(await mySqlServer1.getTimings())
       console.log(await mySqlServer2.getTimings())
       console.log(await mySqlServer3.getTimings())
@@ -97,5 +98,5 @@ describe('MySQLServer', () => {
     } finally {
       process.env.PATH = oldPath
     }
-  }, 15000)
+  }, 20000)
 })

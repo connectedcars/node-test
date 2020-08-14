@@ -69,6 +69,7 @@ export class MySQLServer {
     this.myCnfCustom = options.myCnf || {}
     this.ignoreCache = options.ignoreCache || false
     this.ignoreCustomCache = options.ignoreCustomCache || options.ignoreCache || false
+
     this.initPromise = this.init()
     this.initPromise.catch(() => {
       // Do nothing as we will throw at later calls
@@ -121,6 +122,7 @@ export class MySQLServer {
   }
 
   private async init(): Promise<void> {
+    const totalInitTime = process.hrtime()
     // Generate unique cache key based on mysql version
     const mysqlVersion = await getMySQLServerVersionString(this.mysqldPath)
     const hash = crypto.createHash('sha1')
@@ -156,6 +158,7 @@ export class MySQLServer {
           await unlinkAsync(startingPidFile).catch(() => {
             /* Ignore */
           })
+          this.timings.push(formatHrDiff('totalInit', process.hrtime(totalInitTime)))
           return
         }
         // Kill the pid if we did not read a listen port
@@ -228,5 +231,6 @@ export class MySQLServer {
         /* Ignore */
       })
     }
+    this.timings.push(formatHrDiff('totalInit', process.hrtime(totalInitTime)))
   }
 }
