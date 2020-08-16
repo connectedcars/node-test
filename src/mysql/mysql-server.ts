@@ -134,103 +134,103 @@ export class MySQLServer {
       path.join(this.cachePath, `custom-initialization-data-${cacheCheckSum}.tar.gz`)
     )
 
-    // Resume from or create new mysqlBaseDir
-    let startingPidFile = ''
     if (this.options.mysqlBaseDir) {
       // TODO: Drop mysqlBaseDir if the version of configuration has changed.
       this.mysqlBaseDir = path.resolve(this.options.mysqlBaseDir)
-
-      // Do simple locking to avoid race condition on startup from existing folder
-      const startingLockTime = process.hrtime()
-      startingPidFile = path.join(this.mysqlBaseDir, 'starting.pid')
-      await writePidFile(startingPidFile, 300)
-      this.timings.push(formatHrDiff('startingLock', process.hrtime(startingLockTime)))
-
-      // Check if the mysqld is already running from this folder
-      const mysqldPidFile = path.join(this.mysqlBaseDir, 'mysqld.pid')
-      const pid = await readPidFile(mysqldPidFile)
-      if (pid && (await isPidRunning(pid))) {
-        const listenPort = await readPortFile(path.join(this.mysqlBaseDir, 'mysqld.port'))
-        if (listenPort) {
-          this.mysqldPid = pid
-          this.listenPort = listenPort
-          this.initStatus = 'resumed'
-          await unlinkAsync(startingPidFile).catch(() => {
-            /* Ignore */
-          })
-          this.timings.push(formatHrDiff('totalInit', process.hrtime(totalInitTime)))
-          return
-        }
-        // Kill the pid if we did not read a listen port
-        await stopPid(pid, 3000)
-      }
+      await mkdirAsync(this.mysqlBaseDir, { recursive: true, mode: 0o777 }).catch(() => {
+        // Ignore
+      })
     } else {
       this.mysqlBaseDir = await createTempDirectory()
     }
 
-    // Initialize mysql data
-    let initialized = false
-    if (!fs.existsSync(`${this.mysqlBaseDir}/data`)) {
-      const myCnf: MySQLServerConfig = {
-        mysqld: {},
-        'mysqld-8.0': {}
+    // Do simple locking to avoid race condition on startup from existing folder
+    const startingPidFile = path.join(this.mysqlBaseDir, 'starting.pid')
+    try {
+      const startingLockTime = process.hrtime()
+      await writePidFile(startingPidFile, 300)
+      this.timings.push(formatHrDiff('acquireStartingLock', process.hrtime(startingLockTime)))
+
+      // Check if the mysqld is already running from this folder and try to resume it
+      if (this.options.mysqlBaseDir) {
+        const mysqldPidFile = path.join(this.mysqlBaseDir, 'mysqld.pid')
+        const pid = await readPidFile(mysqldPidFile)
+        if (pid && (await isPidRunning(pid))) {
+          const listenPort = await readPortFile(path.join(this.mysqlBaseDir, 'mysqld.port'))
+          if (listenPort) {
+            this.mysqldPid = pid
+            this.listenPort = listenPort
+            this.initStatus = 'resumed'
+            this.timings.push(formatHrDiff('totalInit', process.hrtime(totalInitTime)))
+            return
+          }
+          // Kill the pid if we did not read a listen port
+          await stopPid(pid, 3000)
+        }
       }
-      if (process.getuid() === 0) {
-        // Drop privileges if running as root
-        myCnf.mysqld.user = 'mysql'
+
+      // Initialize mysql data
+      let initialized = false
+      if (!fs.existsSync(`${this.mysqlBaseDir}/data`)) {
+        const myCnf: MySQLServerConfig = {
+          mysqld: {},
+          'mysqld-8.0': {}
+        }
+        if (process.getuid() === 0) {
+          // Drop privileges if running as root
+          myCnf.mysqld.user = 'mysql'
+        }
+        if (process.platform === 'darwin') {
+          // Work around issue with mysql 5.7 running out of FD on macOSX: https://bugs.mysql.com/bug.php?id=79125
+          myCnf.mysqld.table_open_cache = '250'
+          myCnf.mysqld.open_files_limit = '800'
+          myCnf.mysqld.max_connections = '500'
+
+          // Set limits higher for 8.x
+          myCnf['mysqld-8.0'].max_connections = '2000'
+          myCnf['mysqld-8.0'].open_files_limit = '5000'
+          myCnf['mysqld-8.0'].table_open_cache = '2000'
+        }
+
+        // Ensure permissions and generate config
+        await chmodAsync(this.mysqlBaseDir, '777')
+        const config = generateMySQLServerConfig(this.mysqlBaseDir, { ...myCnf, ...this.myCnfCustom })
+        await writeFileAsync(`${path.join(this.mysqlBaseDir, 'my.cnf')}`, config)
+
+        // Make sure /files exists as it is used for LOAD
+        await mkdirAsync(path.join(this.mysqlBaseDir, '/files'), { recursive: true, mode: 0o777 })
+        await chmodAsync(path.join(this.mysqlBaseDir, '/files'), '777')
+
+        // initialize mysql data folder
+        const initializeTime = process.hrtime()
+        if (!this.ignoreCustomCache && (await existsAsync(this.customInitializeDataTarGz))) {
+          await extractMySQLDataCache(this.mysqlBaseDir, this.customInitializeDataTarGz)
+        } else if (!this.ignoreCache && (await existsAsync(this.cleanInitializeDataTarGz))) {
+          await extractMySQLDataCache(this.mysqlBaseDir, this.cleanInitializeDataTarGz)
+        } else {
+          await initializeMySQLData(this.mysqldPath, this.mysqlBaseDir)
+          await mkdirAsync(this.cachePath, { recursive: true, mode: 0o777 })
+          await createMySQLDataCache(this.mysqlBaseDir, this.cleanInitializeDataTarGz)
+        }
+        this.timings.push(formatHrDiff('initializeMySQLData', process.hrtime(initializeTime)))
+        initialized = true
+      } else if (await isDockerOverlay2()) {
+        // Working around issue with docker overlay2
+        await touchFiles(this.mysqlBaseDir as string)
       }
-      if (process.platform === 'darwin') {
-        // Work around issue with mysql 5.7 running out of FD on macOSX: https://bugs.mysql.com/bug.php?id=79125
-        myCnf.mysqld.table_open_cache = '250'
-        myCnf.mysqld.open_files_limit = '800'
-        myCnf.mysqld.max_connections = '500'
 
-        // Set limits higher for 8.x
-        myCnf['mysqld-8.0'].max_connections = '2000'
-        myCnf['mysqld-8.0'].open_files_limit = '5000'
-        myCnf['mysqld-8.0'].table_open_cache = '2000'
-      }
-
-      // Create base dir
-      await mkdirAsync(path.join(this.mysqlBaseDir), { recursive: true, mode: 0o777 })
-      await chmodAsync(this.mysqlBaseDir, '777')
-      const config = generateMySQLServerConfig(this.mysqlBaseDir, { ...myCnf, ...this.myCnfCustom })
-      await writeFileAsync(`${path.join(this.mysqlBaseDir, 'my.cnf')}`, config)
-
-      // Make sure /files exists as it is used for LOAD
-      await mkdirAsync(path.join(this.mysqlBaseDir, '/files'), { recursive: true, mode: 0o777 })
-      await chmodAsync(path.join(this.mysqlBaseDir, '/files'), '777')
-
-      // initialize mysql data folder
-      const initializeTime = process.hrtime()
-      if (!this.ignoreCustomCache && (await existsAsync(this.customInitializeDataTarGz))) {
-        await extractMySQLDataCache(this.mysqlBaseDir, this.customInitializeDataTarGz)
-      } else if (!this.ignoreCache && (await existsAsync(this.cleanInitializeDataTarGz))) {
-        await extractMySQLDataCache(this.mysqlBaseDir, this.cleanInitializeDataTarGz)
-      } else {
-        await initializeMySQLData(this.mysqldPath, this.mysqlBaseDir)
-        await mkdirAsync(this.cachePath, { recursive: true, mode: 0o777 })
-        await createMySQLDataCache(this.mysqlBaseDir, this.cleanInitializeDataTarGz)
-      }
-      this.timings.push(formatHrDiff('initializeMySQLData', process.hrtime(initializeTime)))
-      initialized = true
-    } else if (await isDockerOverlay2()) {
-      // Working around issue with docker overlay2
-      await touchFiles(this.mysqlBaseDir as string)
-    }
-
-    // Find free port and start mysqld
-    this.listenPort = this.options.listenPort ? this.options.listenPort : await findFreePort()
-    const startTime = process.hrtime()
-    this.mysqldPid = await startMySQLd(this.mysqldPath, this.mysqlBaseDir, [`--port=${this.listenPort}`])
-    this.timings.push(formatHrDiff('startMySQLd', process.hrtime(startTime)))
-    await writeFileAsync(`${path.join(this.mysqlBaseDir, '/mysqld.port')}`, this.listenPort)
-    this.initStatus = initialized ? 'initialized' : 'started'
-    if (startingPidFile) {
+      // Find free port and start mysqld
+      this.listenPort = this.options.listenPort ? this.options.listenPort : await findFreePort()
+      const startTime = process.hrtime()
+      this.mysqldPid = await startMySQLd(this.mysqldPath, this.mysqlBaseDir, [`--port=${this.listenPort}`])
+      this.timings.push(formatHrDiff('startMySQLd', process.hrtime(startTime)))
+      await writeFileAsync(`${path.join(this.mysqlBaseDir, '/mysqld.port')}`, this.listenPort)
+      this.initStatus = initialized ? 'initialized' : 'started'
+      this.timings.push(formatHrDiff('totalInit', process.hrtime(totalInitTime)))
+    } finally {
       await unlinkAsync(startingPidFile).catch(() => {
         /* Ignore */
       })
     }
-    this.timings.push(formatHrDiff('totalInit', process.hrtime(totalInitTime)))
   }
 }
