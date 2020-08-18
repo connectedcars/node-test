@@ -6,6 +6,7 @@ describe('MySQLClient', () => {
   let tmpDatabase: string
   beforeAll(async () => {
     const mySqlServer = new MySQLServer({ mysqlBaseDir: 'mysql-context' })
+    console.log(await mySqlServer.getTimings())
     mySqlClient = new MySQLClient({ port: await mySqlServer.getListenPort() })
     tmpDatabase = await mySqlClient.createTmpDatabase(
       `
