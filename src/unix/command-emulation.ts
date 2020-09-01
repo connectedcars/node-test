@@ -57,9 +57,7 @@ export class CommandEmulation {
 
     // Handle JS function
     if (typeof script === 'function') {
-      const dataString = JSON.stringify(data)
-        .replace(/\\/gs, '\\\\')
-        .replace(/`/gs, '\\`')
+      const dataString = JSON.stringify(data).replace(/\\/gs, '\\\\').replace(/`/gs, '\\`')
       const scriptLines = [
         `const jsonData = JSON.parse(\`${dataString}\`)`,
         `const main = ${script.toString()}`,
@@ -82,7 +80,9 @@ export class CommandEmulation {
     while (this.commands.length > 0) {
       const command = this.commands.shift()
       if (command) {
-        await unlinkAsync(command)
+        await unlinkAsync(command).catch(e => {
+          // Ignore
+        })
       }
     }
   }

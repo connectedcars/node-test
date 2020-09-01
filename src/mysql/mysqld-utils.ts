@@ -71,10 +71,8 @@ export function generateMySQLServerConfig(
       'pid-file': `${mysqlBaseDir}/mysqld.pid`,
       socket: `${mysqlBaseDir}/mysqld.sock`,
       datadir: `${mysqlBaseDir}/data`,
-      // eslint-disable-next-line @typescript-eslint/camelcase
       secure_file_priv: `${mysqlBaseDir}/files`,
       tmpdir,
-      // eslint-disable-next-line @typescript-eslint/camelcase
       max_allowed_packet: '256M'
     },
     'mysqld-8.0': {

@@ -82,4 +82,5 @@ export async function writePidFile(pidFile: string, acquireTries = 10): Promise<
       }
     }
   }
+  throw new Error(`Failed to write pid file ${pidFile} after ${acquireTries} tries`)
 }

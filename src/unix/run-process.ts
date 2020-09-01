@@ -100,8 +100,12 @@ export class RunProcess {
         }
         this.cmd.kill('SIGKILL')
       }
-    } else if (!this.stopped) {
-      throw new StandardStreamsStillOpenError('Process exited but standard steams are still open')
+    } else {
+      // Wait one tick to make sure the end handles on the steams have also closed
+      await new Promise(resolve => setImmediate(resolve))
+      if (!this.stopped) {
+        throw new StandardStreamsStillOpenError('Process exited but standard streams are still open')
+      }
     }
 
     return await this.stopPromise
@@ -217,6 +221,7 @@ export class RunProcess {
     return this
   }
 
+  // eslint-disable-next-line @typescript-eslint/ban-types
   public listeners(event: string | symbol): Function[] {
     return this.cmd.listeners(event)
   }
