@@ -70,7 +70,7 @@ export class CommandEmulation {
     }
 
     const fullScript = `#!${interpreter}\n\n${script}\n`
-    await writeFileAsync(path, fullScript)
+    await writeFileAsync(path, Buffer.from(fullScript, 'utf8'))
     await chmodAsync(path, '755')
     return fullScript
   }

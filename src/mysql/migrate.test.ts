@@ -37,7 +37,8 @@ describe('Migrate', () => {
       `
         SELECT COLUMN_NAME AS 'column'
         FROM INFORMATION_SCHEMA.COLUMNS
-        WHERE TABLE_SCHEMA ='my_test01' AND TABLE_NAME='VehicleInfo';
+        WHERE TABLE_SCHEMA ='my_test01' AND TABLE_NAME='VehicleInfo'
+        ORDER BY 'column';
       `
     )
     expect(columnsBefore).toMatchSnapshot()
@@ -50,7 +51,8 @@ describe('Migrate', () => {
       `
         SELECT COLUMN_NAME AS 'column'
         FROM INFORMATION_SCHEMA.COLUMNS
-        WHERE TABLE_SCHEMA ='my_test01' AND TABLE_NAME='VehicleInfo';
+        WHERE TABLE_SCHEMA ='my_test01' AND TABLE_NAME='VehicleInfo'
+        ORDER BY 'column';
       `
     )
     expect(columnsAfter).toMatchSnapshot()

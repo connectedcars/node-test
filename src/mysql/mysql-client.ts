@@ -218,6 +218,7 @@ export class MySQLClient {
     const result = await Promise.all(promises)
     return result.every(r => r === true)
   }
+
   public async cloneDatabase(pool: mysql.Pool, destinationDatabase: string): Promise<void> {
     // Fetch charset and collation from source database
     const dbInfo = await this.query<{ charset: string; collation: string }>(

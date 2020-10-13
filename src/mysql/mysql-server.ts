@@ -195,7 +195,7 @@ export class MySQLServer {
         // Ensure permissions and generate config
         await chmodAsync(this.mysqlBaseDir, '777')
         const config = generateMySQLServerConfig(this.mysqlBaseDir, { ...myCnf, ...this.myCnfCustom })
-        await writeFileAsync(`${path.join(this.mysqlBaseDir, 'my.cnf')}`, config)
+        await writeFileAsync(`${path.join(this.mysqlBaseDir, 'my.cnf')}`, Buffer.from(config, 'utf8'))
 
         // Make sure /files exists as it is used for LOAD
         await mkdirAsync(path.join(this.mysqlBaseDir, '/files'), { recursive: true, mode: 0o777 })
@@ -224,7 +224,10 @@ export class MySQLServer {
       const startTime = process.hrtime()
       this.mysqldPid = await startMySQLd(this.mysqldPath, this.mysqlBaseDir, [`--port=${this.listenPort}`])
       this.timings.push(formatHrDiff('startMySQLd', process.hrtime(startTime)))
-      await writeFileAsync(`${path.join(this.mysqlBaseDir, '/mysqld.port')}`, this.listenPort)
+      await writeFileAsync(
+        `${path.join(this.mysqlBaseDir, '/mysqld.port')}`,
+        Buffer.from(this.listenPort.toString(), 'utf8')
+      )
       this.initStatus = initialized ? 'initialized' : 'started'
       this.timings.push(formatHrDiff('totalInit', process.hrtime(totalInitTime)))
     } finally {
