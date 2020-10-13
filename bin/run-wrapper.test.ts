@@ -164,7 +164,7 @@ describe('run-wrapper', () => {
         }, 10000)
         console.log('hello world')
         console.error('stderr')
-        fs.writeFileSync(`${data}/my-hello.pid`, process.pid)
+        fs.writeFileSync(`${data}/my-hello.pid`, Buffer.from(process.pid.toString(), 'utf8'))
       },
       null,
       tmpdir
