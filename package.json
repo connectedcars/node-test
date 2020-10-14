@@ -6,14 +6,15 @@
   "bin": {
     "run-wrapper": "build/dist/bin/run-wrapper.js",
     "local-mysql": "build/dist/bin/local-mysql.js",
-    "cache-migrations": "build/dist/bin/cache-migrations.js"
+    "cache-migrations": "build/dist/bin/cache-migrations.js",
+    "checks": "build/dist/bin/checks.js"
   },
   "types": "build/dist/src/index.d.ts",
   "scripts": {
     "test": "TZ=UTC jest",
-    "local-mysql": "npm run build:js && build/dist/bin/local-mysql.js",
     "build": "build src bin",
     "build:js": "build --skip-typings -- src bin",
+    "local-mysql": "npm run build:js && build/dist/bin/local-mysql.js",
     "build:types": "tsc --emitDeclarationOnly",
     "lint": "eslint './src/**/*.{ts,tsx}' './bin/**/*.{ts,tsx}'",
     "lint:fix": "eslint --fix './src/**/*.{ts,tsx}' './bin/**/*.{ts,tsx}'",
@@ -45,6 +46,7 @@
     "@connectedcars/setup": "^0.10.0",
     "@types/yargs": "^15.0.5",
     "@types/jest": "26.0.9",
+    "@jest/test-result": "^25.2.6",
     "@typescript-eslint/eslint-plugin": "3.9.0",
     "@typescript-eslint/parser": "3.9.0",
     "axios": "^0.19.2",
