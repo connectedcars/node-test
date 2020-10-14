@@ -21,8 +21,10 @@ describe('run-jest', () => {
     await commandEmulation.registerCommand(
       'jest',
       data => {
-        process.stdout.write(JSON.stringify(data))
-        process.exit(0)
+        process.stdout.end(JSON.stringify(data))
+        process.stdout.on('finish', () => {
+          process.exit(0)
+        })
       },
       null,
       jestSuccessfulOutput
@@ -35,8 +37,10 @@ describe('run-jest', () => {
     await commandEmulation.registerCommand(
       'react-scripts',
       data => {
-        process.stdout.write(JSON.stringify(data))
-        process.exit(0)
+        process.stdout.end(JSON.stringify(data))
+        process.stdout.on('finish', () => {
+          process.exit(0)
+        })
       },
       null,
       jestSuccessfulOutput
@@ -49,8 +53,10 @@ describe('run-jest', () => {
     await commandEmulation.registerCommand(
       'react-scripts',
       data => {
-        process.stdout.write(JSON.stringify(data))
-        process.exit(1)
+        process.stdout.end(JSON.stringify(data))
+        process.stdout.on('finish', () => {
+          process.exit(0)
+        })
       },
       null,
       jestNotFound

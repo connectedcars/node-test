@@ -21,8 +21,10 @@ describe('run-eslint', () => {
     await commandEmulation.registerCommand(
       'eslint',
       data => {
-        process.stdout.write(JSON.stringify(data))
-        process.exit(0)
+        process.stdout.end(JSON.stringify(data))
+        process.stdout.on('finish', () => {
+          process.exit(0)
+        })
       },
       null,
       eslintSuccesfulOutput

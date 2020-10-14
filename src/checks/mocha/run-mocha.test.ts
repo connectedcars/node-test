@@ -21,8 +21,10 @@ describe('run-mocha', () => {
     await commandEmulation.registerCommand(
       'mocha',
       data => {
-        process.stdout.write(JSON.stringify(data))
-        process.exit(0)
+        process.stdout.end(JSON.stringify(data))
+        process.stdout.on('finish', () => {
+          process.exit(0)
+        })
       },
       null,
       mochaSuccesfulOutput

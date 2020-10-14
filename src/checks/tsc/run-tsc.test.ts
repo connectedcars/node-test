@@ -21,8 +21,10 @@ describe('run-tsc', () => {
     await commandEmulation.registerCommand(
       'tsc',
       data => {
-        process.stdout.write(data?.toString() || '')
-        process.exit(0)
+        process.stdout.end(data?.toString() || '')
+        process.stdout.on('finish', () => {
+          process.exit(0)
+        })
       },
       null,
       tscErrorOutput
