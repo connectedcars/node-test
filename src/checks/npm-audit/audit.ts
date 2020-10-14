@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { CheckResult } from '../checks-common'
 import { Advisory, AuditData, Vulnerabilities } from './audit-types'
 

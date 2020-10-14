@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { eslintCheck } from './eslint'
 import {
   eslintErrorAnnotationsOutput,

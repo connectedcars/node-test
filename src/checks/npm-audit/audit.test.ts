@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { auditCheck } from './audit'
 import { auditMultiVuln, auditNoVuln } from './resources/audit-help-text'
 

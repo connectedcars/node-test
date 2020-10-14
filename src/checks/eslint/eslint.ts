@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { Annotation, CheckResult, GitData, Level } from '../checks-common'
 
 export interface EslintInput extends GitData {

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
-
 import { FormattedTestResults } from '@jest/test-result/build/types'
 
 import { CheckResult } from '../checks-common'
