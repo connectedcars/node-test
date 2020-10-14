@@ -1,5 +1,4 @@
 import { AssertionResult, FormattedTestResults } from '@jest/test-result/build/types'
-import _ from 'lodash'
 
 import { Annotation, CheckResult, GitData } from '../checks-common'
 
@@ -27,7 +26,7 @@ export const jestCheck = ({ data, org, repo, sha }: JestInput): CheckResult => {
 
   result.conclusion = data.success ? 'success' : 'failure'
 
-  result.output.annotations = _(data.testResults)
+  result.output.annotations = data.testResults
     .flatMap(results => {
       return results.assertionResults.map(assertionResult => {
         return {
@@ -51,7 +50,6 @@ export const jestCheck = ({ data, org, repo, sha }: JestInput): CheckResult => {
         raw_details: JSON.stringify(result, null, 2)
       }
     })
-    .value()
 
   result.output.summary = `${data.numPassedTests} of ${data.numTotalTests} tests passed!`
   // note: check numTotalTestSuites for count?
