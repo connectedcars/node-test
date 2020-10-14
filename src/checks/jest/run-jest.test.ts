@@ -1,5 +1,5 @@
 import { CommandEmulation, RunProcess } from '../..'
-import { jestNotFound, jestSuccesfulOutput } from './resources/jest-help-text'
+import { jestNotFound, jestSuccessfulOutput } from './resources/jest-help-text'
 import { runJest, runReactScriptsTest } from './run-jest'
 
 describe('run-jest', () => {
@@ -25,10 +25,10 @@ describe('run-jest', () => {
         process.exit(0)
       },
       null,
-      jestSuccesfulOutput
+      jestSuccessfulOutput
     )
     const jestJson = await runJest()
-    expect(jestJson).toEqual(jestSuccesfulOutput)
+    expect(jestJson).toEqual(jestSuccessfulOutput)
   })
 
   it('should start a react-scripts test process and wait for exit', async () => {
@@ -39,10 +39,10 @@ describe('run-jest', () => {
         process.exit(0)
       },
       null,
-      jestSuccesfulOutput
+      jestSuccessfulOutput
     )
     const jestJson = await runReactScriptsTest()
-    expect(jestJson).toEqual(jestSuccesfulOutput)
+    expect(jestJson).toEqual(jestSuccessfulOutput)
   })
 
   it('should handle react-scripts test failing to launch', async () => {
