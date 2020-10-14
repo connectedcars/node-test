@@ -13,7 +13,7 @@ describe('local-mysql', () => {
     const tmpdir = await createTempDirectory()
     const cmd = new RunProcess('local-mysql', [])
     processCleanup.push(cmd)
-    await expect(cmd.waitForOutput(/mysqld: ready for connections/)).resolves.toMatchObject({
+    await expect(cmd.waitForOutput(/mysqld: ready for connections/, 8000)).resolves.toMatchObject({
       0: 'mysqld: ready for connections'
     })
     await cmd.kill('SIGTERM')
