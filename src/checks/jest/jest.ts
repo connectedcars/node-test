@@ -1,6 +1,6 @@
 import { AssertionResult, FormattedTestResults } from '@jest/test-result/build/types'
 
-import { Annotation, CheckResult, GitData } from '../checks-common'
+import { Annotation, CheckResult, GitData, Level } from '../checks-common'
 
 export type JestOutput = FormattedTestResults
 
@@ -35,15 +35,38 @@ export const jestCheck = ({ data, org, repo, sha }: JestInput): CheckResult => {
         }
       })
     })
-    .filter(r => r.status !== 'passed')
+    .filter(r => !['passed'].includes(r.status))
     .map<Annotation>(result => {
       const match = result.file.match(/^.*\/(src\/.+)$/)
       const relPath = match && match.length === 2 ? match[1] : ''
 
+      let annotation_level: Level
+      switch (result.status) {
+        case 'disabled':
+          annotation_level = 'notice'
+          break
+        case 'failed':
+          annotation_level = 'failure'
+          break
+        case 'passed':
+          annotation_level = 'success'
+          break
+        case 'pending':
+          annotation_level = 'notice'
+          break
+        case 'skipped':
+          annotation_level = 'notice'
+          break
+        case 'todo':
+          annotation_level = 'warning'
+          break
+        default:
+          annotation_level = 'neutral'
+      }
       return {
         start_line: 1,
         end_line: 1,
-        annotation_level: 'failure',
+        annotation_level: annotation_level,
         message: result.failureMessages?.join('\n') || '',
         path: relPath,
         blob_href: `https://github.com/${org}/${repo}/blob/${sha}/${relPath}`,
