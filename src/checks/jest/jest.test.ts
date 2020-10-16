@@ -11,6 +11,8 @@ describe('checks/jest', () => {
     const output = jestCheck({ data, org: 'connectedcars', repo: 'mobile-app', sha: '1234567890' })
     const expected = {
       conclusion: 'success',
+      status: 'completed',
+      completed_at: expect.stringMatching(/^\d{4}/),
       output: {
         title: '33 of 33 tests passed!',
         summary: '33 of 33 tests passed!',
@@ -25,6 +27,8 @@ describe('checks/jest', () => {
 
     const output = jestCheck({ data, org: 'connectedcars', repo: 'mobile-app', sha: '1234567890' })
     const expected: CheckRunResult = {
+      status: 'completed',
+      completed_at: new Date().toISOString(),
       conclusion: 'failure',
       output: {
         title: '3 of 4 tests passed!',
@@ -56,14 +60,15 @@ describe('checks/jest', () => {
       repo: 'mobile-app',
       sha: '1234567890'
     })
-    const expected = {
+    expect(output).toStrictEqual({
       conclusion: 'neutral',
+      status: 'completed',
+      completed_at: expect.stringMatching(/^\d{4}/),
       output: {
         title: 'No tests found',
         summary: 'No tests found',
         annotations: []
       }
-    }
-    expect(output).toStrictEqual(expected)
+    })
   })
 })

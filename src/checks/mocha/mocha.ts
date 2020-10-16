@@ -11,6 +11,8 @@ export function mochaCheck({ data, org, repo, sha }: MochaInput): CheckRunResult
   if (!data || !data.failures) {
     return {
       conclusion: 'neutral',
+      status: 'completed',
+      completed_at: new Date().toISOString(),
       output: {
         title: 'No tests found',
         summary: 'No tests found',
@@ -58,6 +60,8 @@ export function mochaCheck({ data, org, repo, sha }: MochaInput): CheckRunResult
   summary += ` (${details.join(', ')})`
   return {
     conclusion: failing > 0 ? 'failure' : 'success',
+    status: 'completed',
+    completed_at: new Date().toISOString(),
     output: {
       title: 'mocha',
       summary,

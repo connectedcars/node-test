@@ -2,6 +2,7 @@
 
 exports[`checks/audit converts failed audit 1`] = `
 Object {
+  "completed_at": StringMatching /\\^\\\\d\\{4\\}/,
   "conclusion": "neutral",
   "output": Object {
     "summary": "Found **32** vulnerabilities (**23** low, **6** moderate, **2** high, **1** critical) in 965 scanned packages",
@@ -177,5 +178,6 @@ The vulnerable functions are 'defaultsDeep', 'merge', and 'mergeWith' which allo
 Update to version 4.17.5 or later.",
     "title": "npm audit security report",
   },
+  "status": "completed",
 }
 `;

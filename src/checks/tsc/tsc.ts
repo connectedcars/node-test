@@ -7,6 +7,8 @@ export interface TscInput {
 export function tscCheck({ data }: TscInput): CheckRunResult {
   const result: CheckRunResult = {
     conclusion: 'success',
+    status: 'completed',
+    completed_at: new Date().toISOString(),
     output: {
       summary: 'No problems found',
       title: 'No problems found',

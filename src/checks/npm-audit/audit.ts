@@ -82,6 +82,8 @@ export function auditCheck({ data }: AuditInput): CheckRunResult {
   }
   return {
     conclusion: problems.all === 0 ? 'success' : 'neutral',
+    status: 'completed',
+    completed_at: new Date().toISOString(),
     output: {
       title: 'npm audit security report',
       summary: getSummary(problems, totalDependencies),

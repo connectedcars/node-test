@@ -9,6 +9,8 @@ describe('checks/audit', () => {
     })
     expect(result).toStrictEqual({
       conclusion: 'success',
+      status: 'completed',
+      completed_at: expect.stringMatching(/^\d{4}/),
       output: {
         title: 'npm audit security report',
         summary: 'Found **0** vulnerabilities in 4982 scanned packages',
@@ -22,6 +24,8 @@ describe('checks/audit', () => {
     const result = auditCheck({
       data
     })
-    expect(result).toMatchSnapshot()
+    expect(result).toMatchSnapshot({
+      completed_at: expect.stringMatching(/^\d{4}/)
+    })
   })
 })

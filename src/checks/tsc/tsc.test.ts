@@ -11,6 +11,8 @@ describe('checks/tsc', () => {
     })
     expect(result).toStrictEqual({
       conclusion: 'success',
+      status: 'completed',
+      completed_at: expect.stringMatching(/^\d{4}/),
       output: {
         title: 'No problems found',
         summary: 'No problems found',
@@ -24,7 +26,10 @@ describe('checks/tsc', () => {
     const result = tscCheck({
       data
     })
-    expect(result).toMatchSnapshot()
+    expect(result).toMatchSnapshot({
+      status: 'completed',
+      completed_at: expect.stringMatching(/^\d{4}/)
+    })
   })
 
   it('converts successful failed tsc with multi errors', () => {
@@ -32,6 +37,8 @@ describe('checks/tsc', () => {
     const result = tscCheck({
       data
     })
-    expect(result).toMatchSnapshot()
+    expect(result).toMatchSnapshot({
+      completed_at: expect.stringMatching(/^\d{4}/)
+    })
   })
 })

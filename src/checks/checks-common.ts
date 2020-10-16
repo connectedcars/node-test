@@ -9,6 +9,8 @@ export interface GitData {
 export interface CheckRunResult {
   conclusion: CheckRunConclusion
   output: CheckOutput
+  completed_at: string
+  status: CheckRunStatus
 }
 
 export interface CheckOutput {
@@ -28,6 +30,8 @@ export interface Annotation {
   raw_details: string
   title?: string
 }
+
+export type CheckRunStatus = 'queued' | 'in_progress' | 'completed'
 
 export type CheckRunConclusion =
   | 'success'
