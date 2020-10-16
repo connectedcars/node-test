@@ -20,15 +20,15 @@ process.env.PATH = `./node_modules/.bin:${process.env.PATH}`
 
 async function main() {
   if (!REPO_NAME) {
-    console.error('Missing enviroment variable "REPO_NAME"')
+    console.error('Missing environment variable "REPO_NAME"')
     exit(1)
   }
   if (!COMMIT_SHA) {
-    console.error('Missing enviroment variable "COMMIT_SHA"')
+    console.error('Missing environment variable "COMMIT_SHA"')
     exit(1)
   }
   if (!ORG_NAME) {
-    console.error('Missing enviroment variable "ORG_NAME"')
+    console.error('Missing environment variable "ORG_NAME"')
     exit(1)
   }
 
