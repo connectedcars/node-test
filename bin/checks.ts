@@ -52,7 +52,6 @@ async function main() {
             sha: COMMIT_SHA
           }
           const checkOutput = jestCheck(jestInput)
-          console.log(JSON.stringify(checkOutput, null, 2))
           printSummary(checkOutput, args.ci as boolean)
         } catch (error) {
           console.error(error)
@@ -72,7 +71,6 @@ async function main() {
             sha: COMMIT_SHA
           }
           const checkOutput = eslintCheck(eslintInput)
-          console.log(JSON.stringify(checkOutput, null, 2))
           printSummary(checkOutput, args.ci as boolean)
         } catch (error) {
           console.error(error)
@@ -81,7 +79,7 @@ async function main() {
     })
     .command({
       command: 'jest-cra-ci',
-      describe: 'Runs Jest with CI output',
+      describe: 'Runs react-scripts test with CI output',
       handler: async args => {
         try {
           const result = await runReactScriptsTest()
@@ -93,7 +91,6 @@ async function main() {
           }
           console.log(result)
           const checkOutput = jestCheck(jestInput)
-          console.log(JSON.stringify(checkOutput, null, 2))
           printSummary(checkOutput, args.ci as boolean)
         } catch (error) {
           console.error(error)
@@ -114,7 +111,6 @@ async function main() {
           }
           console.log(result)
           const checkOutput = mochaCheck(mochaInput)
-          console.log(JSON.stringify(checkOutput, null, 2))
           printSummary(checkOutput, args.ci as boolean)
         } catch (error) {
           console.error(error)
@@ -131,7 +127,6 @@ async function main() {
             data: result
           }
           const checkOutput = auditCheck(auditInput)
-          console.log(JSON.stringify(checkOutput, null, 2))
           printSummary(checkOutput, args.ci as boolean)
         } catch (error) {
           console.error(error)
@@ -145,7 +140,6 @@ async function main() {
         try {
           const result = await runTsc()
           const checkOutput = tscCheck({ data: result })
-          console.log(JSON.stringify(checkOutput, null, 2))
           printSummary(checkOutput, args.ci as boolean)
         } catch (error) {
           console.error(error)
