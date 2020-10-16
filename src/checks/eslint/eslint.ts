@@ -1,4 +1,4 @@
-import { Annotation, CheckResult, GitData, Level } from '../checks-common'
+import { Annotation, AnnotationLevel, CheckRunResult, GitData } from '../checks-common'
 
 export interface EslintInput extends GitData {
   data: EslintData[]
@@ -24,7 +24,7 @@ const generateSummary = (errors: number, warnings: number): string => {
   return `${summary} (${details.join(', ')})`
 }
 
-export const eslintCheck = ({ data, org, repo, sha }: EslintInput): CheckResult => {
+export const eslintCheck = ({ data, org, repo, sha }: EslintInput): CheckRunResult => {
   let errors = 0
   let warnings = 0
   const annotations: Annotation[] = []
@@ -38,10 +38,10 @@ export const eslintCheck = ({ data, org, repo, sha }: EslintInput): CheckResult 
       const match = file.filePath.match(/^.*\/(src\/.+)$/)
       const relPath = match && match.length === 2 ? match[1] : ''
       // Determine severity of message
-      let annotation_level: Level = 'notice'
+      let annotation_level: AnnotationLevel = 'neutral'
       switch (message.severity) {
         case 1:
-          annotation_level = 'warning'
+          annotation_level = 'notice'
           break
         case 2:
           annotation_level = 'failure'
@@ -65,7 +65,7 @@ export const eslintCheck = ({ data, org, repo, sha }: EslintInput): CheckResult 
 
   const summary = generateSummary(errors, warnings)
 
-  const result: CheckResult = {
+  const result: CheckRunResult = {
     conclusion: 'success',
     output: {
       title: summary,

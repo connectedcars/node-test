@@ -1,6 +1,6 @@
 import { AssertionResult, FormattedTestResults } from '@jest/test-result/build/types'
 
-import { Annotation, CheckResult, GitData, Level } from '../checks-common'
+import { Annotation, AnnotationLevel, CheckRunResult, GitData } from '../checks-common'
 
 export type JestOutput = FormattedTestResults
 
@@ -10,8 +10,8 @@ export interface JestInput extends GitData {
 
 type AssertionSummary = AssertionResult & { file: string }
 
-export const jestCheck = ({ data, org, repo, sha }: JestInput): CheckResult => {
-  const result: CheckResult = {
+export const jestCheck = ({ data, org, repo, sha }: JestInput): CheckRunResult => {
+  const result: CheckRunResult = {
     conclusion: 'neutral',
     output: {
       title: 'No tests found',
@@ -40,25 +40,22 @@ export const jestCheck = ({ data, org, repo, sha }: JestInput): CheckResult => {
       const match = result.file.match(/^.*\/(src\/.+)$/)
       const relPath = match && match.length === 2 ? match[1] : ''
 
-      let annotation_level: Level
+      let annotation_level: AnnotationLevel
       switch (result.status) {
         case 'disabled':
-          annotation_level = 'notice'
+          annotation_level = 'neutral'
           break
         case 'failed':
           annotation_level = 'failure'
-          break
-        case 'passed':
-          annotation_level = 'success'
           break
         case 'pending':
           annotation_level = 'notice'
           break
         case 'skipped':
-          annotation_level = 'notice'
+          annotation_level = 'neutral'
           break
         case 'todo':
-          annotation_level = 'warning'
+          annotation_level = 'notice'
           break
         default:
           annotation_level = 'neutral'

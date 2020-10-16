@@ -1,10 +1,10 @@
-import { Annotation, CheckResult, GitData } from '../checks-common'
+import { Annotation, CheckRunResult, GitData } from '../checks-common'
 
 export interface MochaInput extends GitData {
   data: MochaData
 }
 
-export function mochaCheck({ data, org, repo, sha }: MochaInput): CheckResult {
+export function mochaCheck({ data, org, repo, sha }: MochaInput): CheckRunResult {
   const annotations: Annotation[] = []
 
   // This happens when a test logs something to stdout while running

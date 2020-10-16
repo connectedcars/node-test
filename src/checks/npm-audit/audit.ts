@@ -1,4 +1,4 @@
-import { CheckResult } from '../checks-common'
+import { CheckRunResult } from '../checks-common'
 import { Advisory, AuditData, Vulnerabilities } from './audit-types'
 
 export interface AuditInput {
@@ -61,7 +61,7 @@ function getText(data: AuditData): string {
   return entries.join('\n\n')
 }
 
-export function auditCheck({ data }: AuditInput): CheckResult {
+export function auditCheck({ data }: AuditInput): CheckRunResult {
   const problems = {
     all: 0,
     info: 0,

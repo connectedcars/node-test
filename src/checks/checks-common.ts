@@ -1,11 +1,13 @@
+// https://docs.github.com/en/free-pro-team@latest/rest/reference/checks#runs
+
 export interface GitData {
   org: string
   repo: string
   sha: string
 }
 
-export interface CheckResult {
-  conclusion: Level
+export interface CheckRunResult {
+  conclusion: CheckRunConclusion
   output: CheckOutput
 }
 
@@ -21,15 +23,24 @@ export interface Annotation {
   blob_href?: string
   start_line?: number
   end_line?: number
-  annotation_level: Level
+  annotation_level: AnnotationLevel
   message: string
   raw_details: string
   title?: string
 }
 
-export type Level = 'success' | 'failure' | 'neutral' | 'notice' | 'warning'
+export type CheckRunConclusion =
+  | 'success'
+  | 'failure'
+  | 'neutral'
+  | 'cancelled'
+  | 'skipped'
+  | 'timed_out'
+  | 'action_required'
 
-export function printSummary(checkResult: CheckResult, ci?: boolean): void {
+export type AnnotationLevel = 'notice' | 'failure' | 'neutral'
+
+export function printSummary(checkResult: CheckRunResult, ci?: boolean): void {
   console.log(JSON.stringify(checkResult, null, 2))
 
   const { output } = checkResult

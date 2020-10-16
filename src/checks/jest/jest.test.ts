@@ -1,6 +1,6 @@
 import { FormattedTestResults } from '@jest/test-result/build/types'
 
-import { CheckResult } from '../checks-common'
+import { CheckRunResult } from '../checks-common'
 import { jestCheck } from './jest'
 import { jestFailedOutput, jestPassedOutput } from './resources/jest-help-text'
 
@@ -24,7 +24,7 @@ describe('checks/jest', () => {
     const data = JSON.parse(jestFailedOutput)
 
     const output = jestCheck({ data, org: 'connectedcars', repo: 'mobile-app', sha: '1234567890' })
-    const expected: CheckResult = {
+    const expected: CheckRunResult = {
       conclusion: 'failure',
       output: {
         title: '3 of 4 tests passed!',

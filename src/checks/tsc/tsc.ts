@@ -1,11 +1,11 @@
-import { CheckResult } from '../checks-common'
+import { CheckRunResult } from '../checks-common'
 
 export interface TscInput {
   data: TscData[]
 }
 
-export function tscCheck({ data }: TscInput): CheckResult {
-  const result: CheckResult = {
+export function tscCheck({ data }: TscInput): CheckRunResult {
+  const result: CheckRunResult = {
     conclusion: 'success',
     output: {
       summary: 'No problems found',
