@@ -134,7 +134,8 @@ main(process.argv)
           2
         )
       )
+    } else {
+      console.error(e)
     }
-    //console.error(e)
     process.exit(255)
   })
