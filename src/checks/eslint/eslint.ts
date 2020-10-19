@@ -1,4 +1,4 @@
-import { Annotation, AnnotationLevel, CheckRunResult, GitData } from '../checks-common'
+import { Annotation, AnnotationLevel, CheckConversionError, CheckRunResult, GitData } from '../checks-common'
 
 export interface EslintInput extends GitData {
   data: EslintData[]
@@ -25,66 +25,70 @@ const generateSummary = (errors: number, warnings: number): string => {
 }
 
 export const eslintCheck = ({ data, org, repo, sha }: EslintInput): CheckRunResult => {
-  let errors = 0
-  let warnings = 0
-  const annotations: Annotation[] = []
-  // Run through each file
-  outer: for (const file of data) {
-    // Run through each message for file
-    for (const message of file.messages) {
-      if (message.message === 'File ignored because of a matching ignore pattern. Use "--no-ignore" to override.') {
-        continue outer
+  try {
+    let errors = 0
+    let warnings = 0
+    const annotations: Annotation[] = []
+    // Run through each file
+    outer: for (const file of data) {
+      // Run through each message for file
+      for (const message of file.messages) {
+        if (message.message === 'File ignored because of a matching ignore pattern. Use "--no-ignore" to override.') {
+          continue outer
+        }
+        const match = file.filePath.match(/^.*\/(src\/.+)$/)
+        const relPath = match && match.length === 2 ? match[1] : ''
+        // Determine severity of message
+        let annotation_level: AnnotationLevel = 'neutral'
+        switch (message.severity) {
+          case 1:
+            annotation_level = 'notice'
+            break
+          case 2:
+            annotation_level = 'failure'
+            break
+        }
+        // Generate an annotation
+        annotations.push({
+          path: relPath,
+          blob_href: `https://github.com/${org}/${repo}/blob/${sha}/${relPath}`,
+          start_line: message.line,
+          end_line: message.endLine,
+          annotation_level,
+          message: `${message.line}:${message.column}`.padEnd(10) + message.message,
+          raw_details: JSON.stringify(message, null, '    ')
+        })
       }
-      const match = file.filePath.match(/^.*\/(src\/.+)$/)
-      const relPath = match && match.length === 2 ? match[1] : ''
-      // Determine severity of message
-      let annotation_level: AnnotationLevel = 'neutral'
-      switch (message.severity) {
-        case 1:
-          annotation_level = 'notice'
-          break
-        case 2:
-          annotation_level = 'failure'
-          break
+      // Increment problem counts
+      errors += file.errorCount
+      warnings += file.warningCount
+    }
+
+    const summary = generateSummary(errors, warnings)
+
+    const result: CheckRunResult = {
+      conclusion: 'success',
+      status: 'completed',
+      completed_at: new Date().toISOString(),
+      output: {
+        title: summary,
+        summary,
+        annotations
       }
-      // Generate an annotation
-      annotations.push({
-        path: relPath,
-        blob_href: `https://github.com/${org}/${repo}/blob/${sha}/${relPath}`,
-        start_line: message.line,
-        end_line: message.endLine,
-        annotation_level,
-        message: `${message.line}:${message.column}`.padEnd(10) + message.message,
-        raw_details: JSON.stringify(message, null, '    ')
-      })
     }
-    // Increment problem counts
-    errors += file.errorCount
-    warnings += file.warningCount
-  }
 
-  const summary = generateSummary(errors, warnings)
-
-  const result: CheckRunResult = {
-    conclusion: 'success',
-    status: 'completed',
-    completed_at: new Date().toISOString(),
-    output: {
-      title: summary,
-      summary,
-      annotations
+    if (errors > 0) {
+      result.conclusion = 'failure'
+      return result
     }
-  }
 
-  if (errors > 0) {
-    result.conclusion = 'failure'
+    if (warnings > 0) {
+      result.conclusion = 'neutral'
+      return result
+    }
+
     return result
+  } catch (e) {
+    throw new CheckConversionError('eslint', { data, org, repo, sha }, e)
   }
-
-  if (warnings > 0) {
-    result.conclusion = 'neutral'
-    return result
-  }
-
-  return result
 }
