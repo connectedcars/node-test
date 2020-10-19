@@ -1,8 +1,8 @@
 import { RunProcess } from '../../unix/run-process'
 import { AuditData } from './audit-types'
 
-export async function runNpmAudit(command = 'npm', extraArgs: string[] = []): Promise<AuditData> {
-  const cmd = new RunProcess(command, ['audit', '--json', ...extraArgs], {
+export async function runNpmAudit(extraArgs: string[] = []): Promise<AuditData> {
+  const cmd = new RunProcess('npm', ['audit', '--json', ...extraArgs], {
     env: { ...process.env, TZ: 'UTC' }
   })
   const data: Buffer[] = []
