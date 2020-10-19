@@ -1,6 +1,5 @@
 import { FormattedTestResults } from '@jest/test-result/build/types'
 
-import { CheckRunResult } from '../checks-common'
 import { jestCheck } from './jest'
 import { jestFailedOutput, jestPassedOutput } from './resources/jest-help-text'
 
