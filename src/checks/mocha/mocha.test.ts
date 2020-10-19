@@ -12,6 +12,8 @@ describe('checks/mocha', () => {
       sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88'
     })
     const expected = {
+      name: 'mocha',
+      head_sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88',
       conclusion: 'success',
       status: 'completed',
       completed_at: expect.stringMatching(/^\d{4}/),
@@ -34,7 +36,6 @@ describe('checks/mocha', () => {
       sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88'
     })
     expect(output).toMatchSnapshot({
-      status: 'completed',
       completed_at: expect.stringMatching(/^\d{4}/)
     })
   })

@@ -11,6 +11,8 @@ export function mochaCheck({ data, org, repo, sha }: MochaInput): CheckRunResult
     // This happens when a test logs something to stdout while running
     if (!data || !data.failures) {
       return {
+        name: 'mocha',
+        head_sha: sha,
         conclusion: 'neutral',
         status: 'completed',
         completed_at: new Date().toISOString(),
@@ -60,6 +62,8 @@ export function mochaCheck({ data, org, repo, sha }: MochaInput): CheckRunResult
     }
     summary += ` (${details.join(', ')})`
     return {
+      name: 'mocha',
+      head_sha: sha,
       conclusion: failing > 0 ? 'failure' : 'success',
       status: 'completed',
       completed_at: new Date().toISOString(),

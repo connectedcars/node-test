@@ -13,6 +13,8 @@ type AssertionSummary = AssertionResult & { file: string }
 export const jestCheck = ({ data, org, repo, sha }: JestInput): CheckRunResult => {
   try {
     const result: CheckRunResult = {
+      name: 'jest',
+      head_sha: sha,
       conclusion: 'neutral',
       status: 'completed',
       completed_at: new Date().toISOString(),

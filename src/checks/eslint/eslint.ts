@@ -67,6 +67,8 @@ export const eslintCheck = ({ data, org, repo, sha }: EslintInput): CheckRunResu
     const summary = generateSummary(errors, warnings)
 
     const result: CheckRunResult = {
+      name: 'eslint',
+      head_sha: sha,
       conclusion: 'success',
       status: 'completed',
       completed_at: new Date().toISOString(),

@@ -3,6 +3,7 @@ import { Advisory, AuditData, Vulnerabilities } from './audit-types'
 
 export interface AuditInput {
   data: AuditData
+  sha: string
 }
 
 function getSummary(problems: Vulnerabilities, totalDependencies: number): string {
@@ -61,7 +62,7 @@ function getText(data: AuditData): string {
   return entries.join('\n\n')
 }
 
-export function auditCheck({ data }: AuditInput): CheckRunResult {
+export function auditCheck({ data, sha }: AuditInput): CheckRunResult {
   try {
     const problems = {
       all: 0,
@@ -82,6 +83,8 @@ export function auditCheck({ data }: AuditInput): CheckRunResult {
       }
     }
     return {
+      name: 'audit',
+      head_sha: sha,
       conclusion: problems.all === 0 ? 'success' : 'neutral',
       status: 'completed',
       completed_at: new Date().toISOString(),

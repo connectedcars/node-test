@@ -16,6 +16,8 @@ describe('checks/eslint', () => {
       sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88'
     })
     expect(result).toStrictEqual({
+      name: 'eslint',
+      head_sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88',
       conclusion: 'success',
       status: 'completed',
       completed_at: expect.stringMatching(/^\d{4}/),
@@ -36,6 +38,8 @@ describe('checks/eslint', () => {
       sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88'
     })
     expect(result).toStrictEqual({
+      name: 'eslint',
+      head_sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88',
       conclusion: 'failure',
       status: 'completed',
       completed_at: expect.stringMatching(/^\d{4}/),
@@ -56,6 +60,8 @@ describe('checks/eslint', () => {
       sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88'
     })
     expect(result).toStrictEqual({
+      name: 'eslint',
+      head_sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88',
       conclusion: 'failure',
       status: 'completed',
       completed_at: expect.stringMatching(/^\d{4}/),
@@ -99,6 +105,8 @@ describe('checks/eslint', () => {
       sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88'
     })
     expect(result).toStrictEqual({
+      name: 'eslint',
+      head_sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88',
       conclusion: 'success',
       status: 'completed',
       completed_at: expect.stringMatching(/^\d{4}/),

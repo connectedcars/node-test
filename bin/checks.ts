@@ -95,14 +95,16 @@ async function main(argv: string[]) {
     case 'audit': {
       const output = await runNpmAudit(args)
       checkOutput = auditCheck({
-        data: output
+        data: output,
+        sha: COMMIT_SHA
       })
       break
     }
     case 'tsc': {
       const output = await runTsc()
       checkOutput = tscCheck({
-        data: output
+        data: output,
+        sha: COMMIT_SHA
       })
       break
     }

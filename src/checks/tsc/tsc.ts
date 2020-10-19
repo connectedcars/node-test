@@ -2,11 +2,14 @@ import { CheckConversionError, CheckRunResult } from '../checks-common'
 
 export interface TscInput {
   data: TscData[]
+  sha: string
 }
 
-export function tscCheck({ data }: TscInput): CheckRunResult {
+export function tscCheck({ data, sha }: TscInput): CheckRunResult {
   try {
     const result: CheckRunResult = {
+      name: 'tsc',
+      head_sha: sha,
       conclusion: 'success',
       status: 'completed',
       completed_at: new Date().toISOString(),

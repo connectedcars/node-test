@@ -10,6 +10,8 @@ export interface GitData {
 }
 
 export interface CheckRunResult {
+  name: string
+  head_sha: string
   conclusion: CheckRunConclusion
   output: CheckOutput
   completed_at: string
@@ -93,7 +95,7 @@ export function printSummary(checkResult: CheckRunResult, ci?: boolean): void {
       location = `(${path}${lines})`
     }
 
-    console.log(`\t- ${annotation_level}: ${message} ${location}`)
+    console.log(`  - ${annotation_level}: ${message} ${location}`)
   }
 }
 
