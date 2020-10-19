@@ -1,9 +1,9 @@
 import { mochaCheck } from './mocha'
-import { mochaFailedOutput, mochaSuccesfulOutput } from './resources/mocha-help-text'
+import { mochaFailedOutput, mochaSuccessfulOutput } from './resources/mocha-help-text'
 
 describe('checks/mocha', () => {
   it('processes passing mocha output to checks structure', () => {
-    const data = JSON.parse(mochaSuccesfulOutput)
+    const data = JSON.parse(mochaSuccessfulOutput)
 
     const output = mochaCheck({
       data,

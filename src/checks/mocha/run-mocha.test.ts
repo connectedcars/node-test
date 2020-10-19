@@ -1,5 +1,5 @@
 import { CommandEmulation, RunProcess } from '../..'
-import { mochaSuccesfulOutput } from './resources/mocha-help-text'
+import { mochaSuccessfulOutput } from './resources/mocha-help-text'
 import { runMocha } from './run-mocha'
 
 describe('run-mocha', () => {
@@ -27,9 +27,9 @@ describe('run-mocha', () => {
         })
       },
       null,
-      mochaSuccesfulOutput
+      mochaSuccessfulOutput
     )
     const mochaJson = await runMocha()
-    expect(mochaJson).toEqual(mochaSuccesfulOutput)
+    expect(mochaJson).toEqual(mochaSuccessfulOutput)
   })
 })
