@@ -115,14 +115,14 @@ Object {
 
 exports[`Migrate should migrate schema over two migration runs 1`] = `
 Array [
+  "createdAt",
   "id",
-  "vin",
-  "vendor",
   "make",
   "name",
-  "year",
-  "createdAt",
   "updatedAt",
+  "vendor",
+  "vin",
+  "year",
 ]
 `;
 
@@ -210,15 +210,15 @@ COMMENT 'Basic vehicle information'
 
 exports[`Migrate should migrate schema over two migration runs 3`] = `
 Array [
-  "id",
-  "vin",
-  "vendor",
-  "make",
-  "name",
-  "model",
-  "year",
   "createdAt",
+  "id",
+  "make",
+  "model",
+  "name",
   "updatedAt",
+  "vendor",
+  "vin",
+  "year",
 ]
 `;
 

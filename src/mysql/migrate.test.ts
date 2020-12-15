@@ -41,7 +41,7 @@ describe('Migrate', () => {
         ORDER BY 'column';
       `
     )
-    expect(columnsBefore).toMatchSnapshot()
+    expect(columnsBefore.sort()).toMatchSnapshot()
     expect(migrationResultBefore).toMatchSnapshot()
 
     const [migrationResultAfter, timingAfter] = await time(migrate.migrate('2020-04-02T165700'))
@@ -55,7 +55,7 @@ describe('Migrate', () => {
         ORDER BY 'column';
       `
     )
-    expect(columnsAfter).toMatchSnapshot()
+    expect(columnsAfter.sort()).toMatchSnapshot()
     expect(migrationResultAfter).toMatchSnapshot()
   })
 
