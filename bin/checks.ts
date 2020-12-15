@@ -3,7 +3,7 @@
 import { exit } from 'process'
 import yargs from 'yargs'
 
-import { printSummary } from '../src/checks/checks-common'
+import { printStatus } from '../src/checks/checks-common'
 import { eslintCheck, EslintInput } from '../src/checks/eslint/eslint'
 import { runEslint } from '../src/checks/eslint/run-eslint'
 import { jestCheck, JestInput } from '../src/checks/jest/jest'
@@ -52,8 +52,7 @@ async function main() {
             sha: COMMIT_SHA
           }
           const checkOutput = jestCheck(jestInput)
-          console.log(JSON.stringify(checkOutput, null, 2))
-          printSummary(checkOutput, args.ci as boolean)
+          printStatus(checkOutput, args.ci as boolean)
         } catch (error) {
           console.error(error)
         }
@@ -72,8 +71,7 @@ async function main() {
             sha: COMMIT_SHA
           }
           const checkOutput = eslintCheck(eslintInput)
-          console.log(JSON.stringify(checkOutput, null, 2))
-          printSummary(checkOutput, args.ci as boolean)
+          printStatus(checkOutput, args.ci as boolean)
         } catch (error) {
           console.error(error)
         }
@@ -93,8 +91,7 @@ async function main() {
           }
           console.log(result)
           const checkOutput = jestCheck(jestInput)
-          console.log(JSON.stringify(checkOutput, null, 2))
-          printSummary(checkOutput, args.ci as boolean)
+          printStatus(checkOutput, args.ci as boolean)
         } catch (error) {
           console.error(error)
         }
@@ -114,8 +111,7 @@ async function main() {
           }
           console.log(result)
           const checkOutput = mochaCheck(mochaInput)
-          console.log(JSON.stringify(checkOutput, null, 2))
-          printSummary(checkOutput, args.ci as boolean)
+          printStatus(checkOutput, args.ci as boolean)
         } catch (error) {
           console.error(error)
         }
@@ -131,8 +127,7 @@ async function main() {
             data: result
           }
           const checkOutput = auditCheck(auditInput)
-          console.log(JSON.stringify(checkOutput, null, 2))
-          printSummary(checkOutput, args.ci as boolean)
+          printStatus(checkOutput, args.ci as boolean)
         } catch (error) {
           console.error(error)
         }
@@ -145,8 +140,7 @@ async function main() {
         try {
           const result = await runTsc()
           const checkOutput = tscCheck({ data: result })
-          console.log(JSON.stringify(checkOutput, null, 2))
-          printSummary(checkOutput, args.ci as boolean)
+          printStatus(checkOutput, args.ci as boolean)
         } catch (error) {
           console.error(error)
         }
