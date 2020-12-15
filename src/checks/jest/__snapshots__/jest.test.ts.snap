@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`checks/jest processes failing jest output to checks structure 1`] = `
+Object {
+  "completed_at": StringMatching /\\^\\\\d\\{4\\}/,
+  "conclusion": "failure",
+  "head_sha": "1234567890",
+  "name": "jest",
+  "output": Object {
+    "annotations": Array [
+      Object {
+        "annotation_level": "failure",
+        "blob_href": "https://github.com/connectedcars/mobile-app/blob/1234567890/src/eslint/eslint.test.ts",
+        "end_line": 1,
+        "message": "Error: expect(received).toStrictEqual(expected) // deep equality
+
+- Expected - 1
++ Received + 1
+
+ Object {
+ \\"conclusion\\": \\"success\\",
+ \\"output\\": Object {
+ \\"annotations\\": Array [],
+ \\"summary\\": \\"No problems found\\",
+- \\"title\\": \\"No problems found BUG\\",
++ \\"title\\": \\"No problems found\\",
+ },
+ }
+ at Object.<anonymous> (/home/jagdos/repos/node-ci-tools/src/eslint/eslint.test.ts:61:18)
+ at Object.asyncJestTest (/home/jagdos/repos/node-ci-tools/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)
+ at /home/jagdos/repos/node-ci-tools/node_modules/jest-jasmine2/build/queueRunner.js:45:12
+ at new Promise (<anonymous>)
+ at mapper (/home/jagdos/repos/node-ci-tools/node_modules/jest-jasmine2/build/queueRunner.js:28:19)
+ at /home/jagdos/repos/node-ci-tools/node_modules/jest-jasmine2/build/queueRunner.js:75:41",
+        "path": "src/eslint/eslint.test.ts",
+        "raw_details": "{
+  \\"ancestorTitles\\": [],
+  \\"failureMessages\\": [
+    \\"Error: expect(received).toStrictEqual(expected) // deep equality\\\\n\\\\n- Expected - 1\\\\n+ Received + 1\\\\n\\\\n Object {\\\\n \\\\\\"conclusion\\\\\\": \\\\\\"success\\\\\\",\\\\n \\\\\\"output\\\\\\": Object {\\\\n \\\\\\"annotations\\\\\\": Array [],\\\\n \\\\\\"summary\\\\\\": \\\\\\"No problems found\\\\\\",\\\\n- \\\\\\"title\\\\\\": \\\\\\"No problems found BUG\\\\\\",\\\\n+ \\\\\\"title\\\\\\": \\\\\\"No problems found\\\\\\",\\\\n },\\\\n }\\\\n at Object.<anonymous> (/home/jagdos/repos/node-ci-tools/src/eslint/eslint.test.ts:61:18)\\\\n at Object.asyncJestTest (/home/jagdos/repos/node-ci-tools/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)\\\\n at /home/jagdos/repos/node-ci-tools/node_modules/jest-jasmine2/build/queueRunner.js:45:12\\\\n at new Promise (<anonymous>)\\\\n at mapper (/home/jagdos/repos/node-ci-tools/node_modules/jest-jasmine2/build/queueRunner.js:28:19)\\\\n at /home/jagdos/repos/node-ci-tools/node_modules/jest-jasmine2/build/queueRunner.js:75:41\\"
+  ],
+  \\"fullName\\": \\"converts successful eslint with skipped file\\",
+  \\"location\\": null,
+  \\"status\\": \\"failed\\",
+  \\"title\\": \\"converts successful eslint with skipped file\\",
+  \\"file\\": \\"/home/jagdos/repos/node-ci-tools/src/eslint/eslint.test.ts\\"
+}",
+        "start_line": 1,
+      },
+    ],
+    "summary": "3 of 4 tests passed!",
+    "title": "3 of 4 tests passed!",
+  },
+  "status": "completed",
+}
+`;

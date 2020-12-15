@@ -2,7 +2,10 @@
 
 exports[`checks/mocha processes failing mocha output to checks structure 1`] = `
 Object {
+  "completed_at": StringMatching /\\^\\\\d\\{4\\}/,
   "conclusion": "failure",
+  "head_sha": "c61a4ae014360e064eb2a9f76c8a6a55d05e5b88",
+  "name": "mocha",
   "output": Object {
     "annotations": Array [
       Object {
@@ -67,5 +70,6 @@ Object {
     "summary": "Found **4** failed tests (**3068** passing, **1** pending)",
     "title": "mocha",
   },
+  "status": "completed",
 }
 `;

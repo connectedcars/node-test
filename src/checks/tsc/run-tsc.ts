@@ -17,7 +17,7 @@ export function parseTsc(output: string): TscData[] {
 
   const errors: TscData[] = []
 
-  messages.forEach(msg => {
+  for (const msg of messages) {
     const matched = tscErrorRegex.exec(msg)
     if (matched !== null) {
       errors.push(matchToObj(matched))
@@ -25,7 +25,8 @@ export function parseTsc(output: string): TscData[] {
       // this is a continuation of the previous error
       errors[errors.length - 1].message += '\n' + msg
     }
-  })
+  }
+
   return errors
 }
 
@@ -37,12 +38,6 @@ export async function runTsc(): Promise<TscData[]> {
   })
   await cmd.waitForStarted()
   await cmd.waitForExit()
-
   const compileResult = Buffer.concat(data).toString('utf8')
-
-  if (compileResult === null) {
-    process.exit(-1)
-  }
-
   return parseTsc(compileResult)
 }

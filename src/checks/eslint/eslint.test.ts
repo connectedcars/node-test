@@ -3,12 +3,12 @@ import {
   eslintErrorAnnotationsOutput,
   eslintErrorOutput,
   eslintSkippedOutput,
-  eslintSuccesfulOutput
+  eslintSuccessfulOutput
 } from './resources/eslint-help-text'
 
 describe('checks/eslint', () => {
   it('converts successful eslint', () => {
-    const data = JSON.parse(eslintSuccesfulOutput)
+    const data = JSON.parse(eslintSuccessfulOutput)
     const result = eslintCheck({
       data,
       org: 'connectedcars',
@@ -16,7 +16,11 @@ describe('checks/eslint', () => {
       sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88'
     })
     expect(result).toStrictEqual({
+      name: 'eslint',
+      head_sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88',
       conclusion: 'success',
+      status: 'completed',
+      completed_at: expect.stringMatching(/^\d{4}/),
       output: {
         title: 'No problems found',
         summary: 'No problems found',
@@ -34,7 +38,11 @@ describe('checks/eslint', () => {
       sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88'
     })
     expect(result).toStrictEqual({
+      name: 'eslint',
+      head_sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88',
       conclusion: 'failure',
+      status: 'completed',
+      completed_at: expect.stringMatching(/^\d{4}/),
       output: {
         title: 'Found 1 problem (1 error)',
         summary: 'Found 1 problem (1 error)',
@@ -52,7 +60,11 @@ describe('checks/eslint', () => {
       sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88'
     })
     expect(result).toStrictEqual({
+      name: 'eslint',
+      head_sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88',
       conclusion: 'failure',
+      status: 'completed',
+      completed_at: expect.stringMatching(/^\d{4}/),
       output: {
         title: 'Found 2 problems (2 errors)',
         summary: 'Found 2 problems (2 errors)',
@@ -93,7 +105,11 @@ describe('checks/eslint', () => {
       sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88'
     })
     expect(result).toStrictEqual({
+      name: 'eslint',
+      head_sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88',
       conclusion: 'success',
+      status: 'completed',
+      completed_at: expect.stringMatching(/^\d{4}/),
       output: {
         title: 'No problems found',
         summary: 'No problems found',

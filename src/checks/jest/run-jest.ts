@@ -1,19 +1,16 @@
 import { FormattedTestResults } from '@jest/test-result/build/types'
 
-import { RunProcess } from '../../unix/run-process'
+import { runJsonCommand } from '../checks-common'
 
 export async function runJest(command = 'jest', extraArgs: string[] = []): Promise<FormattedTestResults> {
-  const cmd = new RunProcess(command, [...extraArgs, '--silent', '--no-color', '--json'], {
-    env: { ...process.env, TZ: 'UTC' }
-  })
-  const data: Buffer[] = []
-  cmd.stdout?.on('data', chunk => {
-    data.push(chunk)
-  })
-  await cmd.waitForStarted()
-  await cmd.waitForExit()
-  const json = Buffer.concat(data).toString('utf8')
-  return JSON.parse(json)
+  const [_, json] = await runJsonCommand<FormattedTestResults>(
+    command,
+    [...extraArgs, '--silent', '--no-color', '--json'],
+    {
+      env: { ...process.env, TZ: 'UTC' }
+    }
+  )
+  return json
 }
 
 // Create React App uses a special test command

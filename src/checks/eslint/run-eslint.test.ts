@@ -1,5 +1,5 @@
 import { CommandEmulation, RunProcess } from '../..'
-import { eslintSuccesfulOutput } from './resources/eslint-help-text'
+import { eslintSuccessfulOutput } from './resources/eslint-help-text'
 import { runEslint } from './run-eslint'
 
 describe('run-eslint', () => {
@@ -27,9 +27,9 @@ describe('run-eslint', () => {
         })
       },
       null,
-      eslintSuccesfulOutput
+      eslintSuccessfulOutput
     )
     const jestJson = await runEslint()
-    expect(jestJson).toEqual(eslintSuccesfulOutput)
+    expect(jestJson).toEqual(eslintSuccessfulOutput)
   })
 })

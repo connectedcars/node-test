@@ -2,7 +2,10 @@
 
 exports[`checks/tsc converts successful failed tsc 1`] = `
 Object {
+  "completed_at": StringMatching /\\^\\\\d\\{4\\}/,
   "conclusion": "failure",
+  "head_sha": "c61a4ae014360e064eb2a9f76c8a6a55d05e5b88",
+  "name": "tsc",
   "output": Object {
     "annotations": Array [
       Object {
@@ -23,12 +26,16 @@ Object {
     "summary": "1 error(s) found",
     "title": "1 error(s) found",
   },
+  "status": "completed",
 }
 `;
 
 exports[`checks/tsc converts successful failed tsc with multi errors 1`] = `
 Object {
+  "completed_at": StringMatching /\\^\\\\d\\{4\\}/,
   "conclusion": "failure",
+  "head_sha": "abcdefg",
+  "name": "tsc",
   "output": Object {
     "annotations": Array [
       Object {
@@ -63,5 +70,6 @@ Object {
     "summary": "2 error(s) found",
     "title": "2 error(s) found",
   },
+  "status": "completed",
 }
 `;

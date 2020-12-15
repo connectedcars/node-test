@@ -1,67 +1,79 @@
-import { Annotation, CheckResult, GitData } from '../checks-common'
+import { Annotation, CheckConversionError, CheckRunResult, GitData } from '../checks-common'
 
 export interface MochaInput extends GitData {
   data: MochaData
 }
 
-export function mochaCheck({ data, org, repo, sha }: MochaInput): CheckResult {
-  const annotations: Annotation[] = []
+export function mochaCheck({ data, org, repo, sha }: MochaInput): CheckRunResult {
+  try {
+    const annotations: Annotation[] = []
 
-  // This happens when a test logs something to stdout while running
-  if (!data || !data.failures) {
-    return {
-      conclusion: 'neutral',
-      output: {
-        title: 'No tests found',
-        summary: 'No tests found',
-        annotations: []
+    // This happens when a test logs something to stdout while running
+    if (!data || !data.failures) {
+      return {
+        name: 'mocha',
+        head_sha: sha,
+        conclusion: 'neutral',
+        status: 'completed',
+        completed_at: new Date().toISOString(),
+        output: {
+          title: 'No tests found',
+          summary: 'No tests found',
+          annotations: []
+        }
       }
     }
-  }
 
-  // Run through each failed test to create annotations
-  for (const test of data.failures) {
-    if (!test.err?.stack) {
-      continue
+    // Run through each failed test to create annotations
+    for (const test of data.failures) {
+      if (!test.err?.stack) {
+        continue
+      }
+      // Find file path from stack
+      const matches = test.err.stack.match(/Context\.(?:<anonymous>|it) \((.+)\)/s)
+      if (!matches) {
+        console.log('fail', test.err.stack)
+        continue
+      }
+      const [filePath, line, column] = matches[1].split(':')
+      const lineNumber = parseInt(line)
+      // Render GitHub file path from file path
+      const blob_href = `http://github.com/${org}/${repo}/blob/${sha}/${filePath}`
+      // Generate an annotation
+      annotations.push({
+        path: filePath,
+        blob_href: blob_href,
+        start_line: lineNumber,
+        end_line: lineNumber,
+        annotation_level: 'failure',
+        message: `${line}:${column}`.padEnd(10) + `${test.title} ${test.err.message}`,
+        title: `${filePath}#L${line}`,
+        raw_details: JSON.stringify(test, null, '    ')
+      })
     }
-    // Find file path from stack
-    const matches = test.err.stack.match(/Context\.(?:<anonymous>|it) \((.+)\)/s)
-    if (!matches) {
-      console.log('fail', test.err.stack)
-      continue
+    // Generate a summary of the problems
+    const failing = data.stats.failures
+    const passing = data.stats.passes
+    const pending = data.stats.pending
+    let summary = `Found **${failing}** failed ${failing === 1 ? 'test' : 'tests'}`
+    const details = [`**${passing}** passing`]
+    if (pending > 0) {
+      details.push(`**${pending}** pending`)
     }
-    const [filePath, line, column] = matches[1].split(':')
-    const lineNumber = parseInt(line)
-    // Render GitHub file path from file path
-    const blob_href = `http://github.com/${org}/${repo}/blob/${sha}/${filePath}`
-    // Generate an annotation
-    annotations.push({
-      path: filePath,
-      blob_href: blob_href,
-      start_line: lineNumber,
-      end_line: lineNumber,
-      annotation_level: 'failure',
-      message: `${line}:${column}`.padEnd(10) + `${test.title} ${test.err.message}`,
-      title: `${filePath}#L${line}`,
-      raw_details: JSON.stringify(test, null, '    ')
-    })
-  }
-  // Generate a summary of the problems
-  const failing = data.stats.failures
-  const passing = data.stats.passes
-  const pending = data.stats.pending
-  let summary = `Found **${failing}** failed ${failing === 1 ? 'test' : 'tests'}`
-  const details = [`**${passing}** passing`]
-  if (pending > 0) {
-    details.push(`**${pending}** pending`)
-  }
-  summary += ` (${details.join(', ')})`
-  return {
-    conclusion: failing > 0 ? 'failure' : 'success',
-    output: {
-      title: 'mocha',
-      summary,
-      annotations
+    summary += ` (${details.join(', ')})`
+    return {
+      name: 'mocha',
+      head_sha: sha,
+      conclusion: failing > 0 ? 'failure' : 'success',
+      status: 'completed',
+      completed_at: new Date().toISOString(),
+      output: {
+        title: 'mocha',
+        summary,
+        annotations
+      }
     }
+  } catch (e) {
+    throw new CheckConversionError('mocha', { data, org, repo, sha }, e)
   }
 }

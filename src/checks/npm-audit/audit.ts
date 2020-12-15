@@ -1,8 +1,9 @@
-import { CheckResult } from '../checks-common'
+import { CheckConversionError, CheckRunResult } from '../checks-common'
 import { Advisory, AuditData, Vulnerabilities } from './audit-types'
 
 export interface AuditInput {
   data: AuditData
+  sha: string
 }
 
 function getSummary(problems: Vulnerabilities, totalDependencies: number): string {
@@ -61,31 +62,39 @@ function getText(data: AuditData): string {
   return entries.join('\n\n')
 }
 
-export function auditCheck({ data }: AuditInput): CheckResult {
-  const problems = {
-    all: 0,
-    info: 0,
-    low: 0,
-    moderate: 0,
-    high: 0,
-    critical: 0
-  }
-  let totalDependencies = 0
-  if (data.metadata) {
-    if (data.metadata.vulnerabilities) {
-      Object.assign(problems, data.metadata.vulnerabilities)
-      problems.all = Object.values(problems).reduce((sum, val) => sum + val, 0)
+export function auditCheck({ data, sha }: AuditInput): CheckRunResult {
+  try {
+    const problems = {
+      all: 0,
+      info: 0,
+      low: 0,
+      moderate: 0,
+      high: 0,
+      critical: 0
     }
-    if (data.metadata.totalDependencies) {
-      totalDependencies = data.metadata.totalDependencies
+    let totalDependencies = 0
+    if (data.metadata) {
+      if (data.metadata.vulnerabilities) {
+        Object.assign(problems, data.metadata.vulnerabilities)
+        problems.all = Object.values(problems).reduce((sum, val) => sum + val, 0)
+      }
+      if (data.metadata.totalDependencies) {
+        totalDependencies = data.metadata.totalDependencies
+      }
     }
-  }
-  return {
-    conclusion: problems.all === 0 ? 'success' : 'neutral',
-    output: {
-      title: 'npm audit security report',
-      summary: getSummary(problems, totalDependencies),
-      text: getText(data)
+    return {
+      name: 'audit',
+      head_sha: sha,
+      conclusion: problems.all === 0 ? 'success' : 'neutral',
+      status: 'completed',
+      completed_at: new Date().toISOString(),
+      output: {
+        title: 'npm audit security report',
+        summary: getSummary(problems, totalDependencies),
+        text: getText(data)
+      }
     }
+  } catch (e) {
+    throw new CheckConversionError('audit', { data }, e)
   }
 }
