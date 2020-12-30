@@ -26,6 +26,7 @@ export class RunProcess {
   // TODO: Expose all throws to the error listener
   private errorListeners: Array<(err: Error) => void> = []
   private exitListeners: Array<(code: number | null, signal: NodeJS.Signals | null) => void> = []
+  private exitPromise: Promise<ExitInformation>
 
   public constructor(command: string, args: string[] = [], options?: Parameters<typeof spawn>[2]) {
     // Jest does not give access to global process.env so make sure we use the copy we have in the test
@@ -33,7 +34,6 @@ export class RunProcess {
     this.cmd = spawn(command, args, options)
     this.detached = options.detached ? options.detached : false
 
-    let exitPromise: Promise<ExitInformation>
     if (this.cmd.pid) {
       this.running = true
       this.startPromise = Promise.resolve()
@@ -47,9 +47,9 @@ export class RunProcess {
       if (this.detached) {
         this.cmd.unref()
         this.running = false
-        exitPromise = Promise.resolve({ code: 0, signal: null })
+        this.exitPromise = Promise.resolve({ code: 0, signal: null })
       } else {
-        exitPromise = new Promise(resolve => {
+        this.exitPromise = new Promise(resolve => {
           this.cmd.on('exit', (code, signal) => {
             this.running = false
             resolve({ code, signal })
@@ -64,7 +64,7 @@ export class RunProcess {
           reject(e)
         })
       })
-      exitPromise = Promise.resolve({ code: null, signal: null })
+      this.exitPromise = Promise.resolve({ code: null, signal: null })
     }
 
     const stdoutPromise: Promise<void> = this.stdout
@@ -74,7 +74,7 @@ export class RunProcess {
       ? new Promise<void>(resolve => this.stderr?.on('end', resolve))
       : Promise.resolve()
 
-    this.stopPromise = Promise.all([this.startPromise, exitPromise, stdoutPromise, stderrPromise]).then(result => {
+    this.stopPromise = Promise.all([this.startPromise, this.exitPromise, stdoutPromise, stderrPromise]).then(result => {
       this.stopped = true
       for (const listener of this.exitListeners) {
         listener(result[1].code, result[1].signal)
@@ -98,7 +98,13 @@ export class RunProcess {
         if (await waitFor(this.stopPromise, sigKillTimeout)) {
           return await this.stopPromise
         }
-        this.cmd.kill('SIGKILL')
+        if (this.running) {
+          this.cmd.kill('SIGKILL')
+          if (await waitFor(this.stopPromise, 100)) {
+            return await this.stopPromise
+          }
+        }
+        throw new StandardStreamsStillOpenError('Process exited but standard streams are still open')
       }
     } else {
       // Wait one tick to make sure the end handles on the steams have also closed

@@ -146,7 +146,7 @@ describe('run-process', () => {
     await commandEmulation.registerCommand('sleeping', () => {
       // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
       const childProcess = require('child_process')
-      const child = childProcess.spawn('sh', ['-c', 'echo hello; sleep 5'], {
+      const child = childProcess.spawn('sh', ['-c', 'echo hello; sleep 3'], {
         detached: true,
         stdio: ['inherit', 'inherit', 'inherit']
       })
@@ -155,7 +155,7 @@ describe('run-process', () => {
     })
     const cmd = new RunProcess('sleeping', [])
     await cmd.waitForOutput(/hello/)
-    const stopPromise = cmd.stop()
+    const stopPromise = cmd.stop(1000)
     await expect(stopPromise).rejects.toThrow(StandardStreamsStillOpenError)
     expect(() => {
       cmd.kill()
