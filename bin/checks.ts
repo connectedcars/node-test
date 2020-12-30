@@ -18,6 +18,7 @@ process.env.PATH = `./node_modules/.bin:${process.env.PATH}`
 
 async function main(argv: string[]) {
   const COMMIT_SHA = process.env.COMMIT_SHA
+
   if (!COMMIT_SHA) {
     console.error('Missing environment variable "COMMIT_SHA"')
     return 1
@@ -42,82 +43,150 @@ async function main(argv: string[]) {
 
   const [command, ...args] = commandAndArgs
 
-  switch (command) {
-    case 'jest': {
-      printSummary(
-        {
-          name: 'jest',
-          head_sha: COMMIT_SHA,
-          status: 'in_progress',
-          started_at: new Date().toISOString()
-        },
-        flags.ci
-      )
-      const output = await runJest('jest', args)
-      const checkOutput = jestCheck({
-        data: output,
-        sha: COMMIT_SHA
+  const startedAt = new Date().toISOString()
+  try {
+    switch (command) {
+      case 'jest': {
+        printSummary(
+          {
+            name: 'jest',
+            head_sha: COMMIT_SHA,
+            status: 'in_progress',
+            started_at: startedAt
+          },
+          flags.ci
+        )
+        const output = await runJest('jest', args)
+        const checkOutput = jestCheck({
+          data: output,
+          sha: COMMIT_SHA
+        })
+        printSummary({ ...checkOutput, started_at: startedAt }, flags.ci)
+        break
+      }
+      case 'eslint': {
+        printSummary(
+          {
+            name: 'eslint',
+            head_sha: COMMIT_SHA,
+            status: 'in_progress',
+            started_at: startedAt
+          },
+          flags.ci
+        )
+        const output = await runEslint()
+        const checkOutput = eslintCheck({
+          data: output,
+          sha: COMMIT_SHA
+        })
+        printSummary({ ...checkOutput, started_at: startedAt }, flags.ci)
+        break
+      }
+      case 'jest-cra': {
+        printSummary(
+          {
+            name: 'jest-cra',
+            head_sha: COMMIT_SHA,
+            status: 'in_progress',
+            started_at: startedAt
+          },
+          flags.ci
+        )
+        const output = await runReactScriptsTest()
+        const checkOutput = jestCheck({
+          data: output,
+          sha: COMMIT_SHA
+        })
+        printSummary({ ...checkOutput, started_at: startedAt }, flags.ci)
+        break
+      }
+      case 'mocha': {
+        printSummary(
+          {
+            name: 'mocha',
+            head_sha: COMMIT_SHA,
+            status: 'in_progress',
+            started_at: startedAt
+          },
+          flags.ci
+        )
+        const output = await runMocha()
+        const checkOutput = mochaCheck({
+          data: output,
+          sha: COMMIT_SHA
+        })
+        printSummary({ ...checkOutput, started_at: startedAt }, flags.ci)
+        break
+      }
+      case 'audit': {
+        printSummary(
+          {
+            name: 'audit',
+            head_sha: COMMIT_SHA,
+            status: 'in_progress',
+            started_at: startedAt
+          },
+          flags.ci
+        )
+        const output = await runNpmAudit(args)
+        const checkOutput = auditCheck({
+          data: output,
+          sha: COMMIT_SHA
+        })
+        printSummary({ ...checkOutput, started_at: startedAt }, flags.ci)
+        break
+      }
+      case 'tsc': {
+        printSummary(
+          {
+            name: 'tsc',
+            head_sha: COMMIT_SHA,
+            status: 'in_progress',
+            started_at: startedAt
+          },
+          flags.ci
+        )
+        const output = await runTsc()
+        const checkOutput = tscCheck({
+          data: output,
+          sha: COMMIT_SHA
+        })
+        printSummary({ ...checkOutput, started_at: startedAt }, flags.ci)
+        break
+      }
+      default: {
+        throw new Error(`Unknown command '${command}'`)
+      }
+    }
+  } catch (e) {
+    if (e instanceof CheckConversionError) {
+      printSummary({
+        name: command,
+        head_sha: COMMIT_SHA,
+        status: 'completed',
+        conclusion: 'failure',
+        completed_at: new Date().toISOString(),
+        output: {
+          title: 'Failed converting check',
+          summary: e.message,
+          annotations: []
+        }
       })
-      printSummary(checkOutput, flags.ci)
-      break
+      return 1
     }
-    case 'eslint': {
-      printSummary(
-        {
-          name: 'eslint',
-          head_sha: COMMIT_SHA,
-          status: 'in_progress',
-          started_at: new Date().toISOString()
-        },
-        flags.ci
-      )
-      const output = await runEslint()
-      const checkOutput = eslintCheck({
-        data: output,
-        sha: COMMIT_SHA
-      })
-      printSummary(checkOutput, flags.ci)
-      break
-    }
-    case 'jest-cra': {
-      const output = await runReactScriptsTest()
-      const checkOutput = jestCheck({
-        data: output,
-        sha: COMMIT_SHA
-      })
-      printSummary(checkOutput, flags.ci)
-      break
-    }
-    case 'mocha': {
-      const output = await runMocha()
-      const checkOutput = mochaCheck({
-        data: output,
-        sha: COMMIT_SHA
-      })
-      printSummary(checkOutput, flags.ci)
-      break
-    }
-    case 'audit': {
-      const output = await runNpmAudit(args)
-      const checkOutput = auditCheck({
-        data: output,
-        sha: COMMIT_SHA
-      })
-      printSummary(checkOutput, flags.ci)
-      break
-    }
-    case 'tsc': {
-      const output = await runTsc()
-      const checkOutput = tscCheck({
-        data: output,
-        sha: COMMIT_SHA
-      })
-      printSummary(checkOutput, flags.ci)
-      break
-    }
-    default: {
-      throw new Error(`Unknown command '${command}'`)
-    }
+    printSummary({
+      name: command,
+      head_sha: COMMIT_SHA,
+      status: 'completed',
+      conclusion: 'failure',
+      completed_at: new Date().toISOString(),
+      output: {
+        title: 'Failed for unknown reason',
+        summary: e.message,
+        annotations: []
+      }
+    })
+    return 1
   }
 
   return 0
@@ -128,20 +197,6 @@ main(process.argv)
     process.exit(exitCode)
   })
   .catch(e => {
-    if (e instanceof CheckConversionError) {
-      // TODO: format in github format
-      console.error(
-        JSON.stringify(
-          {
-            error: e.message,
-            input: e.input
-          },
-          null,
-          2
-        )
-      )
-    } else {
-      console.error(e)
-    }
+    console.error(e)
     process.exit(255)
   })
