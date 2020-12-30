@@ -7,6 +7,7 @@ import { RunProcess } from '../unix'
 import { isFileNotFoundError } from '../unix/errors'
 
 const fsExistsAsync = util.promisify(fs.exists)
+const renameAsync = util.promisify(fs.rename)
 const readFileAsync = util.promisify(fs.readFile)
 const unlinkAsync = util.promisify(fs.unlink)
 
@@ -142,7 +143,9 @@ export async function extractMySQLDataCache(mysqlBaseDir: string, initializeData
 }
 
 export async function createMySQLDataCache(mysqlBaseDir: string, initializeDataTarGz: string): Promise<void> {
-  const cmd = new RunProcess('tar', ['-czf', path.resolve(initializeDataTarGz), 'data'], {
+  const randomStr = Math.random().toString(16).substring(2, 6)
+  const tmpInitializeDataTarGzTmp = `${path.resolve(initializeDataTarGz)}$.tmp${randomStr}`
+  const cmd = new RunProcess('tar', ['-czf', tmpInitializeDataTarGzTmp, 'data'], {
     cwd: path.resolve(mysqlBaseDir)
   })
   cmd.stdin?.end()
@@ -153,11 +156,15 @@ export async function createMySQLDataCache(mysqlBaseDir: string, initializeDataT
   const { code } = await cmd.waitForExit()
   if (code !== 0) {
     const output = Buffer.concat(data).toString('utf8')
-    throw new Error(`Failed to create ${initializeDataTarGz} of cached data in ${mysqlBaseDir}\n${output}`)
+    throw new Error(`Failed to create ${tmpInitializeDataTarGzTmp} of cached data in ${mysqlBaseDir}\n${output}`)
   }
+  await renameAsync(tmpInitializeDataTarGzTmp, initializeDataTarGz)
 }
 
 export async function dumpDatabase(port: number, databases: string[], dumpFile: string): Promise<void> {
+  const randomStr = Math.random().toString(16).substring(2, 6)
+  const dumpFileTmp = `${dumpFile}$.tmp${randomStr}`
+
   const cmd = new RunProcess('mysqldump', [
     '--host=127.0.0.1',
     `--port=${port}`,
@@ -168,14 +175,15 @@ export async function dumpDatabase(port: number, databases: string[], dumpFile: 
   cmd.stdin?.end()
   const data: Buffer[] = []
   cmd.stderr?.on('data', chunk => data.push(chunk))
-  const dumpFileStream = fs.createWriteStream(dumpFile)
+  const dumpFileStream = fs.createWriteStream(dumpFileTmp)
   cmd.stdout?.pipe(dumpFileStream)
   await cmd.waitForStarted()
   const { code } = await cmd.waitForExit()
   if (code !== 0) {
     const output = Buffer.concat(data).toString('utf8')
-    throw new Error(`Failed to dump ${databases.join(', ')} to ${dumpFile}\n${output}`)
+    throw new Error(`Failed to dump ${databases.join(', ')} to ${dumpFileTmp}\n${output}`)
   }
+  await renameAsync(dumpFileTmp, dumpFile)
 }
 
 export async function startMySQLd(
