@@ -166,6 +166,7 @@ async function main(argv: string[]) {
         status: 'completed',
         conclusion: 'failure',
         completed_at: new Date().toISOString(),
+        started_at: startedAt,
         output: {
           title: 'Failed converting check',
           summary: e.message,
@@ -180,6 +181,7 @@ async function main(argv: string[]) {
       status: 'completed',
       conclusion: 'failure',
       completed_at: new Date().toISOString(),
+      started_at: startedAt,
       output: {
         title: 'Failed for unknown reason',
         summary: e.message,
