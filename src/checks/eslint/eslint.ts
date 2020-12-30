@@ -1,12 +1,7 @@
-import {
-  CheckAnnotation,
-  CheckAnnotationLevel,
-  CheckConversionError,
-  CheckRunCompleted,
-  GitData
-} from '../checks-common'
+import { CheckAnnotation, CheckAnnotationLevel, CheckConversionError, CheckRunCompleted } from '../checks-common'
 
-export interface EslintInput extends GitData {
+export interface EslintInput {
+  sha: string
   data: EslintData[]
 }
 
@@ -30,7 +25,7 @@ const generateSummary = (errors: number, warnings: number): string => {
   return `${summary} (${details.join(', ')})`
 }
 
-export const eslintCheck = ({ data, org, repo, sha }: EslintInput): CheckRunCompleted => {
+export const eslintCheck = ({ data, sha }: EslintInput): CheckRunCompleted => {
   try {
     let errors = 0
     let warnings = 0
@@ -58,8 +53,8 @@ export const eslintCheck = ({ data, org, repo, sha }: EslintInput): CheckRunComp
         const annotation: CheckAnnotation = {
           path: relPath,
           annotation_level,
-          start_line: message.line || 0,
-          end_line: message.endLine || 0,
+          start_line: message.line || 1,
+          end_line: message.endLine || 1,
           message: `${message.line}:${message.column}`.padEnd(10) + message.message,
           raw_details: JSON.stringify(message, null, '    ')
         }
@@ -98,6 +93,6 @@ export const eslintCheck = ({ data, org, repo, sha }: EslintInput): CheckRunComp
 
     return result
   } catch (e) {
-    throw new CheckConversionError('eslint', { data, org, repo, sha }, e)
+    throw new CheckConversionError('eslint', { data, sha }, e)
   }
 }

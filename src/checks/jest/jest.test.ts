@@ -7,7 +7,7 @@ describe('checks/jest', () => {
   it('processes passing jest output to checks structure', () => {
     const data = JSON.parse(jestPassedOutput)
 
-    const output = jestCheck({ data, org: 'connectedcars', repo: 'mobile-app', sha: '1234567890' })
+    const output = jestCheck({ data, sha: '1234567890' })
     const expected = {
       name: 'jest',
       head_sha: '1234567890',
@@ -25,7 +25,7 @@ describe('checks/jest', () => {
 
   it('processes failing jest output to checks structure', () => {
     const data = JSON.parse(jestFailedOutput)
-    const output = jestCheck({ data, org: 'connectedcars', repo: 'mobile-app', sha: '1234567890' })
+    const output = jestCheck({ data, sha: '1234567890' })
     expect(output).toMatchSnapshot({
       completed_at: expect.stringMatching(/^\d{4}/)
     })
@@ -35,8 +35,6 @@ describe('checks/jest', () => {
     const sampleOutput = ''
     const output = jestCheck({
       data: (sampleOutput as unknown) as FormattedTestResults,
-      org: 'connectedcars',
-      repo: 'mobile-app',
       sha: '1234567890'
     })
     expect(output).toStrictEqual({

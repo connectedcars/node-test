@@ -3,12 +3,6 @@
 import { Json } from '../common'
 import { ExitInformation, RunProcess } from '../unix/run-process'
 
-export interface GitData {
-  org: string
-  repo: string
-  sha: string
-}
-
 export type CheckAnnotationLevel = 'notice' | 'warning' | 'failure'
 
 export interface CheckAnnotation {

@@ -1,10 +1,11 @@
-import { CheckAnnotation, CheckConversionError, CheckRunCompleted, GitData } from '../checks-common'
+import { CheckAnnotation, CheckConversionError, CheckRunCompleted } from '../checks-common'
 
-export interface MochaInput extends GitData {
+export interface MochaInput {
+  sha: string
   data: MochaData
 }
 
-export function mochaCheck({ data, org, repo, sha }: MochaInput): CheckRunCompleted {
+export function mochaCheck({ data, sha }: MochaInput): CheckRunCompleted {
   try {
     const annotations: CheckAnnotation[] = []
 
@@ -72,6 +73,6 @@ export function mochaCheck({ data, org, repo, sha }: MochaInput): CheckRunComple
       }
     }
   } catch (e) {
-    throw new CheckConversionError('mocha', { data, org, repo, sha }, e)
+    throw new CheckConversionError('mocha', { data, sha }, e)
   }
 }

@@ -2,7 +2,7 @@
 
 import yargs from 'yargs'
 
-import { CheckConversionError, CheckRun, printSummary } from '../src/checks/checks-common'
+import { CheckConversionError, printSummary } from '../src/checks/checks-common'
 import { eslintCheck } from '../src/checks/eslint/eslint'
 import { runEslint } from '../src/checks/eslint/run-eslint'
 import { jestCheck } from '../src/checks/jest/jest'
@@ -13,21 +13,13 @@ import { auditCheck } from '../src/checks/npm-audit/audit'
 import { runNpmAudit } from '../src/checks/npm-audit/run-audit'
 import { runTsc } from '../src/checks/tsc/run-tsc'
 import { tscCheck } from '../src/checks/tsc/tsc'
-const { REPO_NAME, COMMIT_SHA, ORG_NAME } = process.env
 
 process.env.PATH = `./node_modules/.bin:${process.env.PATH}`
 
 async function main(argv: string[]) {
-  if (!REPO_NAME) {
-    console.error('Missing environment variable "REPO_NAME"')
-    return 1
-  }
+  const COMMIT_SHA = process.env.COMMIT_SHA
   if (!COMMIT_SHA) {
     console.error('Missing environment variable "COMMIT_SHA"')
-    return 1
-  }
-  if (!ORG_NAME) {
-    console.error('Missing environment variable "ORG_NAME"')
     return 1
   }
 
@@ -50,69 +42,83 @@ async function main(argv: string[]) {
 
   const [command, ...args] = commandAndArgs
 
-  let checkOutput: CheckRun
   switch (command) {
     case 'jest': {
+      printSummary(
+        {
+          name: 'jest',
+          head_sha: COMMIT_SHA,
+          status: 'in_progress',
+          started_at: new Date().toISOString()
+        },
+        flags.ci
+      )
       const output = await runJest('jest', args)
-      checkOutput = jestCheck({
+      const checkOutput = jestCheck({
         data: output,
-        org: ORG_NAME,
-        repo: REPO_NAME,
         sha: COMMIT_SHA
       })
+      printSummary(checkOutput, flags.ci)
       break
     }
     case 'eslint': {
+      printSummary(
+        {
+          name: 'eslint',
+          head_sha: COMMIT_SHA,
+          status: 'in_progress',
+          started_at: new Date().toISOString()
+        },
+        flags.ci
+      )
       const output = await runEslint()
-      checkOutput = eslintCheck({
+      const checkOutput = eslintCheck({
         data: output,
-        org: ORG_NAME,
-        repo: REPO_NAME,
         sha: COMMIT_SHA
       })
+      printSummary(checkOutput, flags.ci)
       break
     }
     case 'jest-cra': {
       const output = await runReactScriptsTest()
-      checkOutput = jestCheck({
+      const checkOutput = jestCheck({
         data: output,
-        org: ORG_NAME,
-        repo: REPO_NAME,
         sha: COMMIT_SHA
       })
+      printSummary(checkOutput, flags.ci)
       break
     }
     case 'mocha': {
       const output = await runMocha()
-      checkOutput = mochaCheck({
+      const checkOutput = mochaCheck({
         data: output,
-        org: ORG_NAME,
-        repo: REPO_NAME,
         sha: COMMIT_SHA
       })
+      printSummary(checkOutput, flags.ci)
       break
     }
     case 'audit': {
       const output = await runNpmAudit(args)
-      checkOutput = auditCheck({
+      const checkOutput = auditCheck({
         data: output,
         sha: COMMIT_SHA
       })
+      printSummary(checkOutput, flags.ci)
       break
     }
     case 'tsc': {
       const output = await runTsc()
-      checkOutput = tscCheck({
+      const checkOutput = tscCheck({
         data: output,
         sha: COMMIT_SHA
       })
+      printSummary(checkOutput, flags.ci)
       break
     }
     default: {
       throw new Error(`Unknown command '${command}'`)
     }
   }
-  printSummary(checkOutput, flags.ci)
 
   return 0
 }

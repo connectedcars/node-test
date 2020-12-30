@@ -1,22 +1,15 @@
-import { AssertionResult, FormattedTestResults } from '@jest/test-result/build/types'
+import { FormattedTestResults } from '@jest/test-result/build/types'
 
-import {
-  CheckAnnotation,
-  CheckAnnotationLevel,
-  CheckConversionError,
-  CheckRunCompleted,
-  GitData
-} from '../checks-common'
+import { CheckAnnotation, CheckAnnotationLevel, CheckConversionError, CheckRunCompleted } from '../checks-common'
 
 export type JestOutput = FormattedTestResults
 
-export interface JestInput extends GitData {
+export interface JestInput {
+  sha: string
   data: FormattedTestResults
 }
 
-type AssertionSummary = AssertionResult & { file: string }
-
-export const jestCheck = ({ data, org, repo, sha }: JestInput): CheckRunCompleted => {
+export const jestCheck = ({ data, sha }: JestInput): CheckRunCompleted => {
   try {
     const result: CheckRunCompleted = {
       name: 'jest',
@@ -72,15 +65,15 @@ export const jestCheck = ({ data, org, repo, sha }: JestInput): CheckRunComplete
             default:
               annotation_level = 'notice'
           }
-          return {
+          const annotation: CheckAnnotation = {
             start_line: 1,
             end_line: 1,
             annotation_level: annotation_level,
             message: result.failureMessages?.join('\n') || '',
             path: relPath,
-            blob_href: `https://github.com/${org}/${repo}/blob/${sha}/${relPath}`,
             raw_details: JSON.stringify(result, null, 2)
           }
+          return annotation
         })
 
       result.output.summary = `${data.numPassedTests} of ${data.numTotalTests} tests passed!`
@@ -90,6 +83,6 @@ export const jestCheck = ({ data, org, repo, sha }: JestInput): CheckRunComplete
 
     return result
   } catch (e) {
-    throw new CheckConversionError('jest', { data, org, repo, sha }, e)
+    throw new CheckConversionError('jest', { data, sha }, e)
   }
 }
