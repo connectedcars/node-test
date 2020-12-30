@@ -3,7 +3,8 @@ import { FormattedTestResults } from '@jest/test-result/build/types'
 import { runJsonCommand } from '../checks-common'
 
 export async function runJest(command = 'jest', extraArgs: string[] = []): Promise<FormattedTestResults> {
-  const [_, json] = await runJsonCommand<FormattedTestResults>(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [exitInfo, json] = await runJsonCommand<FormattedTestResults>(
     command,
     [...extraArgs, '--silent', '--no-color', '--json'],
     {

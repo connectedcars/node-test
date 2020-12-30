@@ -117,7 +117,8 @@ export class MySQLClient {
     await this.query(pool, `DROP DATABASE IF EXISTS \`${database}\`;`)
   }
 
-  public async checkoutDatabase(database: string, readonly = false): Promise<string> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public async checkoutDatabase(database: string, _readonly = false): Promise<string> {
     // TODO: Look into reusing the copied database "SELECT TABLE_NAME, UPDATE_TIME FROM information_schema.tables;"
 
     let pool: mysql.Pool | null = null
@@ -164,7 +165,8 @@ export class MySQLClient {
   }
 
   // https://gist.github.com/christopher-hopper/8431737
-  public async createDatabaseCopy(database: string, tables: string[] = []): Promise<string> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public async createDatabaseCopy(database: string, _tables: string[] = []): Promise<string> {
     // TODO: Look into reusing the copied database "SELECT TABLE_NAME, UPDATE_TIME FROM information_schema.tables;"
     let pool: mysql.Pool | null = null
     try {

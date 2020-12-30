@@ -80,7 +80,7 @@ export class CommandEmulation {
     while (this.commands.length > 0) {
       const command = this.commands.shift()
       if (command) {
-        await unlinkAsync(command).catch(e => {
+        await unlinkAsync(command).catch(() => {
           // Ignore
         })
       }

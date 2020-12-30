@@ -74,7 +74,7 @@ async function main(argv: string[]) {
           },
           flags.ci
         )
-        const output = await runEslint()
+        const output = await runEslint(args)
         const checkOutput = eslintCheck({
           data: output,
           sha: COMMIT_SHA
@@ -168,9 +168,8 @@ async function main(argv: string[]) {
         completed_at: new Date().toISOString(),
         started_at: startedAt,
         output: {
-          title: 'Failed converting check',
-          summary: e.message,
-          annotations: []
+          title: `Failed converting check: ${e.message}`,
+          summary: JSON.stringify(e, null, 2)
         }
       })
       return 1
@@ -183,9 +182,8 @@ async function main(argv: string[]) {
       completed_at: new Date().toISOString(),
       started_at: startedAt,
       output: {
-        title: 'Failed for unknown reason',
-        summary: e.message,
-        annotations: []
+        title: `Failed for unknown reason: ${e.message}`,
+        summary: JSON.stringify(e, null, 2)
       }
     })
     return 1
