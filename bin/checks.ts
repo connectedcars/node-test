@@ -2,7 +2,7 @@
 
 import yargs from 'yargs'
 
-import { CheckConversionError, CheckRunResult, printSummary } from '../src/checks/checks-common'
+import { CheckConversionError, CheckRun, printSummary } from '../src/checks/checks-common'
 import { eslintCheck } from '../src/checks/eslint/eslint'
 import { runEslint } from '../src/checks/eslint/run-eslint'
 import { jestCheck } from '../src/checks/jest/jest'
@@ -50,7 +50,7 @@ async function main(argv: string[]) {
 
   const [command, ...args] = commandAndArgs
 
-  let checkOutput: CheckRunResult
+  let checkOutput: CheckRun
   switch (command) {
     case 'jest': {
       const output = await runJest('jest', args)

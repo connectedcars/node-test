@@ -10,7 +10,6 @@ Object {
     "annotations": Array [
       Object {
         "annotation_level": "failure",
-        "blob_href": "http://github.com/connectedcars/cloudbuilder-wrapper/blob/c61a4ae014360e064eb2a9f76c8a6a55d05e5b88/src/data/db/vehicles.get-optimizations.test.js",
         "end_line": 825,
         "message": "825:7     gets optimizations by allowed workshop ids 
 [31m[1mexpected[22m[39m [36m'select \`cars\`.\`id\`, \`cars\`.\`obdId\`, \`cars\`.\`vin\`, \`cars\`.\`name\`, \`cars\`.\`label\`, \`cars\`.\`imageFilename\`, \`cars\`.\`activated\`, \`cars\`.\`deviceActivated\`, \`cars\`.\`workshopId\`, null as \`closedAt\`, null as \`assignedUserId\`, \`cars\`.\`createdAt\`, \`cars\`.\`updatedAt\`, max(\`LicensePlates\`.\`licensePlate\`) as \`licensePlate\` from \`cars\` left join \`LicensePlates\` on \`LicensePlates\`.\`carId\` = \`cars\`.\`id\` where (\`cars\`.\`workshopId\` in (?, ?) or \`cars\`.\`workshopId!\` is null) and \`cars\`.\`archived\` = ? group by \`cars\`.\`id\` limit ?'[39m
@@ -48,7 +47,6 @@ Object {
       },
       Object {
         "annotation_level": "failure",
-        "blob_href": "http://github.com/connectedcars/cloudbuilder-wrapper/blob/c61a4ae014360e064eb2a9f76c8a6a55d05e5b88/src/utils/cc-api/connected-cars-api.test.js",
         "end_line": 111,
         "message": "111:7     undefined undefined",
         "path": "src/utils/cc-api/connected-cars-api.test.js",

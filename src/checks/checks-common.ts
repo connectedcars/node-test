@@ -9,31 +9,39 @@ export interface GitData {
   sha: string
 }
 
-export interface CheckRunResult {
-  name: string
-  head_sha: string
-  conclusion: CheckRunConclusion
-  output: CheckOutput
-  completed_at: string
-  status: CheckRunStatus
+export type CheckAnnotationLevel = 'notice' | 'warning' | 'failure'
+
+export interface CheckAnnotation {
+  path: string
+  start_line: number
+  end_line: number
+  start_column?: number
+  end_column?: number
+  annotation_level: CheckAnnotationLevel
+  message: string
+  title?: string
+  raw_details: string
+}
+
+export interface CheckAction {
+  label: string
+  description: string
+  identifier: string
+}
+
+export interface CheckImage {
+  alt: string
+  image_url: string
+  caption?: string
+  actions?: CheckAction[]
 }
 
 export interface CheckOutput {
   title: string
   summary: string
-  annotations?: Annotation[]
   text?: string
-}
-
-export interface Annotation {
-  path: string
-  blob_href?: string
-  start_line?: number
-  end_line?: number
-  annotation_level: AnnotationLevel
-  message: string
-  raw_details: string
-  title?: string
+  annotations?: CheckAnnotation[]
+  images?: CheckImage[]
 }
 
 export type CheckRunStatus = 'queued' | 'in_progress' | 'completed'
@@ -47,7 +55,29 @@ export type CheckRunConclusion =
   | 'timed_out'
   | 'action_required'
 
-export type AnnotationLevel = 'notice' | 'failure' | 'neutral'
+export interface CheckRunStarted {
+  name: string
+  head_sha: string
+  details_url?: string
+  external_id?: string
+  status: 'queued' | 'in_progress'
+  started_at?: string
+  output?: CheckOutput
+}
+
+export interface CheckRunCompleted {
+  name: string
+  head_sha: string
+  details_url?: string
+  external_id?: string
+  status: 'completed'
+  started_at?: string
+  conclusion: CheckRunConclusion
+  completed_at: string
+  output?: CheckOutput
+}
+
+export type CheckRun = CheckRunStarted | CheckRunCompleted
 
 export async function runJsonCommand<T = Json>(
   command: string,
@@ -74,7 +104,7 @@ export async function runJsonCommand<T = Json>(
   }
 }
 
-export function printSummary(checkResult: CheckRunResult, ci?: boolean): void {
+export function printSummary(checkResult: CheckRun, ci?: boolean): void {
   console.log(JSON.stringify(checkResult, null, 2))
 
   const { output } = checkResult
@@ -84,18 +114,20 @@ export function printSummary(checkResult: CheckRunResult, ci?: boolean): void {
     return
   }
 
-  console.log(output.summary)
-  const annotations = output.annotations || []
-  for (const annotation of annotations) {
-    const { annotation_level, message, start_line, end_line, path } = annotation
-    let location = ''
+  if (output) {
+    console.log(output.summary)
+    const annotations = output.annotations || []
+    for (const annotation of annotations) {
+      const { annotation_level, message, start_line, end_line, path } = annotation
+      let location = ''
 
-    if (path) {
-      const lines = start_line && end_line ? ` line ${start_line}:${end_line}` : ''
-      location = `(${path}${lines})`
+      if (path) {
+        const lines = start_line && end_line ? ` line ${start_line}:${end_line}` : ''
+        location = `(${path}${lines})`
+      }
+
+      console.log(`  - ${annotation_level}: ${message} ${location}`)
     }
-
-    console.log(`  - ${annotation_level}: ${message} ${location}`)
   }
 }
 

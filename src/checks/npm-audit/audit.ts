@@ -1,4 +1,4 @@
-import { CheckConversionError, CheckRunResult } from '../checks-common'
+import { CheckConversionError, CheckRunCompleted } from '../checks-common'
 import { Advisory, AuditData, Vulnerabilities } from './audit-types'
 
 export interface AuditInput {
@@ -62,7 +62,7 @@ function getText(data: AuditData): string {
   return entries.join('\n\n')
 }
 
-export function auditCheck({ data, sha }: AuditInput): CheckRunResult {
+export function auditCheck({ data, sha }: AuditInput): CheckRunCompleted {
   try {
     const problems = {
       all: 0,

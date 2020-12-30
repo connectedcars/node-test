@@ -1,33 +1,25 @@
-import { CheckConversionError, CheckRunResult } from '../checks-common'
+import { CheckConversionError, CheckOutput, CheckRunCompleted, CheckRunConclusion } from '../checks-common'
 
 export interface TscInput {
   data: TscData[]
   sha: string
 }
 
-export function tscCheck({ data, sha }: TscInput): CheckRunResult {
+export function tscCheck({ data, sha }: TscInput): CheckRunCompleted {
   try {
-    const result: CheckRunResult = {
-      name: 'tsc',
-      head_sha: sha,
-      conclusion: 'success',
-      status: 'completed',
-      completed_at: new Date().toISOString(),
-      output: {
-        summary: 'No problems found',
-        title: 'No problems found',
-        annotations: []
-      }
+    let conclusion: CheckRunConclusion = 'success'
+    const output: CheckOutput = {
+      summary: 'No problems found',
+      title: 'No problems found',
+      annotations: []
     }
 
     if (data && data.length > 0) {
-      result.conclusion = 'failure'
-      result.output.summary = `${data.length} error(s) found`
-      result.output.title = result.output.summary
-
-      result.output.annotations = data.map(err => {
+      conclusion = 'failure'
+      output.summary = `${data.length} error(s) found`
+      output.title = output.summary
+      output.annotations = data.map(err => {
         const relPath = err.file
-
         return {
           start_line: err.line,
           end_line: err.line,
@@ -39,7 +31,14 @@ export function tscCheck({ data, sha }: TscInput): CheckRunResult {
       })
     }
 
-    return result
+    return {
+      name: 'tsc',
+      head_sha: sha,
+      conclusion: conclusion,
+      status: 'completed',
+      completed_at: new Date().toISOString(),
+      output
+    }
   } catch (e) {
     throw new CheckConversionError('tsc', { data }, e)
   }
