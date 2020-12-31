@@ -1,9 +1,9 @@
 import { auditCheck } from './audit'
-import { auditMultiVuln, auditNoVuln } from './resources/audit-help-text'
+import { auditMultiVulnerabilities, auditNoVulnerabilities } from './resources/audit-help-text'
 
 describe('checks/audit', () => {
   it('converts successful audit', () => {
-    const data = JSON.parse(auditNoVuln)
+    const data = JSON.parse(auditNoVulnerabilities)
     const result = auditCheck({
       data,
       sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88'
@@ -23,7 +23,7 @@ describe('checks/audit', () => {
   })
 
   it('converts failed audit', () => {
-    const data = JSON.parse(auditMultiVuln)
+    const data = JSON.parse(auditMultiVulnerabilities)
     const result = auditCheck({
       sha: 'abcdefg',
       data
