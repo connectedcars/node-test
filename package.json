@@ -18,11 +18,12 @@
     "build:types": "tsc --emitDeclarationOnly",
     "lint": "eslint './src/**/*.{ts,tsx}' './bin/**/*.{ts,tsx}'",
     "lint:fix": "eslint --fix './src/**/*.{ts,tsx}' './bin/**/*.{ts,tsx}'",
-    "prepare": "npm run build",
+    "prepare": "echo \"Make npm install devDependencies for this package by having a prepare script\"",
+    "prepack": "npm run build",
+    "prepublishOnly": "rm -rf build",
     "ci-jest": "./build/dist/bin/checks.js jest",
     "ci-audit": "./build/dist/bin/checks.js audit",
-    "ci-eslint-new": "./build/dist/bin/checks.js eslint -- './src/**/*.{ts,tsx}' './bin/**/*.{ts,tsx}'",
-    "ci-eslint": "eslint --format json './src/**/*.{ts,tsx}' './bin/**/*.{ts,tsx}' || true",
+    "ci-eslint": "./build/dist/bin/checks.js eslint -- './src/**/*.{ts,tsx}' './bin/**/*.{ts,tsx}'",
     "cov": "TZ=UTC jest --coverage=true"
   },
   "repository": {

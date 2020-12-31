@@ -3,7 +3,7 @@ ARG NODE_VERSION=12.x
 FROM gcr.io/connectedcars-staging/node-builder.master:$NODE_VERSION as builder
 
 ARG COMMIT_SHA=master
-ENV COMMIT_SHA=COMMIT_SHA
+ENV COMMIT_SHA=$COMMIT_SHA
 
 WORKDIR /app
 
@@ -18,11 +18,9 @@ COPY --chown=builder:builder package.json package-lock.json /app/
 
 RUN npm install
 
-COPY --chown=builder:builder . /app
+COPY --chown=builder:builder . /app/
 
 RUN npm run build
-
-RUN npm run test
 
 # Run ci checks
 RUN npm run ci-audit
