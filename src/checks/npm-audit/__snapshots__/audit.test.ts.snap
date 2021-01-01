@@ -186,7 +186,7 @@ Update to version 4.17.5 or later.",
 
 exports[`checks/audit converts successful audit 1`] = `
 Object {
-  "completed_at": "2021-01-01T21:58:38.493Z",
+  "completed_at": StringMatching /\\^\\\\d\\{4\\}/,
   "conclusion": "success",
   "head_sha": "c61a4ae014360e064eb2a9f76c8a6a55d05e5b88",
   "name": "audit",

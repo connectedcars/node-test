@@ -8,7 +8,9 @@ describe('checks/audit', () => {
       data,
       sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88'
     })
-    expect(result).toMatchSnapshot()
+    expect(result).toMatchSnapshot({
+      completed_at: expect.stringMatching(/^\d{4}/)
+    })
   })
 
   it('converts failed audit', () => {
