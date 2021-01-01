@@ -1,6 +1,6 @@
 steps:
   - name: 'gcr.io/connectedcars-staging/cloudbuilder-wrapper.master'
-    args: ['--skip-push']
+    args: ['--skip-push', '--update-url=http://build-api.connectedcars.io/cloudbuilder']
     env:
       - 'REPO_NAME=$REPO_NAME'
       - 'GCP_PROJECT_ID=$PROJECT_ID'
