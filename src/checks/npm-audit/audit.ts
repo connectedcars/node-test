@@ -82,6 +82,7 @@ export function auditCheck({ data, sha }: AuditInput): CheckRunCompleted {
         totalDependencies = data.metadata.totalDependencies
       }
     }
+
     return {
       name: 'audit',
       head_sha: sha,
@@ -91,7 +92,7 @@ export function auditCheck({ data, sha }: AuditInput): CheckRunCompleted {
       output: {
         title: 'npm audit security report',
         summary: getSummary(problems, totalDependencies),
-        text: getText(data)
+        text: getText(data) || undefined
       }
     }
   } catch (e) {

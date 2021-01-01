@@ -8,18 +8,7 @@ describe('checks/audit', () => {
       data,
       sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88'
     })
-    expect(result).toStrictEqual({
-      name: 'audit',
-      head_sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88',
-      conclusion: 'success',
-      status: 'completed',
-      completed_at: expect.stringMatching(/^\d{4}/),
-      output: {
-        title: 'npm audit security report',
-        summary: 'Found **0** vulnerabilities in 4982 scanned packages',
-        text: ''
-      }
-    })
+    expect(result).toMatchSnapshot()
   })
 
   it('converts failed audit', () => {
