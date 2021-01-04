@@ -56,8 +56,7 @@ async function main(argv: string[]): Promise<number> {
     return 1
   }
 
-  const command = args[0]
-  const commandArgs = args.slice(1)
+  const [command, ...commandArgs] = args.map(a => a.toString())
 
   const options: SpawnOptions = {
     stdio: ['pipe', 'pipe', 'pipe'] // node default

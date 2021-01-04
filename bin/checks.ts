@@ -41,7 +41,7 @@ async function main(argv: string[]) {
     .help()
     .parse(argv.slice(2))
 
-  const [command, ...args] = commandAndArgs
+  const [command, ...args] = commandAndArgs.map(a => a.toString())
 
   const startedAt = new Date().toISOString()
   try {
