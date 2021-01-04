@@ -146,7 +146,8 @@ export class MySQLClient {
         pool,
         `
         SELECT SCHEMA_NAME as \`name\` FROM information_schema.SCHEMATA
-        WHERE SCHEMA_NAME LIKE 'checkout_${database}%';
+        WHERE SCHEMA_NAME LIKE 'checkout_${database}%'
+        ORDER BY name;
         `
       )
 
