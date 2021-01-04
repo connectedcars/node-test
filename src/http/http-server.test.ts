@@ -64,13 +64,21 @@ describe('HttpServer', () => {
       }
     ])
     // We have this to test that http requests are stable
-    expect(httpServer.getTextRequests()).toMatchSnapshot()
+    expect(httpServer.getTextRequests()).toMatchSnapshot([
+      {
+        headers: {
+          'user-agent': expect.any(String)
+        }
+      }
+    ])
   })
 
   it('should GET /json and return json requests', async () => {
     const response = await axios.post<string>(`${httpServer.listenUrl}/json`, { test: 'data' })
     expect(response.data).toMatchObject({ test: 'data' })
-    expect(httpServer.getJsonRequests()).toMatchObject([
+
+    const requests = httpServer.getJsonRequests()
+    expect(requests).toMatchObject([
       {
         body: { test: 'data' },
         method: 'POST',
@@ -78,7 +86,13 @@ describe('HttpServer', () => {
       }
     ])
     // We have this to test that http requests are stable
-    expect(httpServer.getJsonRequests()).toMatchSnapshot()
+    expect(requests).toMatchSnapshot([
+      {
+        headers: {
+          'user-agent': expect.any(String)
+        }
+      }
+    ])
 
     // Validate types
     expect(httpServer.getJsonRequests()[0].body).toMatchObject({ test: 'data' })

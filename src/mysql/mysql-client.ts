@@ -97,6 +97,16 @@ export class MySQLClient {
     return res?.lockStatus === 1
   }
 
+  public async releaseAllLocks(lockConnection: mysql.Connection): Promise<number> {
+    const res = await this.querySingle<{ releasedCount: number }>(
+      lockConnection,
+      `
+        SELECT RELEASE_ALL_LOCKS() as releasedCount;
+      `
+    )
+    return res?.releasedCount || 0
+  }
+
   public async createTmpDatabase(sql?: string): Promise<string> {
     const pool = await this.getConnectionPool('mysql')
     const database = 'tmp-' + crypto.randomBytes(4).toString('hex')
@@ -136,7 +146,8 @@ export class MySQLClient {
         pool,
         `
         SELECT SCHEMA_NAME as \`name\` FROM information_schema.SCHEMATA
-        WHERE SCHEMA_NAME LIKE 'checkout_${database}%';
+        WHERE SCHEMA_NAME LIKE 'checkout_${database}%'
+        ORDER BY name;
         `
       )
 
@@ -350,7 +361,10 @@ export class MySQLClient {
     }
     while (this.lockConnections.length > 0) {
       const connection = this.lockConnections.shift()
-      await new Promise(resolve => connection?.end(resolve))
+      if (connection) {
+        await this.releaseAllLocks(connection)
+        await new Promise(resolve => connection.end(resolve))
+      }
     }
   }
 
