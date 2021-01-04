@@ -10,7 +10,6 @@ describe('local-mysql', () => {
   })
 
   it(`should start a local mysqld without any options`, async () => {
-    const tmpdir = await createTempDirectory()
     const cmd = new RunProcess('local-mysql', [])
     processCleanup.push(cmd)
     await expect(cmd.waitForOutput(/mysqld: ready for connections/, 8000)).resolves.toMatchObject({

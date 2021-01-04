@@ -1,0 +1,110 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`checks/eslint converts successful eslint 1`] = `
+Object {
+  "completed_at": StringMatching /\\^\\\\d\\{4\\}/,
+  "conclusion": "success",
+  "head_sha": "c61a4ae014360e064eb2a9f76c8a6a55d05e5b88",
+  "name": "eslint",
+  "output": Object {
+    "annotations": Array [],
+    "summary": "No problems found",
+    "title": "No problems found",
+  },
+  "status": "completed",
+}
+`;
+
+exports[`checks/eslint converts successful failed eslint 1`] = `
+Object {
+  "completed_at": StringMatching /\\^\\\\d\\{4\\}/,
+  "conclusion": "failure",
+  "head_sha": "c61a4ae014360e064eb2a9f76c8a6a55d05e5b88",
+  "name": "eslint",
+  "output": Object {
+    "annotations": Array [],
+    "summary": "Found 1 problem (1 error)",
+    "title": "Found 1 problem (1 error)",
+  },
+  "status": "completed",
+}
+`;
+
+exports[`checks/eslint converts successful failed eslint with annotations 1`] = `
+Object {
+  "completed_at": StringMatching /\\^\\\\d\\{4\\}/,
+  "conclusion": "failure",
+  "head_sha": "c61a4ae014360e064eb2a9f76c8a6a55d05e5b88",
+  "name": "eslint",
+  "output": Object {
+    "annotations": Array [
+      Object {
+        "annotation_level": "failure",
+        "end_line": 26,
+        "message": "26:1      Delete \`↹\`",
+        "path": "src/checks/jest/jest.ts",
+        "raw_details": "{
+    \\"ruleId\\": \\"prettier/prettier\\",
+    \\"severity\\": 2,
+    \\"message\\": \\"Delete \`↹\`\\",
+    \\"line\\": 26,
+    \\"column\\": 1,
+    \\"nodeType\\": null,
+    \\"endLine\\": 26,
+    \\"endColumn\\": 2,
+    \\"fix\\": {
+        \\"range\\": [
+            679,
+            680
+        ],
+        \\"text\\": \\"\\"
+    }
+}",
+        "start_line": 26,
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 28,
+        "message": "27:4      Delete \`⏎\`",
+        "path": "src/checks/jest/jest.ts",
+        "raw_details": "{
+    \\"ruleId\\": \\"prettier/prettier\\",
+    \\"severity\\": 2,
+    \\"message\\": \\"Delete \`⏎\`\\",
+    \\"line\\": 27,
+    \\"column\\": 4,
+    \\"nodeType\\": null,
+    \\"endLine\\": 28,
+    \\"endColumn\\": 1,
+    \\"fix\\": {
+        \\"range\\": [
+            701,
+            702
+        ],
+        \\"text\\": \\"\\"
+    }
+}",
+        "start_line": 27,
+      },
+    ],
+    "summary": "Found 2 problems (2 errors)",
+    "title": "Found 2 problems (2 errors)",
+  },
+  "status": "completed",
+}
+`;
+
+exports[`checks/eslint converts successful skipped eslint 1`] = `
+Object {
+  "completed_at": StringMatching /\\^\\\\d\\{4\\}/,
+  "conclusion": "success",
+  "head_sha": "c61a4ae014360e064eb2a9f76c8a6a55d05e5b88",
+  "name": "eslint",
+  "output": Object {
+    "annotations": Array [],
+    "summary": "No problems found",
+    "title": "No problems found",
+  },
+  "status": "completed",
+}
+`;

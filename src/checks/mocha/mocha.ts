@@ -1,12 +1,13 @@
-import { Annotation, CheckConversionError, CheckRunResult, GitData } from '../checks-common'
+import { CheckAnnotation, CheckConversionError, CheckRunCompleted } from '../checks-common'
 
-export interface MochaInput extends GitData {
+export interface MochaInput {
+  sha: string
   data: MochaData
 }
 
-export function mochaCheck({ data, org, repo, sha }: MochaInput): CheckRunResult {
+export function mochaCheck({ data, sha }: MochaInput): CheckRunCompleted {
   try {
-    const annotations: Annotation[] = []
+    const annotations: CheckAnnotation[] = []
 
     // This happens when a test logs something to stdout while running
     if (!data || !data.failures) {
@@ -37,12 +38,10 @@ export function mochaCheck({ data, org, repo, sha }: MochaInput): CheckRunResult
       }
       const [filePath, line, column] = matches[1].split(':')
       const lineNumber = parseInt(line)
-      // Render GitHub file path from file path
-      const blob_href = `http://github.com/${org}/${repo}/blob/${sha}/${filePath}`
+
       // Generate an annotation
       annotations.push({
         path: filePath,
-        blob_href: blob_href,
         start_line: lineNumber,
         end_line: lineNumber,
         annotation_level: 'failure',
@@ -74,6 +73,6 @@ export function mochaCheck({ data, org, repo, sha }: MochaInput): CheckRunResult
       }
     }
   } catch (e) {
-    throw new CheckConversionError('mocha', { data, org, repo, sha }, e)
+    throw new CheckConversionError('mocha', { data, sha }, e)
   }
 }

@@ -7,8 +7,6 @@ describe('checks/mocha', () => {
 
     const output = mochaCheck({
       data,
-      org: 'connectedcars',
-      repo: 'cloudbuilder-wrapper',
       sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88'
     })
     const expected = {
@@ -31,8 +29,6 @@ describe('checks/mocha', () => {
 
     const output = mochaCheck({
       data,
-      org: 'connectedcars',
-      repo: 'cloudbuilder-wrapper',
       sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88'
     })
     expect(output).toMatchSnapshot({

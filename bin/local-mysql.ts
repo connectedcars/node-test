@@ -22,6 +22,7 @@ async function readAsync(fd: number): Promise<Buffer> {
 }
 
 async function main(argv: string[]): Promise<number> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { _: args, ...flags } = yargs
     .options({
       mysqlBaseDir: {

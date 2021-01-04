@@ -10,7 +10,6 @@ Object {
     "annotations": Array [
       Object {
         "annotation_level": "failure",
-        "blob_href": "https://github.com/connectedcars/mobile-app/blob/1234567890/src/eslint/eslint.test.ts",
         "end_line": 1,
         "message": "Error: expect(received).toStrictEqual(expected) // deep equality
 

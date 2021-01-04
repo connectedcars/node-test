@@ -81,10 +81,11 @@ describe('Migrate', () => {
     expect(migrationResultAfter).toMatchSnapshot()
   })
 
-  it.skip('should migrate data repo to newest version', async () => {
+  /*it.skip('should migrate data repo to newest version', async () => {
     const migrate = new Migrate({ mysqlClient: mySqlClient, migrationsPaths: ['data/migrations'] })
     await migrate.cleanup()
     const [migrationResult, timingBefore] = await time(migrate.migrate())
     console.log(timingBefore / 1000)
   }, 60_000)
+  */
 })

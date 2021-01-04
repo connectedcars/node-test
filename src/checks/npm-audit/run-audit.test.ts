@@ -1,5 +1,5 @@
 import { CommandEmulation, RunProcess } from '../..'
-import { auditOneVuln } from './resources/audit-help-text'
+import { auditOneVulnerability } from './resources/audit-help-text'
 import { runNpmAudit } from './run-audit'
 
 describe('run-audit', () => {
@@ -27,9 +27,9 @@ describe('run-audit', () => {
         })
       },
       null,
-      auditOneVuln
+      auditOneVulnerability
     )
     const auditJson = await runNpmAudit()
-    expect(auditJson).toEqual(auditOneVuln)
+    expect(auditJson).toEqual(auditOneVulnerability)
   })
 })

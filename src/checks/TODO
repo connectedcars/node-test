@@ -1,0 +1,5 @@
+Checks that could be interesting:
+
+* npm install --json
+* apt-get install
+* node-setup build --json

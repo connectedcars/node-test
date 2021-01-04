@@ -1,6 +1,7 @@
-import { Annotation, AnnotationLevel, CheckConversionError, CheckRunResult, GitData } from '../checks-common'
+import { CheckAnnotation, CheckAnnotationLevel, CheckConversionError, CheckRunCompleted } from '../checks-common'
 
-export interface EslintInput extends GitData {
+export interface EslintInput {
+  sha: string
   data: EslintData[]
 }
 
@@ -24,11 +25,11 @@ const generateSummary = (errors: number, warnings: number): string => {
   return `${summary} (${details.join(', ')})`
 }
 
-export const eslintCheck = ({ data, org, repo, sha }: EslintInput): CheckRunResult => {
+export const eslintCheck = ({ data, sha }: EslintInput): CheckRunCompleted => {
   try {
     let errors = 0
     let warnings = 0
-    const annotations: Annotation[] = []
+    const annotations: CheckAnnotation[] = []
     // Run through each file
     outer: for (const file of data) {
       // Run through each message for file
@@ -39,7 +40,7 @@ export const eslintCheck = ({ data, org, repo, sha }: EslintInput): CheckRunResu
         const match = file.filePath.match(/^.*\/(src\/.+)$/)
         const relPath = match && match.length === 2 ? match[1] : ''
         // Determine severity of message
-        let annotation_level: AnnotationLevel = 'neutral'
+        let annotation_level: CheckAnnotationLevel = 'notice'
         switch (message.severity) {
           case 1:
             annotation_level = 'notice'
@@ -49,15 +50,16 @@ export const eslintCheck = ({ data, org, repo, sha }: EslintInput): CheckRunResu
             break
         }
         // Generate an annotation
-        annotations.push({
+        const annotation: CheckAnnotation = {
           path: relPath,
-          blob_href: `https://github.com/${org}/${repo}/blob/${sha}/${relPath}`,
-          start_line: message.line,
-          end_line: message.endLine,
           annotation_level,
+          start_line: message.line || 1,
+          end_line: message.endLine || 1,
           message: `${message.line}:${message.column}`.padEnd(10) + message.message,
           raw_details: JSON.stringify(message, null, '    ')
-        })
+        }
+
+        annotations.push(annotation)
       }
       // Increment problem counts
       errors += file.errorCount
@@ -66,7 +68,7 @@ export const eslintCheck = ({ data, org, repo, sha }: EslintInput): CheckRunResu
 
     const summary = generateSummary(errors, warnings)
 
-    const result: CheckRunResult = {
+    const result: CheckRunCompleted = {
       name: 'eslint',
       head_sha: sha,
       conclusion: 'success',
@@ -91,6 +93,6 @@ export const eslintCheck = ({ data, org, repo, sha }: EslintInput): CheckRunResu
 
     return result
   } catch (e) {
-    throw new CheckConversionError('eslint', { data, org, repo, sha }, e)
+    throw new CheckConversionError('eslint', { data, sha }, e)
   }
 }

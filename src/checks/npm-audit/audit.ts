@@ -1,4 +1,4 @@
-import { CheckConversionError, CheckRunResult } from '../checks-common'
+import { CheckConversionError, CheckRunCompleted } from '../checks-common'
 import { Advisory, AuditData, Vulnerabilities } from './audit-types'
 
 export interface AuditInput {
@@ -62,7 +62,7 @@ function getText(data: AuditData): string {
   return entries.join('\n\n')
 }
 
-export function auditCheck({ data, sha }: AuditInput): CheckRunResult {
+export function auditCheck({ data, sha }: AuditInput): CheckRunCompleted {
   try {
     const problems = {
       all: 0,
@@ -82,6 +82,7 @@ export function auditCheck({ data, sha }: AuditInput): CheckRunResult {
         totalDependencies = data.metadata.totalDependencies
       }
     }
+
     return {
       name: 'audit',
       head_sha: sha,
@@ -91,7 +92,7 @@ export function auditCheck({ data, sha }: AuditInput): CheckRunResult {
       output: {
         title: 'npm audit security report',
         summary: getSummary(problems, totalDependencies),
-        text: getText(data)
+        text: getText(data) || undefined
       }
     }
   } catch (e) {
