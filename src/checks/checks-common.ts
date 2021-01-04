@@ -113,13 +113,7 @@ export function printSummary(checkResult: CheckRun, ci?: boolean): void {
     const annotations = output.annotations || []
     for (const annotation of annotations) {
       const { annotation_level, message, start_line, end_line, path } = annotation
-      let location = ''
-
-      if (path) {
-        const lines = start_line && end_line ? ` line ${start_line}:${end_line}` : ''
-        location = `(${path}${lines})`
-      }
-
+      const location = `(${path} line ${start_line}:${end_line})`
       console.log(`  - ${annotation_level}: ${message} ${location}`)
     }
   }
