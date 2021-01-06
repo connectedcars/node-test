@@ -225,8 +225,8 @@ export class MySQLClient {
     }
 
     const promises: Promise<boolean>[] = []
-    for (const table of tables) {
-      promises.push(this.compareTable(pool, database1, table.name, database2, table.name))
+    for (const tableName of tableNames1) {
+      promises.push(this.compareTable(pool, database1, tableName, database2, tableName))
     }
     const result = await Promise.all(promises)
     return result.every(r => r === true)
@@ -262,7 +262,7 @@ export class MySQLClient {
     )
     const tables: Array<{ name: string; columns: string[] }> = []
     for (const tableColumn of tableColumns) {
-      if (tableColumn.extra.match(/GENERATED/)) {
+      if (tableColumn.extra.match(/(:?STORED|VIRTUAL) GENERATED/)) {
         // Skip generated columns as we can't INSERT TO them
         continue
       }

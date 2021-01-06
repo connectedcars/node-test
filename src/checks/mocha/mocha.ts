@@ -1,4 +1,5 @@
 import { CheckAnnotation, CheckConversionError, CheckRunCompleted } from '../checks-common'
+import { MochaData } from './mocha-types'
 
 export interface MochaInput {
   sha: string

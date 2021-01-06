@@ -1,4 +1,5 @@
 import { RunProcess } from '../../unix/run-process'
+import { TscData } from './tsc-types'
 
 function matchToObj(match: RegExpExecArray): TscData {
   return {

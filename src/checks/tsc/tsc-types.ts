@@ -1,4 +1,4 @@
-interface TscData {
+export interface TscData {
   file: string
   line: number
   col: number

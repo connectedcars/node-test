@@ -1,4 +1,4 @@
-interface EslintData {
+export interface EslintData {
   filePath: string
   messages: EslintMessage[]
   errorCount: number

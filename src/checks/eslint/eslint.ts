@@ -1,4 +1,5 @@
 import { CheckAnnotation, CheckAnnotationLevel, CheckConversionError, CheckRunCompleted } from '../checks-common'
+import { EslintData } from './eslint-types'
 
 export interface EslintInput {
   sha: string
