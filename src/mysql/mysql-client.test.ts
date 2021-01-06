@@ -17,8 +17,11 @@ describe('MySQLClient', () => {
           make VARCHAR(255) NOT NULL, -- Audi
           name VARCHAR(255) NOT NULL, -- Audi Q2 Sport
           year YEAR(4) NOT NULL, -- 2018
-          createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+          updatedAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+          vinHashValue1 varchar(255) GENERATED ALWAYS AS (md5(concat(vin))) STORED,
+          vinHashValue2 varchar(255) GENERATED ALWAYS AS (md5(concat(vin))) VIRTUAL,
+          vinHashValue3 varchar(255) AS (md5(concat(vin))),
 
           PRIMARY KEY (id),
           UNIQUE KEY vin (vin)
@@ -36,8 +39,8 @@ describe('MySQLClient', () => {
           name VARCHAR(255) NOT NULL, -- Audi Q2 Sport
           model VARCHAR(255) NULL,
           year YEAR(4) NOT NULL, -- 2018
-          createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+          updatedAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
 
           PRIMARY KEY (id),
           UNIQUE KEY vin (vin)

@@ -262,7 +262,7 @@ export class MySQLClient {
     )
     const tables: Array<{ name: string; columns: string[] }> = []
     for (const tableColumn of tableColumns) {
-      if (tableColumn.extra.match(/GENERATED/)) {
+      if (tableColumn.extra.match(/(:?STORED|VIRTUAL) GENERATED/)) {
         // Skip generated columns as we can't INSERT TO them
         continue
       }
