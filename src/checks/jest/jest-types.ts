@@ -1,4 +1,4 @@
-interface JestData {
+export interface JestData {
   filePath: string
   messages: EslintMessage[]
   errorCount: number

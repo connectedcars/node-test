@@ -1,4 +1,5 @@
 import { runJsonCommand } from '../checks-common'
+import { EslintData } from './eslint-types'
 
 export async function runEslint(args: string[] = []): Promise<EslintData[]> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

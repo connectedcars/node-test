@@ -1,4 +1,5 @@
 import { runJsonCommand } from '../checks-common'
+import { MochaData } from './mocha-types'
 
 export async function runMocha(extraArgs: string[] = []): Promise<MochaData> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

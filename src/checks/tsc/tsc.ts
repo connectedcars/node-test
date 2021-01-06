@@ -1,4 +1,5 @@
 import { CheckConversionError, CheckOutput, CheckRunCompleted, CheckRunConclusion } from '../checks-common'
+import { TscData } from './tsc-types'
 
 export interface TscInput {
   data: TscData[]

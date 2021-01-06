@@ -1,4 +1,4 @@
-interface MochaData {
+export interface MochaData {
   stats: Stats
   tests: MochaTest[]
   failures: MochaTest[]
