@@ -167,7 +167,8 @@ async function lookupConvertFunction(
         const output = await runReactScriptsTest()
         return jestCheck({
           data: output,
-          sha: commitSha
+          sha: commitSha,
+          name: 'jest-cra'
         })
       }
     }
