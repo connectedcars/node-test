@@ -7,12 +7,13 @@ export type JestOutput = FormattedTestResults
 export interface JestInput {
   sha: string
   data: FormattedTestResults
+  name?: string
 }
 
-export const jestCheck = ({ data, sha }: JestInput): CheckRunCompleted => {
+export const jestCheck = ({ data, sha, name = 'jest' }: JestInput): CheckRunCompleted => {
   try {
     const result: CheckRunCompleted = {
-      name: 'jest',
+      name,
       head_sha: sha,
       conclusion: 'neutral',
       status: 'completed',
