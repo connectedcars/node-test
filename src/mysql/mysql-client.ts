@@ -1,13 +1,26 @@
 import crypto from 'crypto'
 import mysql from 'mysql'
+import { check } from 'yargs'
 
 export type MySQLClientOptions = mysql.PoolConfig
+
+export interface TableDiff {
+  type: 'changed' | 'added' | 'removed'
+  table: string
+}
+
+export interface Timing {
+  name: string
+  start: [number, number]
+  end?: [number, number]
+  diff?: [number, number]
+}
 
 export class MySQLClient {
   public options: MySQLClientOptions
   private databasePools: { [key: string]: mysql.Pool } = {}
   private lockConnections: mysql.Connection[] = []
-  private timings: string[] = []
+  private timings: Timing[] = []
 
   public constructor(options: MySQLClientOptions = {}) {
     this.options = {
@@ -22,8 +35,8 @@ export class MySQLClient {
     }
   }
 
-  public async getTimings(): Promise<string[]> {
-    return this.timings
+  public getTimings(): string[] {
+    return this.timings.flatMap(t => (t.diff ? [`${t.name} ${t.diff[0]}s ${t.diff[1] / 1000000}ms`] : []))
   }
 
   public async getConnection(database: string, options?: MySQLClientOptions): Promise<mysql.Connection> {
@@ -127,8 +140,13 @@ export class MySQLClient {
     await this.query(pool, `DROP DATABASE IF EXISTS \`${database}\`;`)
   }
 
+  public async dropTable(database: string, table: string): Promise<void> {
+    const pool = await this.getConnectionPool('mysql')
+    await this.query(pool, `DROP TABLE IF EXISTS \`${database}\`.\`${table}\`;`)
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public async checkoutDatabase(database: string, _readonly = false): Promise<string> {
+  public async checkoutDatabase(database: string, tables: string[] = []): Promise<string> {
     // TODO: Look into reusing the copied database "SELECT TABLE_NAME, UPDATE_TIME FROM information_schema.tables;"
 
     let pool: mysql.Pool | null = null
@@ -157,18 +175,35 @@ export class MySQLClient {
       // Try to get a lock of some of the existing checkouts
       for (const checkout of checkouts) {
         if (await this.takeLock(lockConnection, checkout)) {
-          if (await this.compareDatabases(pool, database, checkout)) {
+          const diff = await this.compareDatabasesDiff(pool, database, checkout, tables)
+          if (diff.length === 0) {
             return checkout
           } else {
-            // TODO: Be smarter about this and only drop tables that changed or delete data and recopy
-            await this.dropDatabase(checkout)
+            this.startTiming(`checkoutDatabase:${checkout}:fixup`)
+            for (const change of diff) {
+              if (change.type === 'removed') {
+                await this.cloneTable(pool, change.table, checkout, change.table)
+              } else if (change.type === 'added') {
+                await this.dropTable(checkout, change.table)
+              } else {
+                // TODO: if source table has 0 rows, do truncate instead if the DDL is ok
+                await this.dropTable(checkout, change.table)
+                await this.cloneTable(pool, change.table, checkout, change.table)
+              }
+            }
+            this.saveTiming(`checkoutDatabase:${checkout}:fixup`)
+            // TODO: Maybe use dropDatabase if the diff is very large might be quicker
+            //await this.dropDatabase(checkout)
+            return checkout
           }
         }
       }
 
       const checkout = `checkout_${database}-` + crypto.randomBytes(2).toString('hex')
+      this.startTiming(`checkoutDatabase:${checkout}:cloneDatabase`)
       await this.takeLock(lockConnection, checkout)
       await this.cloneDatabase(pool, checkout)
+      this.saveTiming(`checkoutDatabase:${checkout}:cloneDatabase`)
       return checkout
     } finally {
       pool?.end()
@@ -178,7 +213,6 @@ export class MySQLClient {
   // https://gist.github.com/christopher-hopper/8431737
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async createDatabaseCopy(database: string, _tables: string[] = []): Promise<string> {
-    // TODO: Look into reusing the copied database "SELECT TABLE_NAME, UPDATE_TIME FROM information_schema.tables;"
     let pool: mysql.Pool | null = null
     try {
       // Disable foreign keys for these connections
@@ -201,8 +235,23 @@ export class MySQLClient {
     }
   }
 
-  public async compareDatabases(pool: mysql.Pool, database1: string, database2: string): Promise<boolean> {
-    const tables = await this.query<{ name: string; database: string }>(
+  public async compareDatabases(
+    pool: mysql.Pool,
+    database1: string,
+    database2: string,
+    tables: string[] = []
+  ): Promise<boolean> {
+    const result = await this.compareDatabasesDiff(pool, database1, database2, tables)
+    return result.length === 0
+  }
+
+  public async compareDatabasesDiff(
+    pool: mysql.Pool,
+    database1: string,
+    database2: string,
+    tables: string[] = []
+  ): Promise<TableDiff[]> {
+    const allTables = await this.query<{ name: string; database: string }>(
       pool,
       `
         SELECT table_name as name, table_schema as \`database\` FROM information_schema.tables
@@ -210,29 +259,85 @@ export class MySQLClient {
       `
     )
 
-    // Check if we have table in either database that does not exists in the other
-    const tableNames1 = tables
-      .filter(t => t.database === database1)
-      .map(t => t.name)
-      .sort()
-    const tablesName2 = tables
-      .filter(t => t.database === database2)
-      .map(t => t.name)
-      .sort()
-    const isSame = tableNames1.every(t => tablesName2.includes(t)) && tablesName2.every(e => tableNames1.includes(e))
-    if (!isSame) {
-      return false
+    const tableNames1 = allTables.filter(t => t.database === database1).map(t => t.name)
+    const tableNames2 = allTables.filter(t => t.database === database2).map(t => t.name)
+
+    const removed: string[] = []
+    const added: string[] = []
+    if (tables.length > 0) {
+      const missingInSource = tables.filter(t => !tableNames1.includes(t))
+      if (missingInSource.length > 0) {
+        throw new Error(`Tables missing in ${database1}: ${missingInSource.join(',')}`)
+      }
+      removed.push(...tables.filter(t => !tableNames2.includes(t)))
+    } else {
+      removed.push(...tableNames1.filter(t => !tableNames2.includes(t)))
+      added.push(...tableNames2.filter(t => !tableNames1.includes(t)))
+      tables = tableNames1
+    }
+
+    if (removed.length > 0 || added.length > 0) {
+      return [
+        ...removed.map<TableDiff>(t => {
+          return { type: 'removed', table: t }
+        }),
+        ...added.map<TableDiff>(t => {
+          return { type: 'added', table: t }
+        })
+      ]
     }
 
     const promises: Promise<boolean>[] = []
-    for (const tableName of tableNames1) {
+    for (const tableName of tables) {
       promises.push(this.compareTable(pool, database1, tableName, database2, tableName))
     }
-    const result = await Promise.all(promises)
-    return result.every(r => r === true)
+    const tablesResult = await Promise.all(promises)
+    const result: TableDiff[] = []
+    for (const [i, r] of tablesResult.entries()) {
+      if (!r) {
+        result.push({ table: tables[i], type: 'changed' })
+      }
+    }
+    return result
   }
 
-  public async cloneDatabase(pool: mysql.Pool, destinationDatabase: string): Promise<void> {
+  public async listTables(
+    pool: mysql.Pool,
+    tables: string[] = [],
+    skipGenerated = false
+  ): Promise<Array<{ name: string; columns: string[] }>> {
+    // Find all tables and their columns in the database
+    // -- SELECT TABLE_NAME AS name FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE();
+    const tableColumns = await this.query<{ name: string; column: string; extra: string }>(
+      pool,
+      `
+        SELECT TABLE_NAME as \`name\`, COLUMN_NAME as \`column\`, EXTRA as extra
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE()
+        ${tables.length > 0 ? `AND TABLE_NAME IN (${tables.map(t => `'${t}'`).join(',')})` : ''}
+        ORDER BY \`name\`;
+      `
+    )
+    const allTables: Array<{ name: string; columns: string[] }> = []
+    for (const tableColumn of tableColumns) {
+      if (skipGenerated && tableColumn.extra.match(/(:?STORED|VIRTUAL) GENERATED/)) {
+        // Skip generated columns as we can't INSERT TO them
+        continue
+      }
+      const lastTable = allTables.length > 0 ? allTables[allTables.length - 1] : { name: '', columns: [] }
+      if (lastTable.name === tableColumn.name) {
+        lastTable.columns.push(tableColumn.column)
+      } else {
+        allTables.push({
+          name: tableColumn.name,
+          columns: [tableColumn.column]
+        })
+      }
+    }
+    return allTables
+  }
+
+  public async cloneDatabase(pool: mysql.Pool, destinationDatabase: string, tables: string[] = []): Promise<void> {
     // Fetch charset and collation from source database
     const dbInfo = await this.query<{ charset: string; collation: string }>(
       pool,
@@ -249,36 +354,9 @@ export class MySQLClient {
       `
     )
 
-    // Find all tables and their columns in the database
-    // -- SELECT TABLE_NAME AS name FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE();
-    const tableColumns = await this.query<{ name: string; column: string; extra: string }>(
-      pool,
-      `
-        SELECT TABLE_NAME as \`name\`, COLUMN_NAME as \`column\`, EXTRA as extra
-        FROM INFORMATION_SCHEMA.COLUMNS
-        WHERE TABLE_SCHEMA = DATABASE()
-        ORDER BY \`name\`;
-      `
-    )
-    const tables: Array<{ name: string; columns: string[] }> = []
-    for (const tableColumn of tableColumns) {
-      if (tableColumn.extra.match(/(:?STORED|VIRTUAL) GENERATED/)) {
-        // Skip generated columns as we can't INSERT TO them
-        continue
-      }
-      const lastTable = tables.length > 0 ? tables[tables.length - 1] : { name: '', columns: [] }
-      if (lastTable.name === tableColumn.name) {
-        lastTable.columns.push(tableColumn.column)
-      } else {
-        tables.push({
-          name: tableColumn.name,
-          columns: [tableColumn.column]
-        })
-      }
-    }
-
+    const allTables = await this.listTables(pool, tables, true)
     const promises: Promise<void>[] = []
-    for (const table of tables) {
+    for (const table of allTables) {
       promises.push(this.cloneTable(pool, table.name, destinationDatabase, table.name, table.columns))
     }
     await Promise.all(promises)
@@ -338,8 +416,15 @@ export class MySQLClient {
     sourceTable: string,
     destinationDatabase: string,
     destinationTable: string,
-    columns?: string[]
+    columns: string[] = []
   ): Promise<void> {
+    if (columns.length === 0) {
+      const tables = await this.listTables(pool, [sourceTable], true)
+      if (tables.length === 0) {
+        throw new Error(`Table ${sourceTable} does not exist`)
+      }
+      columns = tables[0].columns
+    }
     const selectColumns = columns ? columns.map(c => `\`${c}\``).join(', ') : '*'
     const insertColumns = columns ? `(${selectColumns})` : ''
 
@@ -368,11 +453,27 @@ export class MySQLClient {
     }
   }
 
-  private async saveTiming<T>(name: string, wrap: (() => Promise<T>) | Promise<T>): Promise<T> {
+  private startTiming(name: string): void {
     const start = process.hrtime()
-    const result = typeof wrap === 'function' ? await wrap() : await wrap
-    const diff = process.hrtime(start)
-    this.timings.push(`${name} ${diff[0]}s ${diff[1] / 1000000}ms`)
-    return result
+    this.timings.push({ name, start })
+  }
+
+  private saveTiming(name: string): void
+  private async saveTiming<T = void>(name: string, wrap: (() => Promise<T>) | Promise<T>): Promise<T>
+  private async saveTiming(name: string, wrap?: (() => Promise<unknown>) | Promise<unknown>): Promise<unknown> {
+    if (wrap) {
+      const start = process.hrtime()
+      const result = typeof wrap === 'function' ? await wrap() : await wrap
+      const diff = process.hrtime(start)
+      this.timings.push({ name, start, diff })
+      return result
+    }
+    for (const timing of this.timings.reverse()) {
+      if (timing.name === name) {
+        timing.diff = process.hrtime(timing.start)
+        return
+      }
+    }
+    return
   }
 }

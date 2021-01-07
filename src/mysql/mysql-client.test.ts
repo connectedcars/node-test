@@ -62,6 +62,25 @@ describe('MySQLClient', () => {
     expect(vehicle.length).toBeGreaterThan(0)
   })
 
+  it('should list all tables and columns in tmp database', async () => {
+    const pool = await mySqlClient.getConnectionPool(tmpDatabase)
+    const tables = await mySqlClient.listTables(pool)
+    expect(tables).toMatchSnapshot()
+  })
+
+  it('should list all tables and non generated columns in tmp database', async () => {
+    const pool = await mySqlClient.getConnectionPool(tmpDatabase)
+    const tables = await mySqlClient.listTables(pool, [], true)
+    expect(tables).toMatchSnapshot()
+  })
+
+  it('should list a subset of tables and columns in tmp database', async () => {
+    const pool = await mySqlClient.getConnectionPool(tmpDatabase)
+    const tables = await mySqlClient.listTables(pool, ['VehicleInfo'])
+    expect(tables).toMatchSnapshot()
+    expect(tables.length).toEqual(1)
+  })
+
   it('should compare two equal tables and return true', async () => {
     const pool = await mySqlClient.getConnectionPool(tmpDatabase)
     await expect(
@@ -96,7 +115,7 @@ describe('MySQLClient', () => {
     expect(database1).not.toEqual(database2)
   })
 
-  it('should make a new checkout because its dirty', async () => {
+  it('should fixup the old checkout because its dirty', async () => {
     const database1 = await mySqlClient.checkoutDatabase(tmpDatabase)
     const myPool = await mySqlClient.getConnectionPool(database1)
     await mySqlClient.query(
@@ -105,6 +124,7 @@ describe('MySQLClient', () => {
     )
     await mySqlClient.cleanup()
     const database2 = await mySqlClient.checkoutDatabase(tmpDatabase)
-    expect(database1).not.toEqual(database2)
+    expect(database1).toEqual(database2)
+    //console.log(mySqlClient.getTimings())
   })
 })
