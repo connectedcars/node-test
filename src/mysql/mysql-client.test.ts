@@ -138,7 +138,7 @@ describe('MySQLClient', () => {
     await mySqlClient.query(
       myPool,
       `
-       ALTER TABLE VehicleInfo RENAME COLUMN \`name\` TO \`nickname\`;
+        ALTER TABLE VehicleInfo CHANGE name nickname VARCHAR(255) NOT NULL;
       `
     )
     await mySqlClient.cleanup()
