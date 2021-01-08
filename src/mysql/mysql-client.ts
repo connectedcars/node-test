@@ -315,7 +315,7 @@ export class MySQLClient {
         FROM INFORMATION_SCHEMA.COLUMNS
         WHERE TABLE_SCHEMA = DATABASE()
         ${tables.length > 0 ? `AND TABLE_NAME IN (${tables.map(t => `'${t}'`).join(',')})` : ''}
-        ORDER BY \`name\`;
+        ORDER BY TABLE_NAME, ORDINAL_POSITION;
       `
     )
     const allTables: Array<{ name: string; columns: string[] }> = []
