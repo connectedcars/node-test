@@ -138,7 +138,7 @@ describe('MySQLClient', () => {
     await mySqlClient.query(
       myPool,
       `
-       ALTER TABLE VehicleInfo RENAME COLUMN name TO nickname;
+       ALTER TABLE VehicleInfo RENAME COLUMN \`name\` TO \`nickname\`;
       `
     )
     await mySqlClient.cleanup()
@@ -226,6 +226,6 @@ describe('MySQLClient', () => {
     const database1 = await mySqlClient.checkoutDatabase(tmpDatabase, ['VehicleInfo'])
     const myPool = await mySqlClient.getConnectionPool(database1)
     const tables = await mySqlClient.listTables(myPool)
-    expect(tables).toContain('VehicleInfo')
+    expect(tables.map(t => t.name)).toContain('VehicleInfo')
   })
 })
