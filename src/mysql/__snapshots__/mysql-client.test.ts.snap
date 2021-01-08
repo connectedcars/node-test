@@ -53,6 +53,20 @@ Array [
     ],
     "name": "VehicleInfo2",
   },
+  Object {
+    "columns": Array [
+      "id",
+      "vin",
+      "vendor",
+      "make",
+      "name",
+      "model",
+      "year",
+      "createdAt",
+      "updatedAt",
+    ],
+    "name": "VehicleInfo3",
+  },
 ]
 `;
 
@@ -84,6 +98,20 @@ Array [
       "updatedAt",
     ],
     "name": "VehicleInfo2",
+  },
+  Object {
+    "columns": Array [
+      "id",
+      "vin",
+      "vendor",
+      "make",
+      "name",
+      "model",
+      "year",
+      "createdAt",
+      "updatedAt",
+    ],
+    "name": "VehicleInfo3",
   },
 ]
 `;

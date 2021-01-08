@@ -1,11 +1,21 @@
 import crypto from 'crypto'
 import mysql from 'mysql'
-import { check } from 'yargs'
 
 export type MySQLClientOptions = mysql.PoolConfig
 
+export enum TableCompare {
+  CountChanged = 'count_changed',
+  EmptyChanged = 'empty_changed',
+  DataChanged = 'data_changed',
+  DdlChanged = 'ddl_changed',
+  AutoIncrementChanged = 'auto_increment_changed',
+  Added = 'added',
+  Removed = 'removed',
+  Same = 'same'
+}
+
 export interface TableDiff {
-  type: 'changed' | 'added' | 'removed'
+  type: TableCompare
   table: string
 }
 
@@ -145,9 +155,20 @@ export class MySQLClient {
     await this.query(pool, `DROP TABLE IF EXISTS \`${database}\`.\`${table}\`;`)
   }
 
+  public async truncateTable(database: string, table: string, resetAutoIncrement?: number): Promise<void> {
+    const pool = await this.getConnectionPool('mysql')
+    await this.query(
+      pool,
+      `
+        TRUNCATE TABLE \`${database}\`.\`${table}\`; 
+        ${resetAutoIncrement ? `ALTER TABLE \`${database}\`.\`${table}\` AUTO_INCREMENT = ${resetAutoIncrement};` : ''}
+      `
+    )
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async checkoutDatabase(database: string, tables: string[] = []): Promise<string> {
-    // TODO: Look into reusing the copied database "SELECT TABLE_NAME, UPDATE_TIME FROM information_schema.tables;"
+    // TODO: Look into reusing the copied database with "SELECT TABLE_NAME, UPDATE_TIME FROM information_schema.tables; as this could be quicker"
 
     let pool: mysql.Pool | null = null
     try {
@@ -176,24 +197,32 @@ export class MySQLClient {
       for (const checkout of checkouts) {
         if (await this.takeLock(lockConnection, checkout)) {
           const diff = await this.compareDatabasesDiff(pool, database, checkout, tables)
-          if (diff.length === 0) {
+          if (diff.every(t => t.type === 'same')) {
             return checkout
           } else {
             this.startTiming(`checkoutDatabase:${checkout}:fixup`)
+            // TODO: Maybe use dropTable + cloneTable or event dropDatabase and create new checkout if the diff is very large might be quicker
             for (const change of diff) {
               if (change.type === 'removed') {
                 await this.cloneTable(pool, change.table, checkout, change.table)
               } else if (change.type === 'added') {
                 await this.dropTable(checkout, change.table)
-              } else {
-                // TODO: if source table has 0 rows, do truncate instead if the DDL is ok
+              } else if (change.type === 'ddl_changed') {
                 await this.dropTable(checkout, change.table)
                 await this.cloneTable(pool, change.table, checkout, change.table)
+              } else if (change.type === 'auto_increment_changed') {
+                const autoIncrement = await this.getTableAutoIncrement(pool, database, change.table)
+                await this.truncateTable(checkout, change.table, autoIncrement)
+                await this.copyTableData(pool, change.table, checkout, change.table)
+              } else if (change.type === 'empty_changed') {
+                await this.truncateTable(checkout, change.table)
+              } else if (change.type === 'data_changed') {
+                await this.truncateTable(checkout, change.table)
+                await this.copyTableData(pool, change.table, checkout, change.table)
               }
             }
+
             this.saveTiming(`checkoutDatabase:${checkout}:fixup`)
-            // TODO: Maybe use dropDatabase if the diff is very large might be quicker
-            //await this.dropDatabase(checkout)
             return checkout
           }
         }
@@ -211,8 +240,7 @@ export class MySQLClient {
   }
 
   // https://gist.github.com/christopher-hopper/8431737
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public async createDatabaseCopy(database: string, _tables: string[] = []): Promise<string> {
+  public async createDatabaseCopy(database: string, tables: string[] = []): Promise<string> {
     let pool: mysql.Pool | null = null
     try {
       // Disable foreign keys for these connections
@@ -227,7 +255,7 @@ export class MySQLClient {
       // Create target database
       const databasePostfix = crypto.randomBytes(2).toString('hex')
       const destinationDatabase = `${database}-${databasePostfix}`
-      await this.cloneDatabase(pool, destinationDatabase)
+      await this.cloneDatabase(pool, destinationDatabase, tables)
 
       return destinationDatabase
     } finally {
@@ -242,7 +270,7 @@ export class MySQLClient {
     tables: string[] = []
   ): Promise<boolean> {
     const result = await this.compareDatabasesDiff(pool, database1, database2, tables)
-    return result.length === 0
+    return result.every(r => r.type === 'same')
   }
 
   public async compareDatabasesDiff(
@@ -276,29 +304,29 @@ export class MySQLClient {
       tables = tableNames1
     }
 
-    if (removed.length > 0 || added.length > 0) {
-      return [
-        ...removed.map<TableDiff>(t => {
-          return { type: 'removed', table: t }
-        }),
-        ...added.map<TableDiff>(t => {
-          return { type: 'added', table: t }
-        })
-      ]
-    }
+    // Make sure we only compare to tables that exist in database2
+    tables = tables.filter(t => tableNames2.includes(t))
 
-    const promises: Promise<boolean>[] = []
+    const tableComparePromises: Promise<TableCompare>[] = []
     for (const tableName of tables) {
-      promises.push(this.compareTable(pool, database1, tableName, database2, tableName))
+      tableComparePromises.push(this.compareTableDiff(pool, database1, tableName, database2, tableName))
     }
-    const tablesResult = await Promise.all(promises)
-    const result: TableDiff[] = []
-    for (const [i, r] of tablesResult.entries()) {
-      if (!r) {
-        result.push({ table: tables[i], type: 'changed' })
-      }
-    }
-    return result
+    const tableCompareResults = await Promise.all(tableComparePromises)
+
+    return [
+      ...removed.map<TableDiff>(t => {
+        return { type: TableCompare.Removed, table: t }
+      }),
+      ...added.map<TableDiff>(t => {
+        return { type: TableCompare.Added, table: t }
+      }),
+      ...tables.map((table, i) => {
+        return {
+          table,
+          type: tableCompareResults[i]
+        }
+      })
+    ]
   }
 
   public async listTables(
@@ -362,6 +390,35 @@ export class MySQLClient {
     await Promise.all(promises)
   }
 
+  public async compareTableDiff(
+    pool: mysql.Pool,
+    database1: string,
+    table1: string,
+    database2: string,
+    table2: string
+  ): Promise<TableCompare> {
+    const table1Ddl = await this.getTableDdl(pool, database1, table1)
+    const table2Ddl = await this.getTableDdl(pool, database2, table2)
+    if (table1Ddl !== table2Ddl) {
+      if (table1Ddl.replace(/AUTO_INCREMENT=\d+/, '') === table2Ddl.replace(/AUTO_INCREMENT=\d+/, '')) {
+        return TableCompare.AutoIncrementChanged
+      }
+      return TableCompare.DdlChanged
+    }
+    const table1Count = await this.getTableRowCount(pool, database1, table1)
+    const table2Count = await this.getTableRowCount(pool, database2, table2)
+    if (table1Count !== table2Count) {
+      if (table1Count === 0) {
+        return TableCompare.EmptyChanged
+      }
+      return TableCompare.CountChanged
+    }
+    if (!(await this.compareTableData(pool, database1, table1, database2, table2))) {
+      return TableCompare.DataChanged
+    }
+    return TableCompare.Same
+  }
+
   public async compareTable(
     pool: mysql.Pool,
     database1: string,
@@ -369,10 +426,38 @@ export class MySQLClient {
     database2: string,
     table2: string
   ): Promise<boolean> {
-    return (
-      (await this.compareTableDdl(pool, database1, table1, database2, table2)) &&
-      (await this.compareTableData(pool, database1, table1, database2, table2))
+    return (await this.compareTableDiff(pool, database1, table1, database2, table2)) === 'same'
+  }
+
+  public async getTableRowCount(pool: mysql.Pool, database1: string, table1: string): Promise<number> {
+    const tableCount = await this.querySingle<{ count: number }>(
+      pool,
+      `SELECT COUNT(*) AS count FROM \`${database1}\`.\`${table1}\`;`
     )
+    if (!tableCount) {
+      throw new Error(`Count result did not return value`)
+    }
+    return tableCount.count
+  }
+
+  public async compareTableCount(
+    pool: mysql.Pool,
+    database1: string,
+    table1: string,
+    database2: string,
+    table2: string
+  ): Promise<boolean> {
+    return (
+      (await this.getTableRowCount(pool, database1, table1)) === (await this.getTableRowCount(pool, database2, table2))
+    )
+  }
+
+  public async getTableAutoIncrement(pool: mysql.Pool, database: string, table: string): Promise<number | undefined> {
+    const autoIncrement = await this.querySingle<{ autoIncrement: number }>(
+      pool,
+      `SELECT \`AUTO_INCREMENT\` as autoIncrement FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '${database}' AND TABLE_NAME = '${table}';`
+    )
+    return autoIncrement?.autoIncrement
   }
 
   public async compareTableData(
@@ -393,25 +478,35 @@ export class MySQLClient {
     return table1Checksum?.Checksum === table2Checksum?.Checksum
   }
 
+  public async getTableDdl(pool: mysql.Pool, database: string, table: string): Promise<string> {
+    const tableDdl = await this.querySingle<{ 'Create Table': string }>(
+      pool,
+      `SHOW CREATE TABLE \`${database}\`.\`${table}\`;`
+    )
+    if (!tableDdl) {
+      throw new Error('Failed to get table DDL')
+    }
+
+    return tableDdl['Create Table']
+  }
+
   public async compareTableDdl(
     pool: mysql.Pool,
     database1: string,
     table1: string,
     database2: string,
-    table2: string
+    table2: string,
+    ignoreAutoIncrement = false
   ): Promise<boolean> {
-    const table1Ddl = await this.querySingle<{ 'Create Table': string }>(
-      pool,
-      `SHOW CREATE TABLE \`${database1}\`.\`${table1}\`;`
-    )
-    const table2Ddl = await this.querySingle<{ 'Create Table': string }>(
-      pool,
-      `SHOW CREATE TABLE \`${database2}\`.\`${table2}\`;`
-    )
-    return table1Ddl?.['Create Table'] === table2Ddl?.['Create Table']
+    const table1Ddl = await this.getTableDdl(pool, database1, table1)
+    const table2Ddl = await this.getTableDdl(pool, database2, table2)
+    if (ignoreAutoIncrement) {
+      return table1Ddl.replace(/AUTO_INCREMENT=\d+/, '') === table2Ddl.replace(/AUTO_INCREMENT=\d+/, '')
+    }
+    return table1Ddl === table2Ddl
   }
 
-  public async cloneTable(
+  public async copyTableData(
     pool: mysql.Pool,
     sourceTable: string,
     destinationDatabase: string,
@@ -430,13 +525,28 @@ export class MySQLClient {
 
     await this.query(
       pool,
-      `
-        CREATE TABLE \`${destinationDatabase}\`.\`${destinationTable}\` LIKE \`${sourceTable}\`;
+      ` 
         ALTER TABLE \`${destinationDatabase}\`.\`${destinationTable}\` DISABLE KEYS;
         INSERT INTO \`${destinationDatabase}\`.\`${destinationTable}\` ${insertColumns} SELECT ${selectColumns} FROM \`${sourceTable}\`;
         ALTER TABLE \`${destinationDatabase}\`.\`${destinationTable}\` ENABLE KEYS;
       `
     )
+  }
+
+  public async cloneTable(
+    pool: mysql.Pool,
+    sourceTable: string,
+    destinationDatabase: string,
+    destinationTable: string,
+    columns: string[] = []
+  ): Promise<void> {
+    await this.query(
+      pool,
+      `
+        CREATE TABLE \`${destinationDatabase}\`.\`${destinationTable}\` LIKE \`${sourceTable}\`;
+      `
+    )
+    await this.copyTableData(pool, sourceTable, destinationDatabase, destinationTable, columns)
   }
 
   public async cleanup(): Promise<void> {
@@ -451,6 +561,7 @@ export class MySQLClient {
         await new Promise(resolve => connection.end(resolve))
       }
     }
+    this.timings.length = 0
   }
 
   private startTiming(name: string): void {
