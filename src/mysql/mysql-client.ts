@@ -49,6 +49,17 @@ export class MySQLClient {
     return pool
   }
 
+  public async getConnectionFromPool(pool: mysql.Pool): Promise<mysql.PoolConnection> {
+    return new Promise<mysql.PoolConnection>((resolve, reject) => {
+      pool.getConnection((err, connection) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve(connection)
+      })
+    })
+  }
+
   public async query<T>(pool: mysql.Pool | mysql.Connection, sql: string, values?: string[]): Promise<T[]> {
     return new Promise((resolve, reject) => {
       pool.query(sql, values, (error, results) => {
