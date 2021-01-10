@@ -163,11 +163,19 @@ export class Migrate {
     for (const database of this.databaseMap[schemaFolder]) {
       migrationPromises.push(this.migrateDatabase(database, migrations, until))
     }
-    const dbMigrations = await this.saveTiming(`applyAllMigrations(${schemaFolder})`, Promise.all(migrationPromises))
+    const dbMigrationsResults = await this.saveTiming(
+      `applyAllMigrations(${schemaFolder})`,
+      Promise.allSettled(migrationPromises)
+    )
 
     // Populate the SchemaMigrationResult structure
     for (const database of this.databaseMap[schemaFolder]) {
-      result[database] = dbMigrations.shift() || []
+      const migrationResult = dbMigrationsResults.shift()
+      if (migrationResult?.status === 'fulfilled') {
+        result[database] = migrationResult.value
+      } else if (migrationResult?.status === 'rejected') {
+        throw migrationResult.reason
+    }
     }
     return result
   }
