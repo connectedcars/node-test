@@ -114,16 +114,21 @@ export class Migrate {
     await this.initPromise
     const result: MigrationResult = {}
     const promises: Array<Promise<SchemaMigrationResult>> = []
-    for (const schemaFolder of this.schemaFolders) {
-      promises.push(this.migrateSchema(schemaFolder, until))
+    const lockConnection = await this.mysqlClient.getConnection('mysql')
+    try {
+      await this.mysqlClient.takeLock(lockConnection, 'migrate')
+      for (const schemaFolder of this.schemaFolders) {
+        promises.push(this.migrateSchema(schemaFolder, until))
+      }
+      const migrations = await this.saveTiming('migrateAllSchema', Promise.all(promises))
+      // Populate the MigrationResult structure
+      for (const schemaFolder of this.schemaFolders) {
+        result[schemaFolder] = migrations.shift() || {}
+      }
+      return result
+    } finally {
+      await this.mysqlClient.closeConnection(lockConnection)
     }
-    const migrations = await this.saveTiming('migrateAllSchema', Promise.all(promises))
-
-    // Populate the MigrationResult structure
-    for (const schemaFolder of this.schemaFolders) {
-      result[schemaFolder] = migrations.shift() || {}
-    }
-    return result
   }
 
   public async migrateSchema(schemaFolder: string, until?: string): Promise<SchemaMigrationResult> {

@@ -34,6 +34,10 @@ export class MySQLClient {
     })
   }
 
+  public async closeConnection(connection: mysql.Pool | mysql.Connection): Promise<void> {
+    await new Promise(resolve => connection.end(resolve))
+  }
+
   public async getConnectionPool(database: string, cache = true, options?: MySQLClientOptions): Promise<mysql.Pool> {
     let pool = cache ? this.databasePools[database] : null
     if (!pool) {
