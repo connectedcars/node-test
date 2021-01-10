@@ -92,11 +92,11 @@ export class MySQLClient {
     return result.map(r => r[column])
   }
 
-  public async takeLock(lockConnection: mysql.Connection, name: string): Promise<boolean> {
+  public async takeLock(lockConnection: mysql.Connection, name: string, timeout = 0): Promise<boolean> {
     const res = await this.querySingle<{ lockStatus: number }>(
       lockConnection,
       `
-        SELECT GET_LOCK('${name}', 0) as lockStatus;
+        SELECT GET_LOCK('${name}', ${timeout}) as lockStatus;
       `
     )
     return res?.lockStatus === 1

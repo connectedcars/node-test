@@ -116,7 +116,9 @@ export class Migrate {
     const promises: Array<Promise<SchemaMigrationResult>> = []
     const lockConnection = await this.mysqlClient.getConnection('mysql')
     try {
-      await this.mysqlClient.takeLock(lockConnection, 'migrate')
+      if (!(await this.mysqlClient.takeLock(lockConnection, 'migrate', 60))) {
+        throw new Error('Failed to take lock after 60 seconds')
+      }
       for (const schemaFolder of this.schemaFolders) {
         promises.push(this.migrateSchema(schemaFolder, until))
       }
