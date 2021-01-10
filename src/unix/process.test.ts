@@ -1,4 +1,5 @@
 import { CommandEmulation, RunProcess, stopPid } from '.'
+import { readPidFile } from './process'
 
 describe('process', () => {
   const commandEmulation = new CommandEmulation()
@@ -24,5 +25,9 @@ describe('process', () => {
 
     // Provoke Error: kill ESRCH
     await expect(stopPid(cmd.pid)).resolves.toEqual(false)
+  })
+
+  it('should handle pid file not existing', async () => {
+    await expect(readPidFile('a-file-that-does-not-exist')).resolves.toEqual(0)
   })
 })

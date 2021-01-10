@@ -1,24 +1,27 @@
 import fs from 'fs'
 import util from 'util'
 
-import { isNoProcessForPidError } from './errors'
+import { isFileNotFoundError, isNoProcessForPidError } from './errors'
 
-const fsExistsAsync = util.promisify(fs.exists)
 const fsReadFileAsync = util.promisify(fs.readFile)
 const fsWriteFileAsync = util.promisify(fs.writeFile)
 const fsUnlinkAsync = util.promisify(fs.unlink)
 
 export async function readPidFile(pidFile: string): Promise<number> {
-  if (!(await fsExistsAsync(pidFile))) {
-    return 0
+  try {
+    const pidFileBuffer = await fsReadFileAsync(pidFile)
+    const pidStr = pidFileBuffer.toString('utf8').replace(/\s+$/s, '')
+    if (!pidStr.match(/^\d+$/)) {
+      return 0
+    }
+    const pid = parseInt(pidStr, 10)
+    return pid
+  } catch (e) {
+    if (isFileNotFoundError(e)) {
+      return 0
+    }
+    throw e
   }
-  const pidFileBuffer = await fsReadFileAsync(pidFile)
-  const pidStr = pidFileBuffer.toString('utf8').replace(/\s+$/s, '')
-  if (!pidStr.match(/^\d+$/)) {
-    return 0
-  }
-  const pid = parseInt(pidStr, 10)
-  return pid
 }
 
 export async function isPidRunning(pid: number): Promise<boolean> {
