@@ -1,8 +1,68 @@
-import { FormattedTestResults } from '@jest/test-result/build/types'
-
 import { CheckAnnotation, CheckAnnotationLevel, CheckConversionError, CheckRunCompleted } from '../checks-common'
 
-export type JestOutput = FormattedTestResults
+export interface FormattedTestResults {
+  numFailedTests: number
+  numFailedTestSuites: number
+  numPassedTests: number
+  numPassedTestSuites: number
+  numPendingTests: number
+  numPendingTestSuites: number
+  numRuntimeErrorTestSuites: number
+  numTodoTests: number
+  numTotalTests: number
+  numTotalTestSuites: number
+  openHandles: string[]
+  snapshot: SnapshotSummary
+  startTime: number
+  success: boolean
+  testResults: Array<FormattedTestResult>
+  wasInterrupted: boolean
+}
+
+export interface FormattedTestResult {
+  message: string
+  name: string
+  summary: string
+  status: 'failed' | 'passed'
+  startTime: number
+  endTime: number
+  coverage?: unknown
+  assertionResults: Array<FormattedAssertionResult>
+}
+
+export interface FormattedAssertionResult {
+  ancestorTitles: Array<string>
+  failureMessages: Array<string>
+  fullName: string
+  location?: {
+    column: number
+    line: number
+  } | null
+  status: 'passed' | 'failed' | 'skipped' | 'pending' | 'todo' | 'disabled'
+  title: string
+}
+
+export interface SnapshotSummary {
+  added: number
+  didUpdate: boolean
+  failure: boolean
+  filesAdded: number
+  filesRemoved: number
+  filesRemovedList: Array<string>
+  filesUnmatched: number
+  filesUpdated: number
+  matched: number
+  total: number
+  unchecked: number
+  uncheckedKeysByFile: Array<UncheckedSnapshot>
+  unmatched: number
+  updated: number
+}
+
+export interface UncheckedSnapshot {
+  filePath: string
+  keys: Array<string>
+}
 
 export interface JestInput {
   sha: string
@@ -66,11 +126,14 @@ export const jestCheck = ({ data, sha, name = 'jest' }: JestInput): CheckRunComp
             default:
               annotation_level = 'notice'
           }
+          const message =
+            result.status === 'pending' ? `skipped test '${result.title}'` : result.failureMessages?.join('\n')
+
           const annotation: CheckAnnotation = {
             start_line: 1,
             end_line: 1,
             annotation_level: annotation_level,
-            message: result.failureMessages?.join('\n') || '',
+            message: message || 'unknown issue',
             path: relPath,
             raw_details: JSON.stringify(result, null, 2)
           }
