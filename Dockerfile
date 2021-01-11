@@ -23,10 +23,4 @@ COPY --chown=builder:builder . /app/
 RUN npm run build
 
 # Run ci checks
-RUN npm run ci-tsc
-
-RUN npm run ci-audit
-
-RUN npm run ci-jest
-
-RUN npm run ci-eslint
+RUN npm run ci-auto
