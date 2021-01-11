@@ -1,7 +1,5 @@
-import { FormattedTestResults } from '@jest/test-result/build/types'
-
-import { jestCheck } from './jest'
-import { jestFailedOutput, jestPassedOutput } from './resources/jest-help-text'
+import { FormattedTestResults, jestCheck } from './jest'
+import { jestFailedOutput, jestPassedOutput, jestSkippedOutput } from './resources/jest-help-text'
 
 describe('checks/jest', () => {
   it('processes passing jest output to checks structure', () => {
@@ -48,6 +46,13 @@ describe('checks/jest', () => {
         summary: 'No tests found',
         annotations: []
       }
+    })
+  })
+
+  it('should handle skipped tests', () => {
+    const output = jestCheck({ data: jestSkippedOutput, sha: '1234567890' })
+    expect(output).toMatchSnapshot({
+      completed_at: expect.stringMatching(/^\d{4}/)
     })
   })
 })

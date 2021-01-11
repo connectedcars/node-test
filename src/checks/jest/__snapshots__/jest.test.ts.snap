@@ -52,3 +52,37 @@ Object {
   "status": "completed",
 }
 `;
+
+exports[`checks/jest should handle skipped tests 1`] = `
+Object {
+  "completed_at": StringMatching /\\^\\\\d\\{4\\}/,
+  "conclusion": "success",
+  "head_sha": "1234567890",
+  "name": "jest",
+  "output": Object {
+    "annotations": Array [
+      Object {
+        "annotation_level": "notice",
+        "end_line": 1,
+        "message": "skipped test 'is possible to distinguish between duplicates and all other errors'",
+        "path": "src/tests/integration/insert-ignore.test.ts",
+        "raw_details": "{
+  \\"ancestorTitles\\": [
+    \\"Tests INSERT IGNORE warnings\\"
+  ],
+  \\"failureMessages\\": [],
+  \\"fullName\\": \\"Tests INSERT IGNORE warnings is possible to distinguish between duplicates and all other errors\\",
+  \\"location\\": null,
+  \\"status\\": \\"pending\\",
+  \\"title\\": \\"is possible to distinguish between duplicates and all other errors\\",
+  \\"file\\": \\"/Users/tlb/git/connectedcars/data/src/tests/integration/insert-ignore.test.ts\\"
+}",
+        "start_line": 1,
+      },
+    ],
+    "summary": "8 of 9 tests passed!",
+    "title": "8 of 9 tests passed!",
+  },
+  "status": "completed",
+}
+`;
