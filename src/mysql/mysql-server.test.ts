@@ -71,7 +71,7 @@ describe('MySQLServer', () => {
     try {
       process.env.PATH = ''
       const mySqlServer = new MySQLServer({ mysqlBaseDir: tmpDir })
-      await expect(mySqlServer.waitForStarted()).rejects.toThrow('spawn mysqld ENOENT')
+      await expect(mySqlServer.waitForStarted()).rejects.toThrow(`Could not find 'mysqld'`)
     } finally {
       process.env.PATH = oldPath
     }

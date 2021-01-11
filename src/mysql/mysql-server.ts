@@ -8,21 +8,25 @@ const mkdirAsync = util.promisify(fs.mkdir)
 const existsAsync = util.promisify(fs.exists)
 const chmodAsync = util.promisify(fs.chmod)
 const unlinkAsync = util.promisify(fs.unlink)
+const realPath = util.promisify(fs.realpath)
 
 import { findFreePort } from '../net'
 import {
   createTempDirectory,
   isDockerOverlay2,
+  isFileExecutable,
   isPidRunning,
   readPidFile,
   stopPid,
   touchFiles,
+  whereIs,
   writePidFile
 } from '../unix'
 import {
   createMySQLDataCache,
   extractMySQLDataCache,
   generateMySQLServerConfig,
+  getMySQLServerBaseConfig,
   getMySQLServerVersionString,
   initializeMySQLData,
   MySQLServerConfig,
@@ -182,28 +186,9 @@ export class MySQLServer {
       // Initialize mysql data
       let initialized = false
       if (!fs.existsSync(`${this.mysqlBaseDir}/data`)) {
-        const myCnf: MySQLServerConfig = {
-          mysqld: {},
-          'mysqld-8.0': {}
-        }
-        if (process.getuid() === 0) {
-          // Drop privileges if running as root
-          myCnf.mysqld.user = 'mysql'
-        }
-        if (process.platform === 'darwin') {
-          // Work around issue with mysql 5.7 running out of FD on macOSX: https://bugs.mysql.com/bug.php?id=79125
-          myCnf.mysqld.table_open_cache = '250'
-          myCnf.mysqld.open_files_limit = '800'
-          myCnf.mysqld.max_connections = '500'
-
-          // Set limits higher for 8.x
-          myCnf['mysqld-8.0'].max_connections = '2000'
-          myCnf['mysqld-8.0'].open_files_limit = '5000'
-          myCnf['mysqld-8.0'].table_open_cache = '2000'
-        }
-
         // Ensure permissions and generate config
         await chmodAsync(this.mysqlBaseDir, '777')
+        const myCnf = await getMySQLServerBaseConfig(this.mysqldPath)
         const config = generateMySQLServerConfig(this.mysqlBaseDir, { ...myCnf, ...this.myCnfCustom })
         await writeFileAsync(`${path.join(this.mysqlBaseDir, 'my.cnf')}`, Buffer.from(config, 'utf8'))
 

@@ -3,7 +3,7 @@ import os from 'os'
 import path from 'path'
 import util from 'util'
 
-import { RunProcess } from '../unix'
+import { pathExists, RunProcess } from '../unix'
 import { isFileNotFoundError } from '../unix/errors'
 
 const fsExistsAsync = util.promisify(fs.exists)
@@ -32,8 +32,12 @@ export async function getMySQLServerVersionString(mysqldPath: string): Promise<s
   return stdout.replace(/\r?\n$/, '')
 }
 
-export async function getMySQLServerConfig(mysqldPath: string, mysqlBaseDir: string): Promise<MySQLServerConfig> {
-  const cmd = new RunProcess(mysqldPath, [`--defaults-file=${mysqlBaseDir}/my.cnf`, '--help', '--verbose'])
+export async function getMySQLServerDefaults(mysqldPath: string, mysqlBaseDir?: string): Promise<MySQLServerConfig> {
+  const cmd = new RunProcess(mysqldPath, [
+    ...(mysqlBaseDir ? [`--defaults-file=${mysqlBaseDir}/my.cnf`] : []),
+    '--help',
+    '--verbose'
+  ])
   const outputData: Buffer[] = []
   cmd.stdout?.on('data', chunk => {
     outputData.push(chunk)
@@ -43,7 +47,8 @@ export async function getMySQLServerConfig(mysqldPath: string, mysqlBaseDir: str
   })
   const { code } = await cmd.waitForExit()
   const output = Buffer.concat(outputData).toString('utf8')
-  if (code !== 0) {
+
+  if (code !== 0 && !output.match(/Plugins have parameters that are not reflected/)) {
     throw new Error(`Failed to dump configuration(${mysqldPath} --help --verbose): \n${output}\n`)
   }
 
@@ -58,6 +63,53 @@ export async function getMySQLServerConfig(mysqldPath: string, mysqlBaseDir: str
     }
   }
   return { mysqld: variables }
+}
+
+export async function getMySQLServerBaseConfig(mysqldPath: string): Promise<MySQLServerConfig> {
+  const myCnf: MySQLServerConfig = {
+    mysqld: {},
+    'mysqld-8.0': {}
+  }
+
+  const mysqdDefaultConfig = await getMySQLServerDefaults(mysqldPath)
+  const mysqlInstallPath = path.resolve(path.dirname(mysqldPath), '..')
+  const characterSetsDir = await pathExists(
+    `${mysqlInstallPath}/share/mysql/charsets`,
+    mysqdDefaultConfig['mysqld']['character-sets-dir']
+  )
+  const languageDir = await pathExists(`${mysqlInstallPath}/share/mysql`, mysqdDefaultConfig['mysqld']['language'])
+  const lcMessagesDir = await pathExists(
+    `${mysqlInstallPath}/share/mysql`,
+    mysqdDefaultConfig['mysqld']['lc-messages-dir']
+  )
+
+  if (characterSetsDir) {
+    myCnf['mysqld']['character-sets-dir'] = characterSetsDir
+  }
+  if (languageDir) {
+    myCnf['mysqld']['language'] = languageDir
+  }
+  if (lcMessagesDir) {
+    myCnf['mysqld']['lc-messages-dir'] = lcMessagesDir
+  }
+
+  if (process.getuid() === 0) {
+    // Drop privileges if running as root
+    myCnf.mysqld.user = 'mysql'
+  }
+  if (process.platform === 'darwin') {
+    // Work around issue with mysql 5.7 running out of FD on macOSX: https://bugs.mysql.com/bug.php?id=79125
+    myCnf.mysqld.table_open_cache = '250'
+    myCnf.mysqld.open_files_limit = '800'
+    myCnf.mysqld.max_connections = '500'
+
+    // Set limits higher for 8.x
+    myCnf['mysqld-8.0'].max_connections = '2000'
+    myCnf['mysqld-8.0'].open_files_limit = '5000'
+    myCnf['mysqld-8.0'].table_open_cache = '2000'
+  }
+
+  return myCnf
 }
 
 export function generateMySQLServerConfig(
@@ -166,6 +218,7 @@ export async function dumpDatabase(port: number, databases: string[], dumpFile: 
   const dumpFileTmp = `${dumpFile}$.tmp${randomStr}`
 
   const cmd = new RunProcess('mysqldump', [
+    '--column-statistics=0',
     '--host=127.0.0.1',
     `--port=${port}`,
     '--user=root',
