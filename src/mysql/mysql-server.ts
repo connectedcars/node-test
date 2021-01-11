@@ -123,6 +123,16 @@ export class MySQLServer {
 
   private async init(): Promise<void> {
     const totalInitTime = process.hrtime()
+
+    // Find mysqldPath
+    if (!(await isFileExecutable(this.mysqldPath))) {
+      const foundMysqldPath = await whereIs(this.mysqldPath)
+      if (!foundMysqldPath) {
+        throw new Error(`Could not find '${this.mysqldPath}'`)
+      }
+      this.mysqldPath = await realPath(foundMysqldPath)
+    }
+
     // Generate unique cache key based on mysql version
     const mysqlVersion = await getMySQLServerVersionString(this.mysqldPath)
     const hash = crypto.createHash('sha1')
