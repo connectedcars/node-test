@@ -32,7 +32,7 @@ async function main(argv: string[]): Promise<number> {
       },
       mysqlBaseDir: {
         type: 'string',
-        default: '',
+        default: undefined,
         describe: `Sets mysqld base dir location, default to picking a tmp folder`
       },
       migrationsDir: {
@@ -51,6 +51,7 @@ async function main(argv: string[]): Promise<number> {
   console.log(
     `MySQLd started in ${mysqlBaseDir} (${await mySqlServer.getInitStatus()}) listening on port ${await mySqlServer.getListenPort()}`
   )
+  console.log(await mySqlServer.getTimings())
 
   if (await existsAsync(flags.migrationsDir)) {
     const mySqlClient = new MySQLClient({ port: await mySqlServer.getListenPort() })

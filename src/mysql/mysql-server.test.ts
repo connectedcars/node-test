@@ -40,7 +40,7 @@ describe('MySQLServer', () => {
       connection?.end()
       await mySqlServer?.kill()
     }
-  }, 20000)
+  }, 30000)
 
   it('Should start a new database server from pre created data and resume it after', async () => {
     let mySqlServer: MySQLServer | null = null
@@ -64,7 +64,7 @@ describe('MySQLServer', () => {
       connection?.end()
       await mySqlServer?.kill()
     }
-  }, 20000)
+  }, 30000)
 
   it('should throw an error when mysqld is not installed', async () => {
     const oldPath = process.env.PATH
@@ -101,5 +101,5 @@ describe('MySQLServer', () => {
       await mySqlServer?.kill()
       process.env.PATH = oldPath
     }
-  }, 20000)
+  }, 30000)
 })

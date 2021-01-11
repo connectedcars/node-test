@@ -17,7 +17,7 @@ describe('local-mysql', () => {
     })
     await cmd.kill('SIGTERM')
     await expect(cmd.waitForExit()).resolves.toEqual({ code: 0, signal: null })
-  }, 10000)
+  }, 30000)
 
   it(`should start a local mysqld and stop it on SIGTERM`, async () => {
     const tmpdir = await createTempDirectory()
@@ -28,7 +28,7 @@ describe('local-mysql', () => {
     })
     await cmd.kill('SIGTERM')
     await expect(cmd.waitForExit()).resolves.toEqual({ code: 0, signal: null })
-  }, 10000)
+  }, 30000)
 
   it(`should start a local mysqld and stop it on SIGINT`, async () => {
     const tmpdir = await createTempDirectory()
@@ -39,7 +39,7 @@ describe('local-mysql', () => {
     })
     await cmd.kill('SIGINT')
     await expect(cmd.waitForExit()).resolves.toEqual({ code: 0, signal: null })
-  }, 10000)
+  }, 30000)
 
   it(`should start a process and migrate to newest version`, async () => {
     const tmpdir = await createTempDirectory()
@@ -60,5 +60,5 @@ describe('local-mysql', () => {
       0: 'mysqld: ready for connections'
     })
     expect(Buffer.concat(data).toString('utf8')).toMatch(/Running migrations/s)
-  }, 10000)
+  }, 30000)
 })
