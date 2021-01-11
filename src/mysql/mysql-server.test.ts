@@ -19,6 +19,8 @@ async function query<T>(connection: mysql.Connection, sql: string): Promise<T[]>
 }
 
 describe('MySQLServer', () => {
+  const mysqldPath = process.env['MYSQLD']
+
   let tmpDir = ''
   beforeAll(async () => {
     tmpDir = await createTempDirectory()
@@ -28,7 +30,7 @@ describe('MySQLServer', () => {
     let mySqlServer: MySQLServer | null = null
     let connection: mysql.Connection | null = null
     try {
-      mySqlServer = new MySQLServer({ mysqlBaseDir: tmpDir })
+      mySqlServer = new MySQLServer({ mysqlBaseDir: tmpDir, mysqldPath })
       const connectionUrl = await mySqlServer.getConnectionUrl('mysql')
       console.log(await mySqlServer.getTimings())
       connection = mysql.createConnection(connectionUrl)
@@ -45,13 +47,13 @@ describe('MySQLServer', () => {
     let connection: mysql.Connection | null = null
     try {
       // Do initial mysql start
-      mySqlServer = new MySQLServer({ mysqlBaseDir: tmpDir })
+      mySqlServer = new MySQLServer({ mysqlBaseDir: tmpDir, mysqldPath })
       await mySqlServer.getListenPort()
       await expect(mySqlServer.getInitStatus()).resolves.toEqual('started')
       console.log(await mySqlServer.getTimings())
 
       // Start mysql again letting it pickup the pid
-      mySqlServer = new MySQLServer({ mysqlBaseDir: tmpDir })
+      mySqlServer = new MySQLServer({ mysqlBaseDir: tmpDir, mysqldPath })
       await expect(mySqlServer.getInitStatus()).resolves.toEqual('resumed')
 
       const connectionUrl = await mySqlServer.getConnectionUrl('mysql')
@@ -79,10 +81,10 @@ describe('MySQLServer', () => {
     let mySqlServer: MySQLServer | null = null
     const oldPath = process.env.PATH
     try {
-      mySqlServer = new MySQLServer({ mysqlBaseDir: tmpDir })
-      const mySqlServer2 = new MySQLServer({ mysqlBaseDir: tmpDir })
-      const mySqlServer3 = new MySQLServer({ mysqlBaseDir: tmpDir })
-      const mySqlServer4 = new MySQLServer({ mysqlBaseDir: tmpDir })
+      mySqlServer = new MySQLServer({ mysqlBaseDir: tmpDir, mysqldPath })
+      const mySqlServer2 = new MySQLServer({ mysqlBaseDir: tmpDir, mysqldPath })
+      const mySqlServer3 = new MySQLServer({ mysqlBaseDir: tmpDir, mysqldPath })
+      const mySqlServer4 = new MySQLServer({ mysqlBaseDir: tmpDir, mysqldPath })
       await expect(
         Promise.all([
           mySqlServer.waitForStarted(),
