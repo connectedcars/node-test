@@ -13,6 +13,7 @@ async function time<T>(promise: Promise<T>): Promise<[number, T]> {
 }
 
 async function main(argv: string[]): Promise<number> {
+  const mysqldPath = process.env['MYSQLD']
   const migrationsDir = argv.slice(2).shift() || 'migrations'
 
   const cleanup: MySQLServer[] = []
@@ -20,12 +21,12 @@ async function main(argv: string[]): Promise<number> {
     const tmpDir = await createTempDirectory()
     console.log(`Run folder: ${tmpDir}`)
 
-    const mySqlServer = new MySQLServer({ mysqlBaseDir: tmpDir, ignoreCache: true })
+    const mySqlServer = new MySQLServer({ mysqlBaseDir: tmpDir, ignoreCache: true, mysqldPath })
     cleanup.push(mySqlServer)
     const [mysqlServerTiming] = await time(mySqlServer.waitForStarted())
     console.log(`mysqld no cache start: ${mysqlServerTiming / 1000}ms`)
 
-    const testResumeMySqlServer = new MySQLServer({ mysqlBaseDir: tmpDir, ignoreCache: true })
+    const testResumeMySqlServer = new MySQLServer({ mysqlBaseDir: tmpDir, ignoreCache: true, mysqldPath: mysqldPath })
     const [testResumeMysqlServerTiming] = await time(testResumeMySqlServer.waitForStarted())
     console.log(`mysqld resume start: ${testResumeMysqlServerTiming / 1000}ms`)
 
@@ -42,12 +43,12 @@ async function main(argv: string[]): Promise<number> {
     const [snapshotTiming] = await time(mySqlServer.saveAsCustomInitState())
     console.log(`custom init snapshot: ${snapshotTiming / 1000}ms`)
 
-    const testCleanMySqlServer = new MySQLServer({ ignoreCustomCache: true })
+    const testCleanMySqlServer = new MySQLServer({ ignoreCustomCache: true, mysqldPath })
     cleanup.push(testCleanMySqlServer)
     const [testCleanMysqlServerTiming] = await time(testCleanMySqlServer.waitForStarted())
     console.log(`mysqld clean start: ${testCleanMysqlServerTiming / 1000}ms`)
 
-    const testCustomMySqlServer = new MySQLServer()
+    const testCustomMySqlServer = new MySQLServer({ mysqldPath })
     cleanup.push(testCustomMySqlServer)
     const [testCustomMysqlServerTiming] = await time(testCustomMySqlServer.waitForStarted())
     console.log(`mysqld custom start: ${testCustomMysqlServerTiming / 1000}ms`)

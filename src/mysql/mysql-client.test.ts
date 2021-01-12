@@ -2,10 +2,12 @@ import { MySQLClient } from './mysql-client'
 import { MySQLServer } from './mysql-server'
 
 describe('MySQLClient', () => {
+  const mysqldPath = process.env['MYSQLD']
+
   let mySqlClient: MySQLClient
   let tmpDatabase: string
   beforeAll(async () => {
-    const mySqlServer = new MySQLServer({ mysqlBaseDir: 'mysql-context' })
+    const mySqlServer = new MySQLServer({ mysqlBaseDir: 'mysql-context', mysqldPath })
     console.log(await mySqlServer.getTimings())
     mySqlClient = new MySQLClient({ port: await mySqlServer.getListenPort() })
     tmpDatabase = await mySqlClient.createTmpDatabase(

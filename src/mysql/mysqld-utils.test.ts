@@ -1,7 +1,7 @@
 import { CommandEmulation, createTempDirectory } from '../unix'
 import {
   generateMySQLServerConfig,
-  getMySQLServerConfig,
+  getMySQLServerDefaults,
   getMySQLServerVersionString,
   startMySQLd
 } from './mysqld-utils'
@@ -47,7 +47,7 @@ describe('mysql common', () => {
     })
   })
 
-  describe('getMySQLServerConfig', () => {
+  describe('getMySQLServerDefaults', () => {
     it('should return the current mysql config', async () => {
       await commandEmulation.registerCommand(
         'mysqld',
@@ -57,7 +57,7 @@ describe('mysql common', () => {
         null,
         mysqlHelpVerboseText
       )
-      const mysqldConfigPromise = getMySQLServerConfig('mysqld', '/tmp/test')
+      const mysqldConfigPromise = getMySQLServerDefaults('mysqld', '/tmp/test')
       await expect(mysqldConfigPromise).resolves.toMatchSnapshot()
     })
   })

@@ -1,12 +1,15 @@
 import fs from 'fs'
+import path from 'path'
 import util from 'util'
 
 import { isNoProcessForPidError } from './errors'
 
+const fsAccessAsync = util.promisify(fs.access)
 const fsExistsAsync = util.promisify(fs.exists)
 const fsReadFileAsync = util.promisify(fs.readFile)
 const fsWriteFileAsync = util.promisify(fs.writeFile)
 const fsUnlinkAsync = util.promisify(fs.unlink)
+const fsStatAsync = util.promisify(fs.stat)
 
 export async function readPidFile(pidFile: string): Promise<number> {
   if (!(await fsExistsAsync(pidFile))) {
@@ -83,4 +86,54 @@ export async function writePidFile(pidFile: string, acquireTries = 10): Promise<
     }
   }
   throw new Error(`Failed to write pid file ${pidFile} after ${acquireTries} tries`)
+}
+
+export async function whereIs(cmd: string): Promise<string | null> {
+  const runPaths = process.env['PATH']?.split(/[:;]/)
+  for (const runPath of runPaths || []) {
+    const fullPath = path.normalize(`${runPath}/${cmd}`)
+    if (!(await fsExistsAsync(fullPath))) {
+      continue
+    }
+    try {
+      await fsAccessAsync(fullPath, fs.constants.X_OK)
+    } catch (e) {
+      continue
+    }
+    return fullPath
+  }
+  return null
+}
+
+export async function isFileReadable(filePath: string): Promise<boolean> {
+  const res = await fsAccessAsync(filePath, fs.constants.R_OK)
+    .then(() => true)
+    .catch(() => false)
+  return res
+}
+
+export async function isFileExecutable(filePath: string): Promise<boolean> {
+  const res = await fsAccessAsync(filePath, fs.constants.X_OK)
+    .then(() => true)
+    .catch(() => false)
+  return res
+}
+
+export async function fileExists(...filePaths: string[]): Promise<string | null> {
+  for (const filePath of filePaths) {
+    if (await isFileReadable(filePath)) {
+      return filePath
+    }
+  }
+  return null
+}
+
+export async function pathExists(...filePaths: string[]): Promise<string | null> {
+  for (const filePath of filePaths) {
+    const stat = await fsStatAsync(filePath).catch(() => null)
+    if (stat) {
+      return filePath
+    }
+  }
+  return null
 }
