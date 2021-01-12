@@ -29,7 +29,7 @@ mysqlx=0
 "
 `;
 
-exports[`mysql common getMySQLServerConfig should return the current mysql config 1`] = `
+exports[`mysql common getMySQLServerDefaults should return the current mysql config 1`] = `
 Object {
   "mysqld": Object {
     "abort-slave-event-count": "0",

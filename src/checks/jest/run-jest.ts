@@ -1,6 +1,5 @@
-import { FormattedTestResults } from '@jest/test-result/build/types'
-
 import { runJsonCommand } from '../checks-common'
+import { FormattedTestResults } from './jest'
 
 export async function runJest(command = 'jest', extraArgs: string[] = []): Promise<FormattedTestResults> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

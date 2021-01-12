@@ -25,9 +25,14 @@ async function main(argv: string[]): Promise<number> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { _: args, ...flags } = yargs
     .options({
+      mysqld: {
+        type: 'string',
+        defaults: undefined,
+        describe: `Sets mysqld to run`
+      },
       mysqlBaseDir: {
         type: 'string',
-        default: '',
+        default: undefined,
         describe: `Sets mysqld base dir location, default to picking a tmp folder`
       },
       migrationsDir: {
@@ -39,11 +44,14 @@ async function main(argv: string[]): Promise<number> {
     .help()
     .parse(argv.slice(2))
 
-  const mySqlServer = new MySQLServer({ mysqlBaseDir: flags.mysqlBaseDir })
+  const mysqldPath = flags.mysqld || process.env['MYSQLD']
+
+  const mySqlServer = new MySQLServer({ mysqlBaseDir: flags.mysqlBaseDir, mysqldPath })
   const mysqlBaseDir = await mySqlServer.getMysqlBaseDir()
   console.log(
     `MySQLd started in ${mysqlBaseDir} (${await mySqlServer.getInitStatus()}) listening on port ${await mySqlServer.getListenPort()}`
   )
+  console.log(await mySqlServer.getTimings())
 
   if (await existsAsync(flags.migrationsDir)) {
     const mySqlClient = new MySQLClient({ port: await mySqlServer.getListenPort() })

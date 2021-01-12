@@ -10,10 +10,12 @@ async function time<T>(promise: Promise<T>): Promise<[T, number]> {
 }
 
 describe('Migrate', () => {
+  const mysqldPath = process.env['MYSQLD']
+
   let mySqlClient: MySQLClient
 
   beforeAll(async () => {
-    const mySqlServer = new MySQLServer({ mysqlBaseDir: 'mysql-context' })
+    const mySqlServer = new MySQLServer({ mysqlBaseDir: 'mysql-context', mysqldPath })
     console.log(await mySqlServer.getTimings())
     mySqlClient = new MySQLClient({ port: await mySqlServer.getListenPort() })
   }, 30000)

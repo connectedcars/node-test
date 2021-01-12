@@ -2,10 +2,12 @@ import { MySQLClient } from './mysql-client'
 import { MySQLServer } from './mysql-server'
 
 describe('MySQLClient', () => {
+  const mysqldPath = process.env['MYSQLD']
+
   let mySqlClient: MySQLClient
   let tmpDatabase: string
   beforeAll(async () => {
-    const mySqlServer = new MySQLServer({ mysqlBaseDir: 'mysql-context' })
+    const mySqlServer = new MySQLServer({ mysqlBaseDir: 'mysql-context', mysqldPath })
     console.log(await mySqlServer.getTimings())
     mySqlClient = new MySQLClient({ port: await mySqlServer.getListenPort() })
     tmpDatabase = await mySqlClient.createTmpDatabase(
@@ -47,6 +49,23 @@ describe('MySQLClient', () => {
         )
         ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4
         COMMENT 'Basic vehicle information';
+
+        CREATE TABLE VehicleInfo3 (
+          id INT(11) UNSIGNED NOT NULL,
+          vin VARCHAR(17) NOT NULL,
+          vendor VARCHAR(255) NOT NULL, -- VAG
+          make VARCHAR(255) NOT NULL, -- Audi
+          name VARCHAR(255) NOT NULL, -- Audi Q2 Sport
+          model VARCHAR(255) NULL,
+          year YEAR(4) NOT NULL, -- 2018
+          createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+          updatedAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+
+          PRIMARY KEY (id),
+          UNIQUE KEY vin (vin)
+        )
+        ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+        COMMENT 'Basic vehicle information';
       `
     )
   }, 20000)
@@ -60,6 +79,25 @@ describe('MySQLClient', () => {
     const pool = await mySqlClient.getConnectionPool(database)
     const vehicle = await mySqlClient.query<{ user: string }>(pool, `SELECT * from VehicleInfo;`)
     expect(vehicle.length).toBeGreaterThan(0)
+  })
+
+  it('should list all tables and columns in tmp database', async () => {
+    const pool = await mySqlClient.getConnectionPool(tmpDatabase)
+    const tables = await mySqlClient.listTables(pool)
+    expect(tables).toMatchSnapshot()
+  })
+
+  it('should list all tables and non generated columns in tmp database', async () => {
+    const pool = await mySqlClient.getConnectionPool(tmpDatabase)
+    const tables = await mySqlClient.listTables(pool, [], true)
+    expect(tables).toMatchSnapshot()
+  })
+
+  it('should list a subset of tables and columns in tmp database', async () => {
+    const pool = await mySqlClient.getConnectionPool(tmpDatabase)
+    const tables = await mySqlClient.listTables(pool, ['VehicleInfo'])
+    expect(tables).toMatchSnapshot()
+    expect(tables.length).toEqual(1)
   })
 
   it('should compare two equal tables and return true', async () => {
@@ -96,7 +134,21 @@ describe('MySQLClient', () => {
     expect(database1).not.toEqual(database2)
   })
 
-  it('should make a new checkout because its dirty', async () => {
+  it('should fixup the old checkout because we added a row (ddl_changed)', async () => {
+    const database1 = await mySqlClient.checkoutDatabase(tmpDatabase)
+    const myPool = await mySqlClient.getConnectionPool(database1)
+    await mySqlClient.query(
+      myPool,
+      `
+        ALTER TABLE VehicleInfo CHANGE name nickname VARCHAR(255) NOT NULL;
+      `
+    )
+    await mySqlClient.cleanup()
+    const database2 = await mySqlClient.checkoutDatabase(tmpDatabase)
+    expect(database1).toEqual(database2)
+  })
+
+  it('should fixup the old checkout because we added a row (auto_increment_changed)', async () => {
     const database1 = await mySqlClient.checkoutDatabase(tmpDatabase)
     const myPool = await mySqlClient.getConnectionPool(database1)
     await mySqlClient.query(
@@ -105,6 +157,77 @@ describe('MySQLClient', () => {
     )
     await mySqlClient.cleanup()
     const database2 = await mySqlClient.checkoutDatabase(tmpDatabase)
-    expect(database1).not.toEqual(database2)
+    expect(database1).toEqual(database2)
+  })
+
+  it('should fixup the old checkout because we added a row (data_changed)', async () => {
+    const database1 = await mySqlClient.checkoutDatabase(tmpDatabase)
+    const myPool = await mySqlClient.getConnectionPool(database1)
+    await mySqlClient.query(
+      myPool,
+      `
+        UPDATE VehicleInfo SET year='2020' WHERE id=1
+      `
+    )
+    await mySqlClient.cleanup()
+    const database2 = await mySqlClient.checkoutDatabase(tmpDatabase)
+    expect(database1).toEqual(database2)
+  })
+
+  it('should fixup the old checkout because we added a row (empty_changed)', async () => {
+    const database1 = await mySqlClient.checkoutDatabase(tmpDatabase)
+    const myPool = await mySqlClient.getConnectionPool(database1)
+    console.log(mySqlClient.getTimings())
+    await mySqlClient.query(
+      myPool,
+      `
+      INSERT INTO VehicleInfo3 (id, vin, vendor, make, name, year) VALUES (1,'ABCDEFGHIJ1234568', 'VAG', 'Audi', 'Audi Q2 Sport', 2018);
+      `
+    )
+    await mySqlClient.cleanup()
+    const database2 = await mySqlClient.checkoutDatabase(tmpDatabase)
+    expect(database1).toEqual(database2)
+  })
+
+  it('should fixup the old checkout because we added a row (removed)', async () => {
+    const database1 = await mySqlClient.checkoutDatabase(tmpDatabase)
+    const myPool = await mySqlClient.getConnectionPool(database1)
+    await mySqlClient.query(
+      myPool,
+      `
+        DROP TABLE VehicleInfo3;
+      `
+    )
+    await mySqlClient.cleanup()
+    const database2 = await mySqlClient.checkoutDatabase(tmpDatabase)
+    expect(database1).toEqual(database2)
+  })
+
+  it('should fixup the old checkout because we added a row (added)', async () => {
+    const database1 = await mySqlClient.checkoutDatabase(tmpDatabase)
+    const myPool = await mySqlClient.getConnectionPool(database1)
+    console.log(mySqlClient.getTimings())
+    await mySqlClient.query(
+      myPool,
+      `
+      CREATE TABLE AddedTable (
+        id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+        PRIMARY KEY (id)
+      )
+      ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+      COMMENT 'Added table';
+      `
+    )
+    await mySqlClient.cleanup()
+    const database2 = await mySqlClient.checkoutDatabase(tmpDatabase)
+    expect(database1).toEqual(database2)
+    console.log(mySqlClient.getTimings())
+  })
+
+  it('should only checkout a subset of tables and reuse that checkout', async () => {
+    const database1 = await mySqlClient.checkoutDatabase(tmpDatabase, ['VehicleInfo'])
+    const myPool = await mySqlClient.getConnectionPool(database1)
+    const tables = await mySqlClient.listTables(myPool)
+    expect(tables.map(t => t.name)).toContain('VehicleInfo')
   })
 })
