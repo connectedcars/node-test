@@ -114,16 +114,23 @@ export class Migrate {
     await this.initPromise
     const result: MigrationResult = {}
     const promises: Array<Promise<SchemaMigrationResult>> = []
-    for (const schemaFolder of this.schemaFolders) {
-      promises.push(this.migrateSchema(schemaFolder, until))
+    const lockConnection = await this.mysqlClient.getConnection('mysql')
+    try {
+      if (!(await this.mysqlClient.takeLock(lockConnection, 'migrate', 60))) {
+        throw new Error('Failed to take lock after 60 seconds')
+      }
+      for (const schemaFolder of this.schemaFolders) {
+        promises.push(this.migrateSchema(schemaFolder, until))
+      }
+      const migrations = await this.saveTiming('migrateAllSchema', Promise.all(promises))
+      // Populate the MigrationResult structure
+      for (const schemaFolder of this.schemaFolders) {
+        result[schemaFolder] = migrations.shift() || {}
+      }
+      return result
+    } finally {
+      await this.mysqlClient.closeConnection(lockConnection)
     }
-    const migrations = await this.saveTiming('migrateAllSchema', Promise.all(promises))
-
-    // Populate the MigrationResult structure
-    for (const schemaFolder of this.schemaFolders) {
-      result[schemaFolder] = migrations.shift() || {}
-    }
-    return result
   }
 
   public async migrateSchema(schemaFolder: string, until?: string): Promise<SchemaMigrationResult> {
@@ -163,11 +170,19 @@ export class Migrate {
     for (const database of this.databaseMap[schemaFolder]) {
       migrationPromises.push(this.migrateDatabase(database, migrations, until))
     }
-    const dbMigrations = await this.saveTiming(`applyAllMigrations(${schemaFolder})`, Promise.all(migrationPromises))
+    const dbMigrationsResults = await this.saveTiming(
+      `applyAllMigrations(${schemaFolder})`,
+      Promise.allSettled(migrationPromises)
+    )
 
     // Populate the SchemaMigrationResult structure
     for (const database of this.databaseMap[schemaFolder]) {
-      result[database] = dbMigrations.shift() || []
+      const migrationResult = dbMigrationsResults.shift()
+      if (migrationResult?.status === 'fulfilled') {
+        result[database] = migrationResult.value
+      } else if (migrationResult?.status === 'rejected') {
+        throw migrationResult.reason
+      }
     }
     return result
   }
@@ -198,23 +213,45 @@ export class Migrate {
 
     const result: Migration[] = []
     for (const migration of migrations) {
-      if (appliedMigrations.filter(v => v.timestamp === migration.timestamp && v.name === migration.name).length > 0) {
+      // Skip if the full migration has been applied
+      if (appliedMigrations.find(v => v.timestamp === migration.timestamp && v.name === migration.name)) {
         continue
       }
+
+      // https://www.mysqltutorial.org/mysql-comment/
+      // Remove comments and split migrations into different statements except if they have LOCK or TRANSACTION in them
+      const migrationStatements = migration.sql.match(/LOCK TABLES|START TRANSACTION/i)
+        ? [migration.sql]
+        : migration.sql
+            .replace(/--\n|--\s[^\n]*|#[^\n]*|\/\*[^!].*?\*\//gs, '')
+            .split(';')
+            .filter(s => !s.match(/^\s*$/s))
+
+      const connection = await this.mysqlClient.getConnectionFromPool(pool)
       try {
-        await this.mysqlClient.query(pool, migration.sql)
-        await this.mysqlClient.query(pool, 'INSERT INTO `Migrations` (`timestamp`, `name`) VALUES (?, ?)', [
-          migration.timestamp,
-          migration.name
-        ])
-        result.push(migration)
+        for (const [i, migrationStatement] of migrationStatements.entries()) {
+          const migrationStatementName = migrationStatements.length > 1 ? `${migration.name}:${i}` : migration.name
+          if (appliedMigrations.find(m => m.timestamp === migration.timestamp && m.name === migrationStatementName)) {
+            continue
+          }
+          await this.mysqlClient.query(connection, migrationStatement)
+          await this.mysqlClient.query(connection, 'INSERT INTO `Migrations` (`timestamp`, `name`) VALUES (?, ?)', [
+            migration.timestamp,
+            migrationStatementName
+          ])
+          result.push(migration)
+
+          if (until && until <= migration.timestamp) {
+            break
+          }
+        }
       } catch (e) {
         throw new Error(`Failed applying migration "${migration.path}: ${e}"`)
-      }
-      if (until && until <= migration.timestamp) {
-        break
+      } finally {
+        pool.releaseConnection(connection)
       }
     }
+
     return result
   }
 

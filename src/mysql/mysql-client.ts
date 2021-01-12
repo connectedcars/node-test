@@ -57,6 +57,10 @@ export class MySQLClient {
     })
   }
 
+  public async closeConnection(connection: mysql.Pool | mysql.Connection): Promise<void> {
+    await new Promise(resolve => connection.end(resolve))
+  }
+
   public async getConnectionPool(database: string, cache = true, options?: MySQLClientOptions): Promise<mysql.Pool> {
     let pool = cache ? this.databasePools[database] : null
     if (!pool) {
@@ -70,6 +74,17 @@ export class MySQLClient {
       }
     }
     return pool
+  }
+
+  public async getConnectionFromPool(pool: mysql.Pool): Promise<mysql.PoolConnection> {
+    return new Promise<mysql.PoolConnection>((resolve, reject) => {
+      pool.getConnection((err, connection) => {
+        if (err) {
+          return reject(err)
+        }
+        return resolve(connection)
+      })
+    })
   }
 
   public async query<T>(pool: mysql.Pool | mysql.Connection, sql: string, values?: string[]): Promise<T[]> {
@@ -91,6 +106,15 @@ export class MySQLClient {
     return null
   }
 
+  public async queryValue<T>(pool: mysql.Pool | mysql.Connection, sql: string, values?: string[]): Promise<T | null> {
+    const result = await this.query<Record<string, T>>(pool, sql, values)
+    if (result.length > 0) {
+      const keys = Object.keys(result[0])
+      return result[0][keys[0]]
+    }
+    return null
+  }
+
   public async queryArray<T>(pool: mysql.Pool | mysql.Connection, sql: string, values?: string[]): Promise<T[]> {
     const result = await this.query<{ [key: string]: T }>(pool, sql, values)
     if (result.length == 0) {
@@ -100,11 +124,11 @@ export class MySQLClient {
     return result.map(r => r[column])
   }
 
-  public async takeLock(lockConnection: mysql.Connection, name: string): Promise<boolean> {
+  public async takeLock(lockConnection: mysql.Connection, name: string, timeout = 0): Promise<boolean> {
     const res = await this.querySingle<{ lockStatus: number }>(
       lockConnection,
       `
-        SELECT GET_LOCK('${name}', 0) as lockStatus;
+        SELECT GET_LOCK('${name}', ${timeout}) as lockStatus;
       `
     )
     return res?.lockStatus === 1

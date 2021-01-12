@@ -83,11 +83,25 @@ describe('Migrate', () => {
     expect(migrationResultAfter).toMatchSnapshot()
   })
 
-  /*it.skip('should migrate data repo to newest version', async () => {
-    const migrate = new Migrate({ mysqlClient: mySqlClient, migrationsPaths: ['data/migrations'] })
+  it('should migrate until bad sql and not redo the succeeded statements', async () => {
+    // Do initial migration and without using cache
+    const initialMigrate = new Migrate({
+      mysqlClient: mySqlClient,
+      migrationsPaths: ['src/mysql/resources/bad-migrations'],
+      ignoreCache: true
+    })
+    await initialMigrate.cleanup()
+    await expect(initialMigrate.migrate()).rejects.toThrowError(/ER_PARSE_ERROR:.*BAD SQL/)
+    await expect(initialMigrate.migrate()).rejects.toThrowError(/ER_PARSE_ERROR:.*BAD SQL/)
+  })
+
+  /* it.skip('should migrate data repo to newest version', async () => {
+    const migrate = new Migrate({
+      mysqlClient: mySqlClient,
+      migrationsPaths: ['data/migrations']
+    })
     await migrate.cleanup()
     const [migrationResult, timingBefore] = await time(migrate.migrate())
     console.log(timingBefore / 1000)
-  }, 60_000)
-  */
+  }, 60_000) */
 })
