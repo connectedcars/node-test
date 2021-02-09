@@ -183,14 +183,16 @@ export class MySQLServer {
         }
       }
 
+      // Always overwrite the my.cnf to ensure it has the newest settings for the system
+      const myCnf = await getMySQLServerBaseConfig(this.mysqldPath)
+      const config = generateMySQLServerConfig(this.mysqlBaseDir, { ...myCnf, ...this.myCnfCustom })
+      await writeFileAsync(`${path.join(this.mysqlBaseDir, 'my.cnf')}`, Buffer.from(config, 'utf8'))
+
       // Initialize mysql data
       let initialized = false
       if (!fs.existsSync(`${this.mysqlBaseDir}/data`)) {
-        // Ensure permissions and generate config
+        // Ensure permissions
         await chmodAsync(this.mysqlBaseDir, '777')
-        const myCnf = await getMySQLServerBaseConfig(this.mysqldPath)
-        const config = generateMySQLServerConfig(this.mysqlBaseDir, { ...myCnf, ...this.myCnfCustom })
-        await writeFileAsync(`${path.join(this.mysqlBaseDir, 'my.cnf')}`, Buffer.from(config, 'utf8'))
 
         // Make sure /files exists as it is used for LOAD
         await mkdirAsync(path.join(this.mysqlBaseDir, '/files'), { recursive: true, mode: 0o777 })
