@@ -1,19 +1,16 @@
 import { CheckConversionError, CheckRunCompleted } from '../checks-common'
-import { Advisory, AuditData, Vulnerabilities } from './audit-types'
+import { Advisory, AuditDataV1, AuditDataV2, AuditMetadataVulnerabilities, isAuditDataV2 } from './audit-types'
 
 export interface AuditInput {
-  data: AuditData
+  data: AuditDataV1 | AuditDataV2
   sha: string
 }
 
-function getSummary(problems: Vulnerabilities, totalDependencies: number): string {
-  let summary = `Found **${problems.all}** vulnerabilities`
-  if (problems.all > 0) {
+function getSummary(problems: AuditMetadataVulnerabilities, totalDependencies: number, totalProblems: number): string {
+  let summary = `Found **${totalProblems}** vulnerabilities`
+  if (totalProblems > 0) {
     const details = []
-    for (const key in problems) {
-      if (key === 'all') {
-        continue
-      }
+    for (const key of Object.keys(problems)) {
       if (problems[key] > 0) {
         details.push(`**${problems[key]}** ${key}`)
       }
@@ -36,7 +33,7 @@ const severities: SeverityMap = {
   info: 1
 }
 
-function getText(data: AuditData): string {
+function getTextV1(data: AuditDataV1): string {
   const advisories = Object.values(data.advisories)
   advisories.sort((a: Advisory, b: Advisory) => severities[b.severity] - severities[a.severity])
   const entries: string[] = []
@@ -62,37 +59,67 @@ function getText(data: AuditData): string {
   return entries.join('\n\n')
 }
 
+function getTextV2(data: AuditDataV2): string {
+  const vulnerabilities = Object.values(data.vulnerabilities)
+  vulnerabilities.sort((a, b) => severities[b.severity] - severities[a.severity])
+  const entries: string[] = []
+  for (const advisory of vulnerabilities) {
+    const severity = advisory.severity.substr(0, 1).toUpperCase() + advisory.severity.substr(1)
+    let entry = `## ${severity}: ${advisory.name} (${advisory.range})\n`
+    const overview = advisory.via
+      .map(a =>
+        typeof a === 'string'
+          ? `* via ${a}`
+          : `* ${a.title}${a.name !== advisory.name ? ` via ${a.name}` : ''} (${a.source}: ${a.url})`
+      )
+      .join('\n')
+    entry += `${overview}`
+    entries.push(entry)
+  }
+  return entries.join('\n\n')
+}
+
 export function auditCheck({ data, sha }: AuditInput): CheckRunCompleted {
   try {
-    const problems = {
-      all: 0,
+    let totalDependencies = 0
+    let totalProblems = 0
+    let text: string | undefined
+
+    let problems: AuditMetadataVulnerabilities = {
       info: 0,
       low: 0,
       moderate: 0,
       high: 0,
-      critical: 0
+      critical: 0,
+      total: 0
     }
-    let totalDependencies = 0
-    if (data.metadata) {
-      if (data.metadata.vulnerabilities) {
-        Object.assign(problems, data.metadata.vulnerabilities)
-        problems.all = Object.values(problems).reduce((sum, val) => sum + val, 0)
+    if (isAuditDataV2(data)) {
+      problems = data.metadata.vulnerabilities
+      totalProblems = Object.values(data.metadata.vulnerabilities).reduce((sum, val) => sum + val, 0)
+      text = getTextV2(data)
+    } else {
+      if (data.metadata) {
+        if (data.metadata.vulnerabilities) {
+          problems = data.metadata.vulnerabilities
+          totalProblems = Object.values(data.metadata.vulnerabilities).reduce((sum, val) => sum + val, 0)
+        }
+        if (data.metadata.totalDependencies) {
+          totalDependencies = data.metadata.totalDependencies
+        }
       }
-      if (data.metadata.totalDependencies) {
-        totalDependencies = data.metadata.totalDependencies
-      }
+      text = getTextV1(data)
     }
 
     return {
       name: 'audit',
       head_sha: sha,
-      conclusion: problems.all === 0 ? 'success' : 'neutral',
+      conclusion: totalProblems === 0 ? 'success' : 'neutral',
       status: 'completed',
       completed_at: new Date().toISOString(),
       output: {
         title: 'npm audit security report',
-        summary: getSummary(problems, totalDependencies),
-        text: getText(data) || undefined
+        summary: getSummary(problems, totalDependencies, totalProblems),
+        text: text || undefined
       }
     }
   } catch (e) {

@@ -184,6 +184,174 @@ Update to version 4.17.5 or later.",
 }
 `;
 
+exports[`checks/audit converts failed audit v2 1`] = `
+Object {
+  "completed_at": StringMatching /\\^\\\\d\\{4\\}/,
+  "conclusion": "neutral",
+  "head_sha": "c61a4ae014360e064eb2a9f76c8a6a55d05e5b88",
+  "name": "audit",
+  "output": Object {
+    "summary": "Found **84** vulnerabilities (**30** low, **3** moderate, **7** high, **2** critical, **42** total) in 0 scanned packages",
+    "text": "## Critical: eslint-utils (1.2.0 - 1.4.0)
+* Arbitrary Code Execution (1118: https://npmjs.com/advisories/1118)
+
+## Critical: handlebars (<=4.7.3)
+* Prototype Pollution (1164: https://npmjs.com/advisories/1164)
+* Denial of Service (1300: https://npmjs.com/advisories/1300)
+* Arbitrary Code Execution (1316: https://npmjs.com/advisories/1316)
+* Arbitrary Code Execution (1324: https://npmjs.com/advisories/1324)
+* Prototype Pollution (755: https://npmjs.com/advisories/755)
+* via optimist
+
+## High: axios (<=0.21.0)
+* Server-Side Request Forgery (1594: https://npmjs.com/advisories/1594)
+* Denial of Service (880: https://npmjs.com/advisories/880)
+
+## High: js-yaml (<=3.13.0)
+* Denial of Service (788: https://npmjs.com/advisories/788)
+* Code Injection (813: https://npmjs.com/advisories/813)
+
+## High: lodash (<=4.17.18)
+* Prototype Pollution (1065: https://npmjs.com/advisories/1065)
+* Prototype Pollution (1523: https://npmjs.com/advisories/1523)
+* Prototype Pollution (782: https://npmjs.com/advisories/782)
+
+## High: mixin-deep (<=1.3.1 || 2.0.0)
+* Prototype Pollution (1013: https://npmjs.com/advisories/1013)
+
+## High: set-value (<=2.0.0 || 3.0.0)
+* Prototype Pollution (1012: https://npmjs.com/advisories/1012)
+
+## High: tar (<2.2.2 || >=3.0.0 <4.4.2)
+* Arbitrary File Overwrite (803: https://npmjs.com/advisories/803)
+
+## High: union-value (<=1.0.0 || 2.0.0)
+* via set-value
+
+## Moderate: acorn (5.5.0 - 5.7.3 || 6.0.0 - 6.4.0 || 7.0.0 - 7.1.0)
+* Regular Expression Denial of Service (1488: https://npmjs.com/advisories/1488)
+
+## Moderate: just-extend (<4.0.0)
+* Prototype Pollution (780: https://npmjs.com/advisories/780)
+
+## Moderate: nise (1.0.1 - 1.4.7)
+* via just-extend
+
+## Low: babel-jest (14.2.0-alpha.ca8bfb6e - 24.0.0-alpha.16)
+* via babel-plugin-istanbul
+
+## Low: babel-plugin-istanbul (<=5.0.0)
+* via test-exclude
+
+## Low: braces (<2.3.1)
+* Regular Expression Denial of Service (786: https://npmjs.com/advisories/786)
+
+## Low: expect (21.0.0-beta.1 - 22.4.3 || 23.4.0 - 23.6.0)
+* via jest-message-util
+
+## Low: ini (<1.3.6)
+* Prototype Pollution (1589: https://npmjs.com/advisories/1589)
+
+## Low: jest (18.5.0-alpha.7da3df39 - 22.4.4 || 23.4.0 - 23.6.0)
+* via jest-cli
+
+## Low: jest-cli (12.1.1-alpha.2935e14d || 12.1.2-alpha.6230044c - 24.8.0)
+* via jest-config
+* via jest-message-util
+* via jest-runner
+* via jest-runtime
+* via jest-snapshot
+* via micromatch
+* via yargs
+
+## Low: jest-config (18.5.0-alpha.7da3df39 - 24.0.0-alpha.16)
+* via babel-jest
+* via jest-jasmine2
+* via jest-util
+* via micromatch
+
+## Low: jest-environment-jsdom (18.5.0-alpha.7da3df39 - 22.4.3 || 23.4.0)
+* via jest-util
+
+## Low: jest-environment-node (18.5.0-alpha.7da3df39 - 22.4.3 || 23.4.0)
+* via jest-util
+
+## Low: jest-haste-map (18.1.0 - 23.1.0 || 23.4.0 - 24.0.0-alpha.16)
+* via micromatch
+
+## Low: jest-jasmine2 (18.5.0-alpha.7da3df39 - 22.4.4 || 23.4.0 - 23.6.0)
+* via expect
+* via jest-message-util
+* via jest-snapshot
+* via jest-util
+
+## Low: jest-message-util (18.5.0-alpha.7da3df39 - 23.1.0 || 23.4.0 - 24.0.0-alpha.16)
+* via micromatch
+
+## Low: jest-resolve-dependencies (23.4.0 - 23.6.0)
+* via jest-snapshot
+
+## Low: jest-runner (21.0.0-alpha.1 - 22.4.4 || 23.4.0 - 23.6.0)
+* via jest-config
+* via jest-runtime
+
+## Low: jest-runtime (12.1.1-alpha.2935e14d - 24.8.0)
+* via babel-plugin-istanbul
+* via jest-config
+* via jest-haste-map
+* via jest-message-util
+* via jest-util
+* via micromatch
+* via yargs
+
+## Low: jest-snapshot (23.4.0 - 23.6.0)
+* via jest-message-util
+
+## Low: jest-util (18.5.0-alpha.7da3df39 - 22.4.3 || 23.4.0)
+* via jest-message-util
+
+## Low: kind-of (6.0.0 - 6.0.2)
+* Validation Bypass (1490: https://npmjs.com/advisories/1490)
+
+## Low: knex (0.6.8 - 0.16.3)
+* via minimist
+
+## Low: mem (<4.0.0)
+* Denial of Service (1084: https://npmjs.com/advisories/1084)
+
+## Low: micromatch (0.2.0 - 2.3.11)
+* via braces
+
+## Low: minimist (<0.2.1 || >=1.0.0 <1.2.3)
+* Prototype Pollution (1179: https://npmjs.com/advisories/1179)
+
+## Low: mkdirp (0.4.1 - 0.5.1)
+* via minimist
+
+## Low: optimist (>=0.6.0)
+* via minimist
+
+## Low: os-locale (2.0.0 - 3.0.0)
+* via mem
+
+## Low: test-exclude (<=4.2.3)
+* via micromatch
+
+## Low: ts-jest (23.10.0-beta.1 - 25.2.1)
+* via yargs-parser
+
+## Low: yargs (4.0.0-alpha1 - 12.0.5 || 14.1.0 || 15.0.0 - 15.2.0)
+* via os-locale
+* via yargs-parser
+
+## Low: yargs-parser (<=13.1.1 || 14.0.0 - 15.0.0 || 16.0.0 - 18.1.1)
+* Prototype Pollution (1500: https://npmjs.com/advisories/1500)",
+    "title": "npm audit security report",
+  },
+  "status": "completed",
+}
+`;
+
 exports[`checks/audit converts successful audit 1`] = `
 Object {
   "completed_at": StringMatching /\\^\\\\d\\{4\\}/,
@@ -192,6 +360,21 @@ Object {
   "name": "audit",
   "output": Object {
     "summary": "Found **0** vulnerabilities in 4982 scanned packages",
+    "text": undefined,
+    "title": "npm audit security report",
+  },
+  "status": "completed",
+}
+`;
+
+exports[`checks/audit converts successful audit v2 1`] = `
+Object {
+  "completed_at": StringMatching /\\^\\\\d\\{4\\}/,
+  "conclusion": "success",
+  "head_sha": "c61a4ae014360e064eb2a9f76c8a6a55d05e5b88",
+  "name": "audit",
+  "output": Object {
+    "summary": "Found **0** vulnerabilities in 0 scanned packages",
     "text": undefined,
     "title": "npm audit security report",
   },
