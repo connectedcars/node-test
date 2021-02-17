@@ -178,7 +178,7 @@ async function lookupConvertFunction(
         return null
       }
       return async () => {
-        const output = await runMocha()
+        const output = await runMocha(args)
         return mochaCheck({
           data: output,
           sha: commitSha
