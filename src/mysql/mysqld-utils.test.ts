@@ -1,10 +1,5 @@
 import { CommandEmulation, createTempDirectory } from '../unix'
-import {
-  generateMySQLServerConfig,
-  getMySQLServerDefaults,
-  getMySQLServerVersionString,
-  startMySQLd
-} from './mysqld-utils'
+import { generateMySQLServerConfig, getMySQLServerDefaults, getMySQLVersionString, startMySQLd } from './mysqld-utils'
 import { mysqlHelpVerboseText } from './resources/mysqld-help-verbose.text'
 import { mysqlStartText } from './resources/mysqld-start.text'
 
@@ -32,7 +27,7 @@ describe('mysql common', () => {
       await commandEmulation.registerCommand('mysqld', () => {
         console.log('/usr/local/Cellar/mysql/8.0.17_1/bin/mysqld  Ver 8.0.17 for osx10.14 on x86_64 (Homebrew)')
       })
-      const versionStringPromise = getMySQLServerVersionString('mysqld')
+      const versionStringPromise = getMySQLVersionString('mysqld')
       await expect(versionStringPromise).resolves.toEqual(
         '/usr/local/Cellar/mysql/8.0.17_1/bin/mysqld  Ver 8.0.17 for osx10.14 on x86_64 (Homebrew)'
       )
@@ -42,7 +37,7 @@ describe('mysql common', () => {
       await commandEmulation.registerCommand('mysqld', () => {
         process.exit(1)
       })
-      const versionStringPromise = getMySQLServerVersionString('mysqld')
+      const versionStringPromise = getMySQLVersionString('mysqld')
       await expect(versionStringPromise).rejects.toEqual(new Error('mysqld --version returned non 0 exit code:\n'))
     })
   })
