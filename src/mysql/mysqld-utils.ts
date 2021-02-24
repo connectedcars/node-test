@@ -15,8 +15,8 @@ export interface MySQLServerConfig {
   [key: string]: { [key: string]: string }
 }
 
-export async function getMySQLServerVersionString(mysqldPath: string): Promise<string> {
-  const cmd = new RunProcess(mysqldPath, ['--version'])
+export async function getMySQLVersionString(mysqltool: string): Promise<string> {
+  const cmd = new RunProcess(mysqltool, ['--version'])
   const outputData: Buffer[] = []
   cmd.stdout?.on('data', chunk => {
     outputData.push(chunk)
@@ -27,7 +27,7 @@ export async function getMySQLServerVersionString(mysqldPath: string): Promise<s
   const { code } = await cmd.waitForExit()
   const stdout = Buffer.concat(outputData).toString('utf8')
   if (code !== 0) {
-    throw new Error(`${mysqldPath} --version returned non 0 exit code:\n${stdout}`)
+    throw new Error(`${mysqltool} --version returned non 0 exit code:\n${stdout}`)
   }
   return stdout.replace(/\r?\n$/, '')
 }
@@ -217,8 +217,10 @@ export async function dumpDatabase(port: number, databases: string[], dumpFile: 
   const randomStr = Math.random().toString(16).substring(2, 6)
   const dumpFileTmp = `${dumpFile}$.tmp${randomStr}`
 
+  const version = await getMySQLVersionString('mysqldump')
   const cmd = new RunProcess('mysqldump', [
-    '--column-statistics=0',
+    // Workaround for this: https://stackoverflow.com/questions/51614140/how-to-disable-column-statistics-in-mysql-8-permanently
+    ...(version.match(/8\.\d+\.\d+/) ? ['--column-statistics=0'] : []),
     '--host=127.0.0.1',
     `--port=${port}`,
     '--user=root',

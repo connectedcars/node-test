@@ -27,7 +27,7 @@ import {
   extractMySQLDataCache,
   generateMySQLServerConfig,
   getMySQLServerBaseConfig,
-  getMySQLServerVersionString,
+  getMySQLVersionString,
   initializeMySQLData,
   MySQLServerConfig,
   readPortFile,
@@ -138,7 +138,7 @@ export class MySQLServer {
     }
 
     // Generate unique cache key based on mysql version
-    const mysqlVersion = await getMySQLServerVersionString(this.mysqldPath)
+    const mysqlVersion = await getMySQLVersionString(this.mysqldPath)
     const hash = crypto.createHash('sha1')
     const cacheCheckSum = hash.update(mysqlVersion).digest('hex') // TODO: Also add calculation for myCnf
     this.cleanInitializeDataTarGz = path.resolve(
