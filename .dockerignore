@@ -4,3 +4,4 @@
 /.git
 /mysql-context
 /cache
+Dockerfile

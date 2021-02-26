@@ -38,8 +38,8 @@ export const eslintCheck = ({ data, sha }: EslintInput): CheckRunCompleted => {
         if (message.message === 'File ignored because of a matching ignore pattern. Use "--no-ignore" to override.') {
           continue outer
         }
-        const match = file.filePath.match(/^.*\/(src\/.+)$/)
-        const relPath = match && match.length === 2 ? match[1] : ''
+        const match = file.filePath.match(/^.*\/((?:src|bin)\/.+)$/)
+        const relPath = match && match.length === 2 ? match[1] : '.eslintrc'
         // Determine severity of message
         let annotation_level: CheckAnnotationLevel = 'notice'
         switch (message.severity) {
@@ -78,7 +78,8 @@ export const eslintCheck = ({ data, sha }: EslintInput): CheckRunCompleted => {
       output: {
         title: summary,
         summary,
-        annotations
+        // Limit to 50 annotations as this is the max per post for github
+        annotations: annotations.slice(0, 50)
       }
     }
 
