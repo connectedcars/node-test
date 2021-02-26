@@ -103,8 +103,9 @@ export const jestCheck = ({ data, sha, name = 'jest' }: JestInput): CheckRunComp
         })
         .filter(r => !['passed'].includes(r.status))
         .map<CheckAnnotation>(result => {
-          const match = result.file.match(/^.*\/(src\/.+)$/)
-          const relPath = match && match.length === 2 ? match[1] : ''
+          const match = result.file.match(/^.*\/((?:src|bin)\/.+)$/)
+          // Path needs to be set so default to a file we know exists
+          const relPath = match && match.length === 2 ? match[1] : 'jest.config.js'
 
           let annotation_level: CheckAnnotationLevel
           switch (result.status) {
