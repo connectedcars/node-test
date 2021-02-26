@@ -112,11 +112,6 @@ export async function getMySQLServerBaseConfig(mysqldPath: string): Promise<MySQ
   return myCnf
 }
 
-// TOOD: Look at optimizations
-// https://dev.mysql.com/doc/refman/5.7/en/innodb-parameters.html#sysvar_innodb_flush_log_at_trx_commit
-// https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_flush_method
-// https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_fsync_threshold
-
 export function generateMySQLServerConfig(
   mysqlBaseDir: string,
   myCnfCustom: MySQLServerConfig = {},
@@ -131,7 +126,14 @@ export function generateMySQLServerConfig(
       datadir: `${mysqlBaseDir}/data`,
       secure_file_priv: `${mysqlBaseDir}/files`,
       tmpdir,
-      max_allowed_packet: '256M'
+      max_allowed_packet: '256M',
+      // Disable some safety to get some more speed
+      innodb_flush_method: 'nosync',
+      innodb_flush_log_at_trx_commit: '2',
+      innodb_io_capacity: '1000',
+      // Set a default charset that is supported by both
+      'character-set-server': 'utf8mb4',
+      'collation-server': 'utf8mb4_general_ci'
     },
     'mysqld-8.0': {
       mysqlx: '0'

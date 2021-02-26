@@ -9,6 +9,11 @@ datadir=/tmp/test/data
 secure_file_priv=/tmp/test/files
 tmpdir=/tmp
 max_allowed_packet=256M
+innodb_flush_method=nosync
+innodb_flush_log_at_trx_commit=2
+innodb_io_capacity=1000
+character-set-server=utf8mb4
+collation-server=utf8mb4_general_ci
 [mysqld-8.0]
 mysqlx=0
 "
@@ -23,6 +28,11 @@ datadir=/tmp/test/data
 secure_file_priv=/tmp/test/files
 tmpdir=/tmp
 max_allowed_packet=256M
+innodb_flush_method=nosync
+innodb_flush_log_at_trx_commit=2
+innodb_io_capacity=1000
+character-set-server=utf8mb4
+collation-server=utf8mb4_general_ci
 user=mysql
 [mysqld-8.0]
 mysqlx=0
