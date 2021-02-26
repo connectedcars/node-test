@@ -3,7 +3,7 @@ import { jestFailedOutput, jestPassedOutput, jestSkippedOutput } from './resourc
 
 describe('checks/jest', () => {
   it('processes passing jest output to checks structure', () => {
-    const output = jestCheck({ data: jestPassedOutput , sha: '1234567890' })
+    const output = jestCheck({ data: jestPassedOutput, sha: '1234567890' })
     const expected = {
       name: 'jest',
       head_sha: '1234567890',

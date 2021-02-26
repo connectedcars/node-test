@@ -140,6 +140,8 @@ export const jestCheck = ({ data, sha, name = 'jest' }: JestInput): CheckRunComp
           }
           return annotation
         })
+        // Limit to 50 annotations as this is the max per post for github
+        .slice(0, 50)
 
       result.output.summary = `${data.numPassedTests} of ${data.numTotalTests} tests passed!`
       // note: check numTotalTestSuites for count?

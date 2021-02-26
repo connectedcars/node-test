@@ -78,7 +78,8 @@ export const eslintCheck = ({ data, sha }: EslintInput): CheckRunCompleted => {
       output: {
         title: summary,
         summary,
-        annotations
+        // Limit to 50 annotations as this is the max per post for github
+        annotations: annotations.slice(0, 50)
       }
     }
 
