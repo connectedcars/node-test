@@ -112,6 +112,11 @@ export async function getMySQLServerBaseConfig(mysqldPath: string): Promise<MySQ
   return myCnf
 }
 
+// TOOD: Look at optimizations
+// https://dev.mysql.com/doc/refman/5.7/en/innodb-parameters.html#sysvar_innodb_flush_log_at_trx_commit
+// https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_flush_method
+// https://dev.mysql.com/doc/refman/8.0/en/innodb-parameters.html#sysvar_innodb_fsync_threshold
+
 export function generateMySQLServerConfig(
   mysqlBaseDir: string,
   myCnfCustom: MySQLServerConfig = {},
