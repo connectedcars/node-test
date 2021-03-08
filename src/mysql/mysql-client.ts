@@ -193,6 +193,7 @@ export class MySQLClient {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async checkoutDatabase(database: string, tables: string[] = []): Promise<string> {
     // TODO: Look into reusing the copied database with "SELECT TABLE_NAME, UPDATE_TIME FROM information_schema.tables; as this could be quicker"
+    // TODO: Look into using innodb-table for copying the tables: https://dev.mysql.com/doc/refman/8.0/en/innodb-table-import.html
 
     let pool: mysql.Pool | null = null
     try {
