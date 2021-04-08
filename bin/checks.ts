@@ -4,6 +4,10 @@ import fs from 'fs'
 import util from 'util'
 import yargs from 'yargs'
 
+import { cargoClippyCheck } from '../src/checks/cargo/cargo-clippy'
+import { cargoTestCheck } from '../src/checks/cargo/cargo-test'
+import { runCargoClippy } from '../src/checks/cargo/run-cargo-clippy'
+import { runCargoTest } from '../src/checks/cargo/run-cargo-test'
 import { CheckConversionError, CheckRunCompleted, printSummary } from '../src/checks/checks-common'
 import { eslintCheck } from '../src/checks/eslint/eslint'
 import { runEslint } from '../src/checks/eslint/run-eslint'
@@ -51,6 +55,8 @@ async function main(argv: string[]) {
     .command('mocha', 'Runs Mocha with CI output')
     .command('audit', 'Runs audit with CI output')
     .command('tsc', 'Runs tsc with CI output')
+    .command('cargo-clippy', 'Runs cargo clippy with CI output')
+    .command('cargo-test', 'Runs cargo test with CI output')
     .command('auto', 'Runs all relevant checks')
     .strict()
     .help()
@@ -61,7 +67,10 @@ async function main(argv: string[]) {
   const startedAt = new Date().toISOString()
 
   let failure = false
-  const commands = command === 'auto' ? ['jest', 'eslint', 'jest-cra', 'mocha', 'audit', 'tsc'] : [command]
+  const commands =
+    command === 'auto'
+      ? ['jest', 'eslint', 'jest-cra', 'mocha', 'audit', 'tsc', 'cargo-clippy', 'cargo-test']
+      : [command]
   for (const cmd of commands) {
     try {
       const convertFunction = await lookupConvertFunction(cmd, args, COMMIT_SHA, command === 'auto')
@@ -204,6 +213,30 @@ async function lookupConvertFunction(
       return async () => {
         const output = await runTsc()
         return tscCheck({
+          data: output,
+          sha: commitSha
+        })
+      }
+    }
+    case 'cargo-clippy': {
+      if (detect && !(await isFileReadable('Cargo.toml'))) {
+        return null
+      }
+      return async () => {
+        const output = await runCargoClippy()
+        return cargoClippyCheck({
+          data: output,
+          sha: commitSha
+        })
+      }
+    }
+    case 'cargo-test': {
+      if (detect && !(await isFileReadable('Cargo.toml'))) {
+        return null
+      }
+      return async () => {
+        const output = await runCargoTest()
+        return cargoTestCheck({
           data: output,
           sha: commitSha
         })
