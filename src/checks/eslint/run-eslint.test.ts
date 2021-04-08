@@ -19,7 +19,7 @@ describe('run-eslint', () => {
 
   it('should start a eslint process and wait for exit', async () => {
     await commandEmulation.registerCommand(
-      'cargo',
+      'eslint',
       data => {
         process.stdout.end(JSON.stringify(data))
         process.stdout.on('finish', () => {
