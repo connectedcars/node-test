@@ -1,8 +1,8 @@
 import { CommandEmulation, RunProcess } from '../..'
-import { eslintSuccessfulOutput } from './resources/eslint-help-text'
-import { runEslint } from './run-eslint'
+import { cargoClippyFailedOutput } from './resources/cargo-clippy-text'
+import { runCargoClippy } from './run-cargo-clippy'
 
-describe('run-eslint', () => {
+describe('run-cargo-clippy', () => {
   const commandEmulation = new CommandEmulation()
 
   afterAll(async () => {
@@ -27,9 +27,9 @@ describe('run-eslint', () => {
         })
       },
       null,
-      eslintSuccessfulOutput
+      cargoClippyFailedOutput as any
     )
-    const jestJson = await runEslint()
-    expect(jestJson).toEqual(eslintSuccessfulOutput)
+    const cargoJson = await runCargoClippy()
+    expect(cargoJson).toEqual(cargoClippyFailedOutput)
   })
 })
