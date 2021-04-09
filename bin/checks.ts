@@ -5,8 +5,10 @@ import util from 'util'
 import yargs from 'yargs'
 
 import { cargoClippyCheck } from '../src/checks/cargo/cargo-clippy'
+import { cargoFmtCheck } from '../src/checks/cargo/cargo-fmt'
 import { cargoTestCheck } from '../src/checks/cargo/cargo-test'
 import { runCargoClippy } from '../src/checks/cargo/run-cargo-clippy'
+import { runCargoFmt } from '../src/checks/cargo/run-cargo-fmt'
 import { runCargoTest } from '../src/checks/cargo/run-cargo-test'
 import { CheckConversionError, CheckRunCompleted, printSummary } from '../src/checks/checks-common'
 import { eslintCheck } from '../src/checks/eslint/eslint'
@@ -57,6 +59,7 @@ async function main(argv: string[]) {
     .command('tsc', 'Runs tsc with CI output')
     .command('cargo-clippy', 'Runs cargo clippy with CI output')
     .command('cargo-test', 'Runs cargo test with CI output')
+    .command('cargo-fmt', 'Runs cargo fmt with CI output')
     .command('auto', 'Runs all relevant checks')
     .strict()
     .help()
@@ -237,6 +240,18 @@ async function lookupConvertFunction(
       return async () => {
         const output = await runCargoTest()
         return cargoTestCheck({
+          data: output,
+          sha: commitSha
+        })
+      }
+    }
+    case 'cargo-fmt': {
+      if (detect && !(await isFileReadable('Cargo.toml'))) {
+        return null
+      }
+      return async () => {
+        const output = await runCargoFmt()
+        return cargoFmtCheck({
           data: output,
           sha: commitSha
         })
