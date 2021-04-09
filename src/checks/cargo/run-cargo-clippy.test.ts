@@ -1,4 +1,5 @@
 import { CommandEmulation, RunProcess } from '../..'
+import { CargoMessage } from './cargo-types'
 import { cargoClippyFailedOutput } from './resources/cargo-clippy-text'
 import { runCargoClippy } from './run-cargo-clippy'
 
@@ -17,11 +18,20 @@ describe('run-cargo-clippy', () => {
     }
   })
 
-  it('should start a eslint process and wait for exit', async () => {
+  it('should start a cargo process and wait for exit', async () => {
     await commandEmulation.registerCommand(
       'cargo',
       data => {
-        process.stdout.end(JSON.stringify(data))
+        // Cargo emits message as individual json objects line-by-line,
+        // so a single `process.stdout.end(JSON.stringify(data))` will not
+        // suffice, as it would wrap it all in an array.
+        const msgs = (data as any[]) as CargoMessage[]
+        msgs.forEach(msg => {
+          process.stdout.write(JSON.stringify(msg))
+          process.stdout.write('\n')
+        })
+        process.stdout.end()
+
         process.stdout.on('finish', () => {
           process.exit(0)
         })
