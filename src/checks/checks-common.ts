@@ -73,11 +73,17 @@ export interface CheckRunCompleted {
 
 export type CheckRun = CheckRunStarted | CheckRunCompleted
 
-export async function runJsonCommand<T = Json>(
+export interface CommandOutput {
+  exitInfo: ExitInformation
+  stdout: string
+  stderr: string
+}
+
+export async function runCommand(
   command: string,
   args: string[],
   options?: ConstructorParameters<typeof RunProcess>[2]
-): Promise<[ExitInformation, T]> {
+): Promise<CommandOutput> {
   const cmd = new RunProcess(command, args, options)
   const stdoutChunks: Buffer[] = []
   cmd.stdout?.on('data', chunk => {
@@ -91,8 +97,36 @@ export async function runJsonCommand<T = Json>(
   const exitInfo = await cmd.waitForExit()
   const stdout = Buffer.concat(stdoutChunks).toString('utf8')
   const stderr = Buffer.concat(stdoutChunks).toString('utf8')
+  return { exitInfo, stdout, stderr }
+}
+
+export async function runJsonCommand<T = Json>(
+  command: string,
+  args: string[],
+  options?: ConstructorParameters<typeof RunProcess>[2]
+): Promise<[ExitInformation, T]> {
+  const { exitInfo, stdout, stderr } = await runCommand(command, args, options)
   try {
     return [exitInfo, JSON.parse(stdout)]
+  } catch (e) {
+    throw new CommandJSONConversionError(command, args, stdout, stderr, e)
+  }
+}
+
+export async function runJsonLinesCommand<T = Json>(
+  command: string,
+  args: string[],
+  options?: ConstructorParameters<typeof RunProcess>[2]
+): Promise<[ExitInformation, T[]]> {
+  const { exitInfo, stdout, stderr } = await runCommand(command, args, options)
+  try {
+    // Trimming whitespace from the ends, as otherwise an empty line
+    // would result in `Unexpected end of JSON input`
+    const blobs = stdout
+      .trim()
+      .split('\n')
+      .map(line => JSON.parse(line))
+    return [exitInfo, blobs]
   } catch (e) {
     throw new CommandJSONConversionError(command, args, stdout, stderr, e)
   }
