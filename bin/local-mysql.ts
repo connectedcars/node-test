@@ -46,7 +46,11 @@ async function main(argv: string[]): Promise<number> {
 
   const mysqldPath = flags.mysqld || process.env['MYSQLD']
 
-  const mySqlServer = new MySQLServer({ mysqlBaseDir: flags.mysqlBaseDir, mysqldPath })
+  const mySqlServer = new MySQLServer({
+    mysqlBaseDir: flags.mysqlBaseDir,
+    mysqldPath,
+    listenPort: process.env.MYSQL_PORT ? Number(process.env.MYSQL_PORT) : undefined
+  })
   const mysqlBaseDir = await mySqlServer.getMysqlBaseDir()
   console.log(
     `MySQLd started in ${mysqlBaseDir} (${await mySqlServer.getInitStatus()}) listening on port ${await mySqlServer.getListenPort()}`
