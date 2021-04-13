@@ -15,7 +15,7 @@ export function getCompilerAnnotations(item: CargoCompilerMessage): CheckAnnotat
     end_line: span ? span.line_end : 0,
     annotation_level: 'failure',
     message: message.message,
-    raw_details: ''
+    raw_details: JSON.stringify(message, null, '    ')
   })
 
   return annotations

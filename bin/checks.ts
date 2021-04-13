@@ -70,10 +70,19 @@ async function main(argv: string[]) {
   const startedAt = new Date().toISOString()
 
   let failure = false
-  const commands =
-    command === 'auto'
-      ? ['jest', 'eslint', 'jest-cra', 'mocha', 'audit', 'tsc', 'cargo-clippy', 'cargo-test']
-      : [command]
+
+  const ALL_COMMANDS = [
+    'jest',
+    'eslint',
+    'jest-cra',
+    'mocha',
+    'audit',
+    'tsc',
+    'cargo-clippy',
+    'cargo-test',
+    'cargo-fmt'
+  ]
+  const commands = command === 'auto' ? ALL_COMMANDS : [command]
   for (const cmd of commands) {
     try {
       const convertFunction = await lookupConvertFunction(cmd, args, COMMIT_SHA, command === 'auto')

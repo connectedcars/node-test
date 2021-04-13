@@ -72,3 +72,17 @@ export interface DiagnosticSpan {
     }
   ]
 }
+
+export interface CargoFmtFile {
+  name: string
+  mismatches: CargoFmtMismatch[]
+}
+
+export interface CargoFmtMismatch {
+  original_begin_line: number
+  original_end_line: number
+  expected_begin_line: number
+  expected_end_line: number
+  original: string
+  expected: string
+}

@@ -47,7 +47,7 @@ export function cargoClippyCheck({ data, sha }: CargoClippyInput): CheckRunCompl
     }
 
     if (annotations.length > 0) {
-      const summary = `Total of ${annotations.length} errors`
+      const summary = `Total of ${annotations.length} ${annotations.length === 1 ? 'issue' : 'issues'}`
       return {
         name: 'cargo clippy',
         head_sha: sha,
@@ -79,8 +79,8 @@ export function cargoClippyCheck({ data, sha }: CargoClippyInput): CheckRunCompl
       status: 'completed',
       completed_at: new Date().toISOString(),
       output: {
-        title: 'Found no errors',
-        summary: 'Found no errors',
+        title: 'Found no issues',
+        summary: 'Found no issues',
         annotations: []
       }
     }
