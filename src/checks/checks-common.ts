@@ -96,7 +96,7 @@ export async function runCommand(
   await cmd.waitForStarted()
   const exitInfo = await cmd.waitForExit()
   const stdout = Buffer.concat(stdoutChunks).toString('utf8')
-  const stderr = Buffer.concat(stdoutChunks).toString('utf8')
+  const stderr = Buffer.concat(stderrChunks).toString('utf8')
   return { exitInfo, stdout, stderr }
 }
 
