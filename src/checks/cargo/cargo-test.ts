@@ -25,7 +25,7 @@ function getTestAnnotations(item: CargoTestMessage): CheckAnnotation[] {
       end_line: 0,
       annotation_level: 'failure',
       message: item.name,
-      raw_details: ''
+      raw_details: JSON.stringify(item, null, '    ')
     }
   ]
 }
@@ -46,8 +46,7 @@ export function cargoTestCheck({ data, sha }: CargoTestInput): CheckRunCompleted
   if (Array.isArray(data)) {
     const annotations = getAnnotations(data)
     if (annotations.length > 0) {
-      const summary = `Total of ${annotations.length} errors`
-
+      const summary = `Total of ${annotations.length} ${annotations.length === 1 ? 'issue' : 'issues'}`
       return {
         name: 'cargo test',
         head_sha: sha,
