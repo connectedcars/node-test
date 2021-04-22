@@ -66,13 +66,13 @@ export function cargoClippyCheck({ data, sha }: CargoClippyInput): CheckRunCompl
           text: [
             '## Results',
             '',
-            '| Message level           | Amount                |',
-            '| ----------------------- | --------------------- |',
-            `| Internal compiler error | ${stats.ice}     |`,
-            `| Error                   | ${stats.error}   |`,
-            `| Warning                 | ${stats.warning} |`,
-            `| Note                    | ${stats.note}    |`,
-            `| Help                    | ${stats.help}    |`
+            '| Message level           | Amount |',
+            '| ----------------------- | ------ |',
+            '| Internal compiler error | ' + `${stats.ice}`.padStart(6) + ' |',
+            '| Error                   | ' + `${stats.error}`.padStart(6) + ' |',
+            '| Warning                 | ' + `${stats.warning}`.padStart(6) + ' |',
+            '| Note                    | ' + `${stats.note}`.padStart(6) + ' |',
+            '| Help                    | ' + `${stats.help}`.padStart(6) + ' |'
           ].join('\n'),
           annotations
         }
