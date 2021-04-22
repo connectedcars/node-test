@@ -4,9 +4,12 @@ import fs from 'fs'
 import util from 'util'
 import yargs from 'yargs'
 
+import { cargoHasBuildFinished } from '../src/checks/cargo/cargo'
+import { cargoCheckCheck } from '../src/checks/cargo/cargo-check'
 import { cargoClippyCheck } from '../src/checks/cargo/cargo-clippy'
 import { cargoFmtCheck } from '../src/checks/cargo/cargo-fmt'
 import { cargoTestCheck } from '../src/checks/cargo/cargo-test'
+import { runCargoCheck } from '../src/checks/cargo/run-cargo-check'
 import { runCargoClippy } from '../src/checks/cargo/run-cargo-clippy'
 import { runCargoFmt } from '../src/checks/cargo/run-cargo-fmt'
 import { runCargoTest } from '../src/checks/cargo/run-cargo-test'
@@ -57,9 +60,11 @@ async function main(argv: string[]) {
     .command('mocha', 'Runs Mocha with CI output')
     .command('audit', 'Runs audit with CI output')
     .command('tsc', 'Runs tsc with CI output')
+    .command('cargo-check', 'Runs cargo check with CI output')
     .command('cargo-clippy', 'Runs cargo clippy with CI output')
     .command('cargo-test', 'Runs cargo test with CI output')
     .command('cargo-fmt', 'Runs cargo fmt with CI output')
+    .command('cargo-all', 'Runs all cargo checks with CI output')
     .command('auto', 'Runs all relevant checks')
     .strict()
     .help()
@@ -69,21 +74,41 @@ async function main(argv: string[]) {
 
   const startedAt = new Date().toISOString()
 
-  let failure = false
+  const ALL_CARGO_COMMANDS = ['cargo-check', 'cargo-clippy', 'cargo-test', 'cargo-fmt']
+  const ALL_COMMANDS = ['jest', 'eslint', 'jest-cra', 'mocha', 'audit', 'tsc', ...ALL_CARGO_COMMANDS]
 
-  const ALL_COMMANDS = [
-    'jest',
-    'eslint',
-    'jest-cra',
-    'mocha',
-    'audit',
-    'tsc',
-    'cargo-clippy',
-    'cargo-test',
-    'cargo-fmt'
-  ]
-  const commands = command === 'auto' ? ALL_COMMANDS : [command]
+  let commands
+  if (command == 'auto') {
+    commands = ALL_COMMANDS
+  } else if (command == 'cargo-all') {
+    commands = ALL_CARGO_COMMANDS
+  } else {
+    commands = [command]
+  }
+
+  let failure = false
+  let skipRemainingChecks = false
   for (const cmd of commands) {
+    if (skipRemainingChecks) {
+      const summary = `Skipping ${cmd}`
+      printSummary(
+        {
+          name: cmd,
+          head_sha: COMMIT_SHA,
+          status: 'completed',
+          conclusion: 'skipped',
+          completed_at: new Date().toISOString(),
+          started_at: startedAt,
+          output: {
+            title: summary,
+            summary
+          }
+        },
+        flags.ci
+      )
+      continue
+    }
+
     try {
       const convertFunction = await lookupConvertFunction(cmd, args, COMMIT_SHA, command === 'auto')
       if (convertFunction === null) {
@@ -99,7 +124,9 @@ async function main(argv: string[]) {
         flags.ci
       )
 
-      const checkOutput = await convertFunction()
+      const [skipRest, checkOutput] = await convertFunction()
+      skipRemainingChecks ||= skipRest
+
       printSummary({ ...checkOutput, started_at: startedAt }, flags.ci)
       if (
         flags.hardFail &&
@@ -153,7 +180,7 @@ async function lookupConvertFunction(
   args: string[],
   commitSha: string,
   detect = false
-): Promise<(() => Promise<CheckRunCompleted>) | null> {
+): Promise<(() => Promise<[boolean, CheckRunCompleted]>) | null> {
   switch (command) {
     case 'jest': {
       if (detect && !(await isFileReadable('jest.config.js'))) {
@@ -161,10 +188,13 @@ async function lookupConvertFunction(
       }
       return async () => {
         const output = await runJest('jest', args)
-        return jestCheck({
-          data: output,
-          sha: commitSha
-        })
+        return [
+          false,
+          jestCheck({
+            data: output,
+            sha: commitSha
+          })
+        ]
       }
     }
     case 'eslint': {
@@ -173,10 +203,13 @@ async function lookupConvertFunction(
       }
       return async () => {
         const output = await runEslint(args)
-        return eslintCheck({
-          data: output,
-          sha: commitSha
-        })
+        return [
+          false,
+          eslintCheck({
+            data: output,
+            sha: commitSha
+          })
+        ]
       }
     }
     case 'jest-cra': {
@@ -186,11 +219,14 @@ async function lookupConvertFunction(
       }
       return async () => {
         const output = await runReactScriptsTest()
-        return jestCheck({
-          data: output,
-          sha: commitSha,
-          name: 'jest-cra'
-        })
+        return [
+          false,
+          jestCheck({
+            data: output,
+            sha: commitSha,
+            name: 'jest-cra'
+          })
+        ]
       }
     }
     case 'mocha': {
@@ -200,10 +236,13 @@ async function lookupConvertFunction(
       }
       return async () => {
         const output = await runMocha(args)
-        return mochaCheck({
-          data: output,
-          sha: commitSha
-        })
+        return [
+          false,
+          mochaCheck({
+            data: output,
+            sha: commitSha
+          })
+        ]
       }
     }
     case 'audit': {
@@ -212,10 +251,13 @@ async function lookupConvertFunction(
       }
       return async () => {
         const output = await runNpmAudit(args)
-        return auditCheck({
-          data: output,
-          sha: commitSha
-        })
+        return [
+          false,
+          auditCheck({
+            data: output,
+            sha: commitSha
+          })
+        ]
       }
     }
     case 'tsc': {
@@ -224,10 +266,30 @@ async function lookupConvertFunction(
       }
       return async () => {
         const output = await runTsc()
-        return tscCheck({
-          data: output,
-          sha: commitSha
-        })
+        return [
+          false,
+          tscCheck({
+            data: output,
+            sha: commitSha
+          })
+        ]
+      }
+    }
+    case 'cargo-check': {
+      if (detect && !(await isFileReadable('Cargo.toml'))) {
+        return null
+      }
+      return async () => {
+        const output = await runCargoCheck(args)
+        const skipRest = !cargoHasBuildFinished(output)
+
+        return [
+          skipRest,
+          cargoCheckCheck({
+            data: output,
+            sha: commitSha
+          })
+        ]
       }
     }
     case 'cargo-clippy': {
@@ -235,11 +297,14 @@ async function lookupConvertFunction(
         return null
       }
       return async () => {
-        const output = await runCargoClippy()
-        return cargoClippyCheck({
-          data: output,
-          sha: commitSha
-        })
+        const output = await runCargoClippy(args)
+        return [
+          false,
+          cargoClippyCheck({
+            data: output,
+            sha: commitSha
+          })
+        ]
       }
     }
     case 'cargo-test': {
@@ -247,11 +312,14 @@ async function lookupConvertFunction(
         return null
       }
       return async () => {
-        const output = await runCargoTest()
-        return cargoTestCheck({
-          data: output,
-          sha: commitSha
-        })
+        const output = await runCargoTest(args)
+        return [
+          false,
+          cargoTestCheck({
+            data: output,
+            sha: commitSha
+          })
+        ]
       }
     }
     case 'cargo-fmt': {
@@ -259,11 +327,14 @@ async function lookupConvertFunction(
         return null
       }
       return async () => {
-        const output = await runCargoFmt()
-        return cargoFmtCheck({
-          data: output,
-          sha: commitSha
-        })
+        const output = await runCargoFmt(args)
+        return [
+          false,
+          cargoFmtCheck({
+            data: output,
+            sha: commitSha
+          })
+        ]
       }
     }
     default: {

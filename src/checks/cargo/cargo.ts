@@ -3,7 +3,7 @@ import path from 'path'
 import util from 'util'
 
 import { CheckAnnotation } from '../checks-common'
-import { CargoCompilerMessage } from './cargo-types'
+import { CargoBuildFinishedMessage, CargoCompilerMessage, CargoMessage } from './cargo-types'
 
 const readdir = util.promisify(fs.readdir)
 const utimes = util.promisify(fs.utimes)
@@ -26,6 +26,21 @@ export function getCompilerAnnotations(item: CargoCompilerMessage): CheckAnnotat
   })
 
   return annotations
+}
+
+export function cargoHasBuildFinished(output: CargoMessage[]): boolean {
+  // If the `build-finished` message has `success: false` it implies
+  // there is syntax errors in the code. In that case running clippy,
+  // tests, rustfmt is needless, as they'll fail with the same syntax
+  // errors.
+  const buildFinished = output.find(msg => msg.reason == 'build-finished') as CargoBuildFinishedMessage | undefined
+
+  // If the `build-finished` message is not found in `output`, then
+  // assume it passed, and run the other checks regardless. Worst case
+  // the other checks fail.
+  const buildSuccess = buildFinished?.success ?? true
+
+  return buildSuccess
 }
 
 // Clippy shares the same build cache as Cargo,
