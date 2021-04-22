@@ -1,7 +1,6 @@
 import { runJsonCommand } from '../checks-common'
 import { CargoFmtFile } from './cargo-types'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function runCargoFmt(args: string[] = []): Promise<CargoFmtFile[]> {
   // While cargo and clippy emits individual json objects, rustfmt does not
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -11,7 +10,8 @@ export async function runCargoFmt(args: string[] = []): Promise<CargoFmtFile[]> 
     '--',
     '--emit=json',
     '--color',
-    'never'
+    'never',
+    ...args
   ])
   // TODO: If there is syntax errors then `cargo fmt` fails, which results in `json` being empty
   //       and in turn `cargoFmtCheck` passing. It might be useful to handle that case. However,
