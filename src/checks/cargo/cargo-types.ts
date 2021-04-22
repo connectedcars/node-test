@@ -1,4 +1,13 @@
-export type CargoMessage = CargoCompilerMessage | CargoBuildFinishedMessage | CargoTestMessage | CargoSuiteMessage
+// References:
+// - https://doc.rust-lang.org/rustc/json.html
+// - https://doc.rust-lang.org/cargo/reference/external-tools.html
+
+export type CargoMessage =
+  | CargoCompilerMessage
+  | CargoBuildFinishedMessage
+  | CargoCompilerArtifact
+  | CargoTestMessage
+  | CargoSuiteMessage
 
 export interface CargoTestMessage {
   type: 'test'
@@ -38,8 +47,35 @@ export interface CargoCompilerMessage {
     name: string
     src_path: string
     edition: string
-    doctest: true
+    doctest: boolean
+    test?: boolean
   }
+}
+
+export interface CargoCompilerArtifact {
+  type?: undefined
+  reason: 'compiler-artifact'
+  package_id: string
+  target: {
+    kind: string[]
+    crate_types: string[]
+    name: string
+    src_path: string
+    edition: string
+    doctest: boolean
+    test?: boolean
+  }
+  profile: {
+    opt_level?: '0' | '1' | '2'
+    debuginfo: number
+    debug_assertions: boolean
+    overflow_checks: boolean
+    test: boolean
+  }
+  features: string[]
+  filenames: string[]
+  executable: string | null
+  fresh: boolean
 }
 
 export interface CargoCompilerMessageBody {
@@ -64,13 +100,13 @@ export interface DiagnosticSpan {
   label: string | null
   suggested_replacement: null | unknown
   suggestion_applicability: null | unknown
-  text: [
-    {
-      highlight_end: number
-      highlight_start: number
-      text: string
-    }
-  ]
+  text: DiagnosticSpanText[]
+}
+
+export interface DiagnosticSpanText {
+  highlight_end: number
+  highlight_start: number
+  text: string
 }
 
 export interface CargoFmtFile {
