@@ -4,12 +4,12 @@ import { CargoMessage } from './cargo-types'
 
 // TODO: Implement more than just errors: https://github.com/actions-rs/clippy-check/blob/master/src/check.ts
 
-export interface CargoClippyInput {
+export interface CargoCheckInput {
   sha: string
   data: CargoMessage[]
 }
 
-export function cargoClippyCheck({ data, sha }: CargoClippyInput): CheckRunCompleted {
+export function cargoCheckCheck({ data, sha }: CargoCheckInput): CheckRunCompleted {
   if (Array.isArray(data)) {
     const annotations: CheckAnnotation[] = []
     const stats = {
@@ -21,11 +21,7 @@ export function cargoClippyCheck({ data, sha }: CargoClippyInput): CheckRunCompl
     }
     for (const item of data) {
       if (item.reason === 'compiler-message') {
-        // All clippy lints contains "clippy" in their message, so
-        // filter all compiler messages that does not contain the
-        // "clippy". This is to avoid repeating all issues already
-        // found by `cargo check`.
-        if (!item.message.rendered?.includes('clippy')) {
+        if (item.message.rendered?.includes('clippy')) {
           continue
         }
 
@@ -55,7 +51,7 @@ export function cargoClippyCheck({ data, sha }: CargoClippyInput): CheckRunCompl
     if (annotations.length > 0) {
       const summary = `Total of ${annotations.length} ${annotations.length === 1 ? 'issue' : 'issues'}`
       return {
-        name: 'cargo clippy',
+        name: 'cargo check',
         head_sha: sha,
         conclusion: 'failure',
         status: 'completed',
@@ -79,7 +75,7 @@ export function cargoClippyCheck({ data, sha }: CargoClippyInput): CheckRunCompl
       }
     }
     return {
-      name: 'cargo clippy',
+      name: 'cargo check',
       head_sha: sha,
       conclusion: 'success',
       status: 'completed',
@@ -92,13 +88,13 @@ export function cargoClippyCheck({ data, sha }: CargoClippyInput): CheckRunCompl
     }
   }
   return {
-    name: 'cargo clippy',
+    name: 'cargo check',
     head_sha: sha,
-    conclusion: 'neutral',
+    conclusion: 'skipped',
     status: 'completed',
     completed_at: new Date().toISOString(),
     output: {
-      title: 'Unexpected clippy output',
+      title: 'Unexpected check output',
       summary: ''
     }
   }
