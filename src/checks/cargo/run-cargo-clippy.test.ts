@@ -26,10 +26,10 @@ describe('run-cargo-clippy', () => {
         // so a single `process.stdout.end(JSON.stringify(data))` will not
         // suffice, as it would wrap it all in an array.
         const msgs = (data as any[]) as CargoMessage[]
-        msgs.forEach(msg => {
+        for (const msg of msgs) {
           process.stdout.write(JSON.stringify(msg))
           process.stdout.write('\n')
-        })
+        }
         process.stdout.end()
 
         process.stdout.on('finish', () => {

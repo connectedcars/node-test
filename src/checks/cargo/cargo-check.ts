@@ -44,6 +44,11 @@ export function cargoCheckCheck({ data, sha }: CargoCheckInput): CheckRunComplet
           default:
             break
         }
+
+        // Disregarding checking the `item.message.level` as in the
+        // Rust projects, any compiler warning, lint, suggestion, etc
+        // is already regarded as something that must be resolved.
+        // Thus map all messages into failures.
         annotations.push(...getCompilerAnnotations(item))
       }
     }

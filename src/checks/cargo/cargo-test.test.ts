@@ -25,7 +25,7 @@ describe('checks/cargo-tests', () => {
       status: 'completed',
       completed_at: expect.any(String),
       head_sha: '11963e3cb7ecbb9247f638cc0fb047173a62cf7a',
-      conclusion: 'neutral',
+      conclusion: 'skipped',
       output: {
         title: 'Unexpected test output',
         summary: ''

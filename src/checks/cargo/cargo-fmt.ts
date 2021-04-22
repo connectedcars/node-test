@@ -1,12 +1,12 @@
 import { CheckAnnotation, CheckRunCompleted } from '../checks-common'
 import { CargoFmtFile } from './cargo-types'
 
-export interface CargoFmt {
+export interface CargoFmtInput {
   sha: string
   data: CargoFmtFile[]
 }
 
-export function cargoFmtCheck({ data, sha }: CargoFmt): CheckRunCompleted {
+export function cargoFmtCheck({ data, sha }: CargoFmtInput): CheckRunCompleted {
   if (Array.isArray(data)) {
     const annotations: CheckAnnotation[] = []
     for (const file of data) {
@@ -53,11 +53,11 @@ export function cargoFmtCheck({ data, sha }: CargoFmt): CheckRunCompleted {
   return {
     name: 'cargo fmt',
     head_sha: sha,
-    conclusion: 'failure',
+    conclusion: 'skipped',
     status: 'completed',
     completed_at: new Date().toISOString(),
     output: {
-      title: 'Unexpected rustfmt output',
+      title: 'Unexpected cargo fmt output',
       summary: ''
     }
   }

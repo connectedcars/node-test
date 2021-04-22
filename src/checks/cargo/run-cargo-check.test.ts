@@ -1,9 +1,9 @@
 import { CommandEmulation, RunProcess } from '../..'
 import { CargoMessage } from './cargo-types'
-import { cargoTestFailedOutput } from './resources/cargo-test-text'
-import { runCargoTest } from './run-cargo-test'
+import { cargoCheckFailedOutput } from './resources/cargo-check-text'
+import { runCargoCheck } from './run-cargo-check'
 
-describe('run-cargo-clippy', () => {
+describe('run-cargo-check', () => {
   const commandEmulation = new CommandEmulation()
 
   afterAll(async () => {
@@ -18,7 +18,7 @@ describe('run-cargo-clippy', () => {
     }
   })
 
-  it('should start a cargo process and wait for exit', async () => {
+  it('should start a `cargo check` process and wait for exit', async () => {
     await commandEmulation.registerCommand(
       'cargo',
       data => {
@@ -37,9 +37,9 @@ describe('run-cargo-clippy', () => {
         })
       },
       null,
-      cargoTestFailedOutput as any
+      cargoCheckFailedOutput as any
     )
-    const cargoJson = await runCargoTest()
-    expect(cargoJson).toEqual(cargoTestFailedOutput)
+    const cargoJson = await runCargoCheck()
+    expect(cargoJson).toEqual(cargoCheckFailedOutput)
   })
 })

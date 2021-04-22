@@ -48,6 +48,11 @@ export function cargoClippyCheck({ data, sha }: CargoClippyInput): CheckRunCompl
           default:
             break
         }
+
+        // Disregarding checking the `item.message.level` as in the
+        // Rust projects, any compiler warning, lint, suggestion, etc
+        // is already regarded as something that must be resolved.
+        // Thus map all messages into failures.
         annotations.push(...getCompilerAnnotations(item))
       }
     }
@@ -94,7 +99,7 @@ export function cargoClippyCheck({ data, sha }: CargoClippyInput): CheckRunCompl
   return {
     name: 'cargo clippy',
     head_sha: sha,
-    conclusion: 'neutral',
+    conclusion: 'skipped',
     status: 'completed',
     completed_at: new Date().toISOString(),
     output: {

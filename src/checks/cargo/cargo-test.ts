@@ -73,7 +73,7 @@ export function cargoTestCheck({ data, sha }: CargoTestInput): CheckRunCompleted
     }
   }
   return {
-    conclusion: 'neutral',
+    conclusion: 'skipped',
     name: 'cargo test',
     head_sha: sha,
     status: 'completed',
