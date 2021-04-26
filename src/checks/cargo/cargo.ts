@@ -1,12 +1,6 @@
-import fs from 'fs'
-import path from 'path'
-import util from 'util'
-
+import { touchFiles } from '../../unix'
 import { CheckAnnotation } from '../checks-common'
 import { CargoBuildFinishedMessage, CargoCompilerMessage, CargoMessage } from './cargo-types'
-
-const readdir = util.promisify(fs.readdir)
-const utimes = util.promisify(fs.utimes)
 
 export function getCompilerAnnotations(item: CargoCompilerMessage): CheckAnnotation[] {
   const annotations: CheckAnnotation[] = []
@@ -57,39 +51,8 @@ export function cargoHasBuildFinished(output: CargoMessage[]): boolean {
 //
 // Issue: https://github.com/rust-lang/rust-clippy/issues/4612
 export async function touchRustFiles(path = '.'): Promise<void> {
-  return walk(
-    path,
-    async (filePath, fileName) => {
-      if (fileName.endsWith('.rs')) {
-        await touchExistingFile(filePath)
-      }
-    },
-    (_dirPath, dirName) => {
-      return dirName != '.git' && dirName != 'target'
-    }
-  )
-}
-
-async function touchExistingFile(path: string): Promise<void> {
-  const time = new Date()
-  return utimes(path, time, time)
-}
-
-async function walk(
-  dir: string,
-  visitPath: (path: string, name: string) => Promise<void>,
-  visitDir: (path: string, name: string) => boolean
-): Promise<void> {
-  const files = await readdir(dir)
-  for (const name of files) {
-    const abspath = path.join(dir, name)
-    const isDir = fs.statSync(abspath).isDirectory()
-    if (isDir) {
-      if (visitDir(abspath, name)) {
-        await walk(abspath, visitPath, visitDir)
-      }
-    } else {
-      await visitPath(abspath, name)
-    }
-  }
+  await touchFiles(path, {
+    excludeDir: /\.git|target/i,
+    includeFile: /\.rs$/i
+  })
 }
