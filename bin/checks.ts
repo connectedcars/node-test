@@ -37,13 +37,6 @@ export async function isFileReadable(filePath: string): Promise<boolean> {
 }
 
 async function main(argv: string[]) {
-  const COMMIT_SHA = process.env.COMMIT_SHA
-
-  if (!COMMIT_SHA) {
-    console.error('Missing environment variable "COMMIT_SHA"')
-    return 1
-  }
-
   const { _: commandAndArgs, ...flags } = yargs
     .options({
       ci: {
@@ -71,6 +64,12 @@ async function main(argv: string[]) {
     .parse(argv.slice(2))
 
   const [command, ...args] = commandAndArgs.map(a => a.toString())
+
+  const COMMIT_SHA = process.env.COMMIT_SHA
+  if (!COMMIT_SHA) {
+    console.error('Missing environment variable "COMMIT_SHA"')
+    return 1
+  }
 
   const startedAt = new Date().toISOString()
 
