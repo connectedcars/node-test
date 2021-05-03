@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`checks/clippy converts buggy clippy 1`] = `
+exports[`checks/cargo-clippy converts buggy cargo-clippy 1`] = `
 Object {
   "completed_at": Any<String>,
   "conclusion": "skipped",
   "head_sha": "11963e3cb7ecbb9247f638cc0fb047173a62cf7a",
-  "name": "cargo clippy",
+  "name": "cargo-clippy",
   "output": Object {
     "summary": "",
     "title": "Unexpected clippy output",
@@ -14,12 +14,12 @@ Object {
 }
 `;
 
-exports[`checks/clippy converts failed clippy 1`] = `
+exports[`checks/cargo-clippy converts failed cargo-clippy 1`] = `
 Object {
   "completed_at": Any<String>,
   "conclusion": "failure",
   "head_sha": "11963e3cb7ecbb9247f638cc0fb047173a62cf7a",
-  "name": "cargo clippy",
+  "name": "cargo-clippy",
   "output": Object {
     "annotations": Array [
       Object {
@@ -1133,12 +1133,12 @@ Object {
 }
 `;
 
-exports[`checks/clippy converts successful clippy 1`] = `
+exports[`checks/cargo-clippy converts successful cargo-clippy 1`] = `
 Object {
   "completed_at": Any<String>,
   "conclusion": "success",
   "head_sha": "11963e3cb7ecbb9247f638cc0fb047173a62cf7a",
-  "name": "cargo clippy",
+  "name": "cargo-clippy",
   "output": Object {
     "annotations": Array [],
     "summary": "Found no issues",

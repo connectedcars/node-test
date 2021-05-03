@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`checks/cargo-tests converts failed compilation and tests 1`] = `
+exports[`checks/cargo-test converts failed compilation and tests 1`] = `
 Object {
   "completed_at": Any<String>,
   "conclusion": "failure",
   "head_sha": "11963e3cb7ecbb9247f638cc0fb047173a62cf7a",
-  "name": "cargo test",
+  "name": "cargo-test",
   "output": Object {
     "annotations": Array [
       Object {
@@ -103,12 +103,12 @@ Object {
 }
 `;
 
-exports[`checks/cargo-tests converts invalid input 1`] = `
+exports[`checks/cargo-test converts invalid input 1`] = `
 Object {
   "completed_at": Any<String>,
   "conclusion": "skipped",
   "head_sha": "11963e3cb7ecbb9247f638cc0fb047173a62cf7a",
-  "name": "cargo test",
+  "name": "cargo-test",
   "output": Object {
     "summary": "",
     "title": "Unexpected test output",
@@ -117,12 +117,12 @@ Object {
 }
 `;
 
-exports[`checks/cargo-tests converts no failed tests 1`] = `
+exports[`checks/cargo-test converts no failed cargo-test 1`] = `
 Object {
   "completed_at": Any<String>,
   "conclusion": "success",
   "head_sha": "11963e3cb7ecbb9247f638cc0fb047173a62cf7a",
-  "name": "cargo test",
+  "name": "cargo-test",
   "output": Object {
     "summary": "Tests passed",
     "title": "Tests passed",

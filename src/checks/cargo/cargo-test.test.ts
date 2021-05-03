@@ -1,8 +1,8 @@
 import { cargoTestCheck } from './cargo-test'
 import { cargoTestFailedOutput } from './resources/cargo-test-text'
 
-describe('checks/cargo-tests', () => {
-  it('converts no failed tests', () => {
+describe('checks/cargo-test', () => {
+  it('converts no failed cargo-test', () => {
     const result = cargoTestCheck({ data: [], sha: '11963e3cb7ecbb9247f638cc0fb047173a62cf7a' })
     expect(result).toMatchSnapshot({
       completed_at: expect.any(String)
