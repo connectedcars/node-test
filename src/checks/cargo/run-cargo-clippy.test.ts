@@ -18,7 +18,7 @@ describe('run-cargo-clippy', () => {
     }
   })
 
-  it('should start a cargo process and wait for exit', async () => {
+  it('should start a `cargo clippy` process and wait for exit', async () => {
     await commandEmulation.registerCommand(
       'cargo',
       data => {

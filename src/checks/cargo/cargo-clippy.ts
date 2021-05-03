@@ -60,7 +60,7 @@ export function cargoClippyCheck({ data, sha }: CargoClippyInput): CheckRunCompl
     if (annotations.length > 0) {
       const summary = `Total of ${annotations.length} ${annotations.length === 1 ? 'issue' : 'issues'}`
       return {
-        name: 'cargo clippy',
+        name: 'cargo-clippy',
         head_sha: sha,
         conclusion: 'failure',
         status: 'completed',
@@ -84,7 +84,7 @@ export function cargoClippyCheck({ data, sha }: CargoClippyInput): CheckRunCompl
       }
     }
     return {
-      name: 'cargo clippy',
+      name: 'cargo-clippy',
       head_sha: sha,
       conclusion: 'success',
       status: 'completed',
@@ -97,7 +97,7 @@ export function cargoClippyCheck({ data, sha }: CargoClippyInput): CheckRunCompl
     }
   }
   return {
-    name: 'cargo clippy',
+    name: 'cargo-clippy',
     head_sha: sha,
     conclusion: 'skipped',
     status: 'completed',

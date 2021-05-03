@@ -48,7 +48,7 @@ export function cargoTestCheck({ data, sha }: CargoTestInput): CheckRunCompleted
     if (annotations.length > 0) {
       const summary = `Total of ${annotations.length} ${annotations.length === 1 ? 'issue' : 'issues'}`
       return {
-        name: 'cargo test',
+        name: 'cargo-test',
         head_sha: sha,
         conclusion: 'failure',
         status: 'completed',
@@ -62,7 +62,7 @@ export function cargoTestCheck({ data, sha }: CargoTestInput): CheckRunCompleted
     }
     return {
       conclusion: 'success',
-      name: 'cargo test',
+      name: 'cargo-test',
       head_sha: sha,
       status: 'completed',
       completed_at: new Date().toISOString(),
@@ -74,7 +74,7 @@ export function cargoTestCheck({ data, sha }: CargoTestInput): CheckRunCompleted
   }
   return {
     conclusion: 'skipped',
-    name: 'cargo test',
+    name: 'cargo-test',
     head_sha: sha,
     status: 'completed',
     completed_at: new Date().toISOString(),

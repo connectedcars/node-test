@@ -25,7 +25,7 @@ export function cargoFmtCheck({ data, sha }: CargoFmtInput): CheckRunCompleted {
     if (annotations.length > 0) {
       const summary = `Total of ${annotations.length} ${annotations.length === 1 ? 'issue' : 'issues'}`
       return {
-        name: 'cargo fmt',
+        name: 'cargo-fmt',
         head_sha: sha,
         conclusion: 'failure',
         status: 'completed',
@@ -38,7 +38,7 @@ export function cargoFmtCheck({ data, sha }: CargoFmtInput): CheckRunCompleted {
       }
     }
     return {
-      name: 'cargo fmt',
+      name: 'cargo-fmt',
       head_sha: sha,
       conclusion: 'success',
       status: 'completed',
@@ -51,7 +51,7 @@ export function cargoFmtCheck({ data, sha }: CargoFmtInput): CheckRunCompleted {
     }
   }
   return {
-    name: 'cargo fmt',
+    name: 'cargo-fmt',
     head_sha: sha,
     conclusion: 'skipped',
     status: 'completed',

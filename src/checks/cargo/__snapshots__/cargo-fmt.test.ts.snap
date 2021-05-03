@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`checks/cargo-fmt converts buggy cargo fmt 1`] = `
+exports[`checks/cargo-fmt converts buggy cargo-fmt 1`] = `
 Object {
   "completed_at": Any<String>,
   "conclusion": "skipped",
   "head_sha": "11963e3cb7ecbb9247f638cc0fb047173a62cf7a",
-  "name": "cargo fmt",
+  "name": "cargo-fmt",
   "output": Object {
     "summary": "",
     "title": "Unexpected cargo fmt output",
@@ -14,12 +14,12 @@ Object {
 }
 `;
 
-exports[`checks/cargo-fmt converts failed cargo fmt 1`] = `
+exports[`checks/cargo-fmt converts failed cargo-fmt 1`] = `
 Object {
   "completed_at": Any<String>,
   "conclusion": "failure",
   "head_sha": "11963e3cb7ecbb9247f638cc0fb047173a62cf7a",
-  "name": "cargo fmt",
+  "name": "cargo-fmt",
   "output": Object {
     "annotations": Array [
       Object {
@@ -242,12 +242,12 @@ Expected: ",
 }
 `;
 
-exports[`checks/cargo-fmt converts successful cargo fmt 1`] = `
+exports[`checks/cargo-fmt converts successful cargo-fmt 1`] = `
 Object {
   "completed_at": Any<String>,
   "conclusion": "success",
   "head_sha": "11963e3cb7ecbb9247f638cc0fb047173a62cf7a",
-  "name": "cargo fmt",
+  "name": "cargo-fmt",
   "output": Object {
     "annotations": Array [],
     "summary": "Found no issues",
