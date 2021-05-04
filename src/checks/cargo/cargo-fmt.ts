@@ -1,3 +1,4 @@
+import { filterDuplicates } from '../../common'
 import { CheckAnnotation, CheckRunCompleted } from '../checks-common'
 import { CargoFmtFile } from './cargo-types'
 
@@ -8,7 +9,7 @@ export interface CargoFmtInput {
 
 export function cargoFmtCheck({ data, sha }: CargoFmtInput): CheckRunCompleted {
   if (Array.isArray(data)) {
-    const annotations: CheckAnnotation[] = []
+    let annotations: CheckAnnotation[] = []
     for (const file of data) {
       for (const mismatch of file.mismatches) {
         const annotation: CheckAnnotation = {
@@ -23,6 +24,8 @@ export function cargoFmtCheck({ data, sha }: CargoFmtInput): CheckRunCompleted {
       }
     }
     if (annotations.length > 0) {
+      annotations = filterDuplicates(annotations)
+
       const summary = `Total of ${annotations.length} ${annotations.length === 1 ? 'issue' : 'issues'}`
       return {
         name: 'cargo-fmt',

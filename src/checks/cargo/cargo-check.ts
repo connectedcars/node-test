@@ -1,3 +1,4 @@
+import { filterDuplicates } from '../../common'
 import { CheckAnnotation, CheckRunCompleted } from '../checks-common'
 import { getCompilerAnnotations } from './cargo'
 import { CargoMessage } from './cargo-types'
@@ -11,7 +12,7 @@ export interface CargoCheckInput {
 
 export function cargoCheckCheck({ data, sha }: CargoCheckInput): CheckRunCompleted {
   if (Array.isArray(data)) {
-    const annotations: CheckAnnotation[] = []
+    let annotations: CheckAnnotation[] = []
     const stats = {
       help: 0,
       note: 0,
@@ -54,6 +55,8 @@ export function cargoCheckCheck({ data, sha }: CargoCheckInput): CheckRunComplet
     }
 
     if (annotations.length > 0) {
+      annotations = filterDuplicates(annotations)
+
       const summary = `Total of ${annotations.length} ${annotations.length === 1 ? 'issue' : 'issues'}`
       return {
         name: 'cargo-check',
