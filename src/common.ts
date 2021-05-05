@@ -21,3 +21,11 @@ export function filterDuplicates<T>(items: T[]): T[] {
   }
   return filtered
 }
+
+export function stripPrefix(str: string, prefix: string): string {
+  if (str.indexOf(prefix) === 0) {
+    return str.slice(prefix.length)
+  } else {
+    return str
+  }
+}
