@@ -1,11 +1,13 @@
-// https://docs.github.com/en/free-pro-team@latest/rest/reference/checks#runs
+// https://docs.github.com/en/rest/reference/checks#runs
 
 import { Json } from '../common'
 import { ExitInformation, RunProcess } from '../unix/run-process'
 
 export type CheckAnnotationLevel = 'notice' | 'warning' | 'failure'
 
+// https://docs.github.com/en/rest/reference/checks#annotations-items
 export interface CheckAnnotation {
+  // Path must be relative to the root of the repository
   path: string
   start_line: number
   end_line: number

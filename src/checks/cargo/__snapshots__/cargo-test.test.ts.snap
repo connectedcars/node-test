@@ -10,9 +10,17 @@ Object {
     "annotations": Array [
       Object {
         "annotation_level": "failure",
-        "end_line": 535,
-        "message": "expected one of \`.\`, \`;\`, \`?\`, \`}\`, or an operator, found \`assert_eq\`",
-        "path": "can/src/lib.rs",
+        "end_line": 536,
+        "message": "error: expected one of \`.\`, \`;\`, \`?\`, \`}\`, or an operator, found \`assert_eq\`
+   --> can/src/can_session.rs:536:9
+    |
+535 |         assert!(false) 
+    |                       - expected one of \`.\`, \`;\`, \`?\`, \`}\`, or an operator
+536 |         assert_eq!(session.typ, SessionType::TP2(0x89));
+    |         ^^^^^^^^^ unexpected token
+
+",
+        "path": "can/src/can_session.rs",
         "raw_details": "{
     \\"rendered\\": \\"error: expected one of \`.\`, \`;\`, \`?\`, \`}\`, or an operator, found \`assert_eq\`\\\\n   --> can/src/can_session.rs:536:9\\\\n    |\\\\n535 |         assert!(false) \\\\n    |                       - expected one of \`.\`, \`;\`, \`?\`, \`}\`, or an operator\\\\n536 |         assert_eq!(session.typ, SessionType::TP2(0x89));\\\\n    |         ^^^^^^^^^ unexpected token\\\\n\\\\n\\",
     \\"children\\": [],
@@ -64,22 +72,8 @@ Object {
         }
     ]
 }",
-        "start_line": 535,
-      },
-      Object {
-        "annotation_level": "failure",
-        "end_line": 0,
-        "message": "aborting due to previous error; 2 warnings emitted",
-        "path": "can/src/lib.rs",
-        "raw_details": "{
-    \\"rendered\\": \\"error: aborting due to previous error; 2 warnings emitted\\\\n\\\\n\\",
-    \\"children\\": [],
-    \\"code\\": null,
-    \\"level\\": \\"error\\",
-    \\"message\\": \\"aborting due to previous error; 2 warnings emitted\\",
-    \\"spans\\": []
-}",
-        "start_line": 0,
+        "start_line": 536,
+        "title": "expected one of \`.\`, \`;\`, \`?\`, \`}\`, or an operator, found \`assert_eq\`",
       },
       Object {
         "annotation_level": "failure",
@@ -96,8 +90,8 @@ Object {
         "start_line": 0,
       },
     ],
-    "summary": "Total of 3 issues",
-    "title": "Total of 3 issues",
+    "summary": "Total of 2 issues",
+    "title": "Total of 2 issues",
   },
   "status": "completed",
 }

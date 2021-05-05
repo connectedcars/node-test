@@ -25,13 +25,20 @@ Object {
       Object {
         "annotation_level": "failure",
         "end_line": 3,
-        "message": "unused import: \`std::io::BufReader\`",
-        "path": "Cargo.toml",
+        "message": "warning: unused import: \`std::io::BufReader\`
+ --> src/main.rs:3:5
+  |
+3 | use std::io::BufReader;
+  |     ^^^^^^^^^^^^^^^^^^
+  |
+  = note: \`#[warn(unused_imports)]\` on by default
+
+",
+        "path": "src/main.rs",
         "raw_details": "{
     \\"rendered\\": \\"warning: unused import: \`std::io::BufReader\`\\\\n --> src/main.rs:3:5\\\\n  |\\\\n3 | use std::io::BufReader;\\\\n  |     ^^^^^^^^^^^^^^^^^^\\\\n  |\\\\n  = note: \`#[warn(unused_imports)]\` on by default\\\\n\\\\n\\",
     \\"children\\": [
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"note\\",
             \\"message\\": \\"\`#[warn(unused_imports)]\` on by default\\",
@@ -39,7 +46,6 @@ Object {
             \\"spans\\": []
         },
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"help\\",
             \\"message\\": \\"remove the whole \`use\` item\\",
@@ -100,17 +106,25 @@ Object {
     ]
 }",
         "start_line": 3,
+        "title": "unused import: \`std::io::BufReader\`",
       },
       Object {
         "annotation_level": "failure",
         "end_line": 15,
-        "message": "unused variable: \`foo\`",
-        "path": "Cargo.toml",
+        "message": "warning: unused variable: \`foo\`
+  --> src/main.rs:15:11
+   |
+15 |       let foo = foo();
+   |           ^^^ help: if this is intentional, prefix it with an underscore: \`_foo\`
+   |
+   = note: \`#[warn(unused_variables)]\` on by default
+
+",
+        "path": "src/main.rs",
         "raw_details": "{
     \\"rendered\\": \\"warning: unused variable: \`foo\`\\\\n  --> src/main.rs:15:11\\\\n   |\\\\n15 |       let foo = foo();\\\\n   |           ^^^ help: if this is intentional, prefix it with an underscore: \`_foo\`\\\\n   |\\\\n   = note: \`#[warn(unused_variables)]\` on by default\\\\n\\\\n\\",
     \\"children\\": [
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"note\\",
             \\"message\\": \\"\`#[warn(unused_variables)]\` on by default\\",
@@ -118,7 +132,6 @@ Object {
             \\"spans\\": []
         },
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"help\\",
             \\"message\\": \\"if this is intentional, prefix it with an underscore\\",
@@ -179,17 +192,23 @@ Object {
     ]
 }",
         "start_line": 15,
+        "title": "unused variable: \`foo\`",
       },
       Object {
         "annotation_level": "failure",
         "end_line": 20,
-        "message": "unused variable: \`f\`",
-        "path": "Cargo.toml",
+        "message": "warning: unused variable: \`f\`
+  --> src/main.rs:20:9
+   |
+20 |     let f = File::open(\\"foo.txt\\");
+   |         ^ help: if this is intentional, prefix it with an underscore: \`_f\`
+
+",
+        "path": "src/main.rs",
         "raw_details": "{
     \\"rendered\\": \\"warning: unused variable: \`f\`\\\\n  --> src/main.rs:20:9\\\\n   |\\\\n20 |     let f = File::open(\\\\\\"foo.txt\\\\\\");\\\\n   |         ^ help: if this is intentional, prefix it with an underscore: \`_f\`\\\\n\\\\n\\",
     \\"children\\": [
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"help\\",
             \\"message\\": \\"if this is intentional, prefix it with an underscore\\",
@@ -250,17 +269,26 @@ Object {
     ]
 }",
         "start_line": 20,
+        "title": "unused variable: \`f\`",
       },
       Object {
         "annotation_level": "failure",
         "end_line": 29,
-        "message": "value assigned to \`foo\` is never read",
-        "path": "Cargo.toml",
+        "message": "warning: value assigned to \`foo\` is never read
+  --> src/main.rs:29:9
+   |
+29 |     let mut foo = 0;
+   |         ^^^^^^^
+   |
+   = note: \`#[warn(unused_assignments)]\` on by default
+   = help: maybe it is overwritten before being read?
+
+",
+        "path": "src/main.rs",
         "raw_details": "{
     \\"rendered\\": \\"warning: value assigned to \`foo\` is never read\\\\n  --> src/main.rs:29:9\\\\n   |\\\\n29 |     let mut foo = 0;\\\\n   |         ^^^^^^^\\\\n   |\\\\n   = note: \`#[warn(unused_assignments)]\` on by default\\\\n   = help: maybe it is overwritten before being read?\\\\n\\\\n\\",
     \\"children\\": [
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"note\\",
             \\"message\\": \\"\`#[warn(unused_assignments)]\` on by default\\",
@@ -268,7 +296,6 @@ Object {
             \\"spans\\": []
         },
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"help\\",
             \\"message\\": \\"maybe it is overwritten before being read?\\",
@@ -307,17 +334,25 @@ Object {
     ]
 }",
         "start_line": 29,
+        "title": "value assigned to \`foo\` is never read",
       },
       Object {
         "annotation_level": "failure",
         "end_line": 33,
-        "message": "value assigned to \`bar\` is never read",
-        "path": "Cargo.toml",
+        "message": "warning: value assigned to \`bar\` is never read
+  --> src/main.rs:33:5
+   |
+33 |     bar = foo;
+   |     ^^^
+   |
+   = help: maybe it is overwritten before being read?
+
+",
+        "path": "src/main.rs",
         "raw_details": "{
     \\"rendered\\": \\"warning: value assigned to \`bar\` is never read\\\\n  --> src/main.rs:33:5\\\\n   |\\\\n33 |     bar = foo;\\\\n   |     ^^^\\\\n   |\\\\n   = help: maybe it is overwritten before being read?\\\\n\\\\n\\",
     \\"children\\": [
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"help\\",
             \\"message\\": \\"maybe it is overwritten before being read?\\",
@@ -356,17 +391,26 @@ Object {
     ]
 }",
         "start_line": 33,
+        "title": "value assigned to \`bar\` is never read",
       },
       Object {
         "annotation_level": "failure",
         "end_line": 25,
-        "message": "unused \`std::result::Result\` that must be used",
-        "path": "Cargo.toml",
+        "message": "warning: unused \`std::result::Result\` that must be used
+  --> src/main.rs:25:5
+   |
+25 |     f.read(&mut buf);
+   |     ^^^^^^^^^^^^^^^^^
+   |
+   = note: \`#[warn(unused_must_use)]\` on by default
+   = note: this \`Result\` may be an \`Err\` variant, which should be handled
+
+",
+        "path": "src/main.rs",
         "raw_details": "{
     \\"rendered\\": \\"warning: unused \`std::result::Result\` that must be used\\\\n  --> src/main.rs:25:5\\\\n   |\\\\n25 |     f.read(&mut buf);\\\\n   |     ^^^^^^^^^^^^^^^^^\\\\n   |\\\\n   = note: \`#[warn(unused_must_use)]\` on by default\\\\n   = note: this \`Result\` may be an \`Err\` variant, which should be handled\\\\n\\\\n\\",
     \\"children\\": [
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"note\\",
             \\"message\\": \\"\`#[warn(unused_must_use)]\` on by default\\",
@@ -374,7 +418,6 @@ Object {
             \\"spans\\": []
         },
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"note\\",
             \\"message\\": \\"this \`Result\` may be an \`Err\` variant, which should be handled\\",
@@ -413,24 +456,10 @@ Object {
     ]
 }",
         "start_line": 25,
-      },
-      Object {
-        "annotation_level": "failure",
-        "end_line": 0,
-        "message": "6 warnings emitted",
-        "path": "Cargo.toml",
-        "raw_details": "{
-    \\"rendered\\": \\"warning: 6 warnings emitted\\\\n\\\\n\\",
-    \\"children\\": [],
-    \\"code\\": null,
-    \\"level\\": \\"warning\\",
-    \\"message\\": \\"6 warnings emitted\\",
-    \\"spans\\": []
-}",
-        "start_line": 0,
+        "title": "unused \`std::result::Result\` that must be used",
       },
     ],
-    "summary": "Total of 7 issues",
+    "summary": "Total of 6 issues",
     "text": "## Results
 
 | Message level           | Amount |
@@ -440,7 +469,7 @@ Object {
 | Warning                 |     14 |
 | Note                    |      0 |
 | Help                    |      0 |",
-    "title": "Total of 7 issues",
+    "title": "Total of 6 issues",
   },
   "status": "completed",
 }

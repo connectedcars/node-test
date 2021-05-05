@@ -25,13 +25,23 @@ Object {
       Object {
         "annotation_level": "failure",
         "end_line": 33,
-        "message": "this looks like you are trying to swap \`foo\` and \`bar\`",
-        "path": "Cargo.toml",
+        "message": "error: this looks like you are trying to swap \`foo\` and \`bar\`
+  --> src/main.rs:32:5
+   |
+32 | /     foo = bar;
+33 | |     bar = foo;
+   | |_____________^ help: try: \`std::mem::swap(&mut foo, &mut bar)\`
+   |
+   = note: \`#[deny(clippy::almost_swapped)]\` on by default
+   = note: or maybe you should use \`std::mem::replace\`?
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#almost_swapped
+
+",
+        "path": "src/main.rs",
         "raw_details": "{
     \\"rendered\\": \\"error: this looks like you are trying to swap \`foo\` and \`bar\`\\\\n  --> src/main.rs:32:5\\\\n   |\\\\n32 | /     foo = bar;\\\\n33 | |     bar = foo;\\\\n   | |_____________^ help: try: \`std::mem::swap(&mut foo, &mut bar)\`\\\\n   |\\\\n   = note: \`#[deny(clippy::almost_swapped)]\` on by default\\\\n   = note: or maybe you should use \`std::mem::replace\`?\\\\n   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#almost_swapped\\\\n\\\\n\\",
     \\"children\\": [
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"note\\",
             \\"message\\": \\"\`#[deny(clippy::almost_swapped)]\` on by default\\",
@@ -39,7 +49,6 @@ Object {
             \\"spans\\": []
         },
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"note\\",
             \\"message\\": \\"or maybe you should use \`std::mem::replace\`?\\",
@@ -47,7 +56,6 @@ Object {
             \\"spans\\": []
         },
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"help\\",
             \\"message\\": \\"for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#almost_swapped\\",
@@ -55,7 +63,6 @@ Object {
             \\"spans\\": []
         },
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"help\\",
             \\"message\\": \\"try\\",
@@ -126,17 +133,26 @@ Object {
     ]
 }",
         "start_line": 32,
+        "title": "this looks like you are trying to swap \`foo\` and \`bar\`",
       },
       Object {
         "annotation_level": "failure",
         "end_line": 15,
-        "message": "use of a blacklisted/placeholder name \`foo\`",
-        "path": "Cargo.toml",
+        "message": "warning: use of a blacklisted/placeholder name \`foo\`
+  --> src/main.rs:15:11
+   |
+15 |       let foo = foo();
+   |           ^^^
+   |
+   = note: \`#[warn(clippy::blacklisted_name)]\` on by default
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#blacklisted_name
+
+",
+        "path": "src/main.rs",
         "raw_details": "{
     \\"rendered\\": \\"warning: use of a blacklisted/placeholder name \`foo\`\\\\n  --> src/main.rs:15:11\\\\n   |\\\\n15 |       let foo = foo();\\\\n   |           ^^^\\\\n   |\\\\n   = note: \`#[warn(clippy::blacklisted_name)]\` on by default\\\\n   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#blacklisted_name\\\\n\\\\n\\",
     \\"children\\": [
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"note\\",
             \\"message\\": \\"\`#[warn(clippy::blacklisted_name)]\` on by default\\",
@@ -144,7 +160,6 @@ Object {
             \\"spans\\": []
         },
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"help\\",
             \\"message\\": \\"for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#blacklisted_name\\",
@@ -183,17 +198,25 @@ Object {
     ]
 }",
         "start_line": 15,
+        "title": "use of a blacklisted/placeholder name \`foo\`",
       },
       Object {
         "annotation_level": "failure",
         "end_line": 29,
-        "message": "use of a blacklisted/placeholder name \`foo\`",
-        "path": "Cargo.toml",
+        "message": "warning: use of a blacklisted/placeholder name \`foo\`
+  --> src/main.rs:29:13
+   |
+29 |     let mut foo = 0;
+   |             ^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#blacklisted_name
+
+",
+        "path": "src/main.rs",
         "raw_details": "{
     \\"rendered\\": \\"warning: use of a blacklisted/placeholder name \`foo\`\\\\n  --> src/main.rs:29:13\\\\n   |\\\\n29 |     let mut foo = 0;\\\\n   |             ^^^\\\\n   |\\\\n   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#blacklisted_name\\\\n\\\\n\\",
     \\"children\\": [
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"help\\",
             \\"message\\": \\"for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#blacklisted_name\\",
@@ -232,17 +255,26 @@ Object {
     ]
 }",
         "start_line": 29,
+        "title": "use of a blacklisted/placeholder name \`foo\`",
       },
       Object {
         "annotation_level": "failure",
         "end_line": 37,
-        "message": "in an \`if\` condition, avoid complex blocks or closures with blocks; instead, move the block or closure higher and bind it with a \`let\`",
-        "path": "Cargo.toml",
+        "message": "warning: in an \`if\` condition, avoid complex blocks or closures with blocks; instead, move the block or closure higher and bind it with a \`let\`
+  --> src/main.rs:37:5
+   |
+37 |     if { let b = false; b } {}
+   |     ^^^^^^^^^^^^^^^^^^^^^^^ help: try: \`let res = { let b = false; b }; if res\`
+   |
+   = note: \`#[warn(clippy::blocks_in_if_conditions)]\` on by default
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#blocks_in_if_conditions
+
+",
+        "path": "src/main.rs",
         "raw_details": "{
     \\"rendered\\": \\"warning: in an \`if\` condition, avoid complex blocks or closures with blocks; instead, move the block or closure higher and bind it with a \`let\`\\\\n  --> src/main.rs:37:5\\\\n   |\\\\n37 |     if { let b = false; b } {}\\\\n   |     ^^^^^^^^^^^^^^^^^^^^^^^ help: try: \`let res = { let b = false; b }; if res\`\\\\n   |\\\\n   = note: \`#[warn(clippy::blocks_in_if_conditions)]\` on by default\\\\n   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#blocks_in_if_conditions\\\\n\\\\n\\",
     \\"children\\": [
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"note\\",
             \\"message\\": \\"\`#[warn(clippy::blocks_in_if_conditions)]\` on by default\\",
@@ -250,7 +282,6 @@ Object {
             \\"spans\\": []
         },
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"help\\",
             \\"message\\": \\"for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#blocks_in_if_conditions\\",
@@ -258,7 +289,6 @@ Object {
             \\"spans\\": []
         },
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"help\\",
             \\"message\\": \\"try\\",
@@ -319,17 +349,32 @@ Object {
     ]
 }",
         "start_line": 37,
+        "title": "in an \`if\` condition, avoid complex blocks or closures with blocks; instead, move the block or closure higher and bind it with a \`let\`",
       },
       Object {
         "annotation_level": "failure",
         "end_line": 37,
-        "message": "returning the result of a \`let\` binding from a block",
-        "path": "Cargo.toml",
+        "message": "warning: returning the result of a \`let\` binding from a block
+  --> src/main.rs:37:25
+   |
+37 |     if { let b = false; b } {}
+   |          -------------- ^
+   |          |
+   |          unnecessary \`let\` binding
+   |
+   = note: \`#[warn(clippy::let_and_return)]\` on by default
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#let_and_return
+help: return the expression directly
+   |
+37 |     if {  false } {}
+   |         --^^^^^
+
+",
+        "path": "src/main.rs",
         "raw_details": "{
     \\"rendered\\": \\"warning: returning the result of a \`let\` binding from a block\\\\n  --> src/main.rs:37:25\\\\n   |\\\\n37 |     if { let b = false; b } {}\\\\n   |          -------------- ^\\\\n   |          |\\\\n   |          unnecessary \`let\` binding\\\\n   |\\\\n   = note: \`#[warn(clippy::let_and_return)]\` on by default\\\\n   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#let_and_return\\\\nhelp: return the expression directly\\\\n   |\\\\n37 |     if {  false } {}\\\\n   |         --^^^^^\\\\n\\\\n\\",
     \\"children\\": [
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"note\\",
             \\"message\\": \\"\`#[warn(clippy::let_and_return)]\` on by default\\",
@@ -337,7 +382,6 @@ Object {
             \\"spans\\": []
         },
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"help\\",
             \\"message\\": \\"for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#let_and_return\\",
@@ -345,7 +389,6 @@ Object {
             \\"spans\\": []
         },
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"help\\",
             \\"message\\": \\"return the expression directly\\",
@@ -448,17 +491,28 @@ Object {
     ]
 }",
         "start_line": 37,
+        "title": "returning the result of a \`let\` binding from a block",
       },
       Object {
         "annotation_level": "failure",
         "end_line": 51,
-        "message": "\`assert!(true)\` will be optimized out by the compiler",
-        "path": "Cargo.toml",
+        "message": "warning: \`assert!(true)\` will be optimized out by the compiler
+  --> src/main.rs:51:9
+   |
+51 |         assert!(true);
+   |         ^^^^^^^^^^^^^^
+   |
+   = note: \`#[warn(clippy::assertions_on_constants)]\` on by default
+   = help: remove it
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#assertions_on_constants
+   = note: this warning originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+",
+        "path": "src/main.rs",
         "raw_details": "{
     \\"rendered\\": \\"warning: \`assert!(true)\` will be optimized out by the compiler\\\\n  --> src/main.rs:51:9\\\\n   |\\\\n51 |         assert!(true);\\\\n   |         ^^^^^^^^^^^^^^\\\\n   |\\\\n   = note: \`#[warn(clippy::assertions_on_constants)]\` on by default\\\\n   = help: remove it\\\\n   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#assertions_on_constants\\\\n   = note: this warning originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)\\\\n\\\\n\\",
     \\"children\\": [
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"note\\",
             \\"message\\": \\"\`#[warn(clippy::assertions_on_constants)]\` on by default\\",
@@ -466,7 +520,6 @@ Object {
             \\"spans\\": []
         },
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"help\\",
             \\"message\\": \\"remove it\\",
@@ -474,7 +527,6 @@ Object {
             \\"spans\\": []
         },
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"help\\",
             \\"message\\": \\"for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#assertions_on_constants\\",
@@ -572,17 +624,27 @@ Object {
     ]
 }",
         "start_line": 51,
+        "title": "\`assert!(true)\` will be optimized out by the compiler",
       },
       Object {
         "annotation_level": "failure",
         "end_line": 56,
-        "message": "\`assert!(false)\` should probably be replaced",
-        "path": "Cargo.toml",
+        "message": "warning: \`assert!(false)\` should probably be replaced
+  --> src/main.rs:56:5
+   |
+56 |     assert!(false);
+   |     ^^^^^^^^^^^^^^^
+   |
+   = help: use \`panic!()\` or \`unreachable!()\`
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#assertions_on_constants
+   = note: this warning originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)
+
+",
+        "path": "src/main.rs",
         "raw_details": "{
     \\"rendered\\": \\"warning: \`assert!(false)\` should probably be replaced\\\\n  --> src/main.rs:56:5\\\\n   |\\\\n56 |     assert!(false);\\\\n   |     ^^^^^^^^^^^^^^^\\\\n   |\\\\n   = help: use \`panic!()\` or \`unreachable!()\`\\\\n   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#assertions_on_constants\\\\n   = note: this warning originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)\\\\n\\\\n\\",
     \\"children\\": [
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"help\\",
             \\"message\\": \\"use \`panic!()\` or \`unreachable!()\`\\",
@@ -590,7 +652,6 @@ Object {
             \\"spans\\": []
         },
         {
-            \\"children\\": [],
             \\"code\\": null,
             \\"level\\": \\"help\\",
             \\"message\\": \\"for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#assertions_on_constants\\",
@@ -688,6 +749,7 @@ Object {
     ]
 }",
         "start_line": 56,
+        "title": "\`assert!(false)\` should probably be replaced",
       },
     ],
     "summary": "Total of 7 issues",

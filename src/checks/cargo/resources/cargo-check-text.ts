@@ -18,7 +18,6 @@ export const cargoCheckFailedOutput: CargoMessage[] = [
         'warning: unused import: `std::io::BufReader`\n --> src/main.rs:3:5\n  |\n3 | use std::io::BufReader;\n  |     ^^^^^^^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` on by default\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[warn(unused_imports)]` on by default',
@@ -26,7 +25,6 @@ export const cargoCheckFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'remove the whole `use` item',
@@ -104,7 +102,6 @@ export const cargoCheckFailedOutput: CargoMessage[] = [
         'warning: unused import: `std::io::BufReader`\n --> src/main.rs:3:5\n  |\n3 | use std::io::BufReader;\n  |     ^^^^^^^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` on by default\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[warn(unused_imports)]` on by default',
@@ -112,7 +109,6 @@ export const cargoCheckFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'remove the whole `use` item',
@@ -190,7 +186,6 @@ export const cargoCheckFailedOutput: CargoMessage[] = [
         'warning: unused variable: `foo`\n  --> src/main.rs:15:11\n   |\n15 |       let foo = foo();\n   |           ^^^ help: if this is intentional, prefix it with an underscore: `_foo`\n   |\n   = note: `#[warn(unused_variables)]` on by default\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[warn(unused_variables)]` on by default',
@@ -198,7 +193,6 @@ export const cargoCheckFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'if this is intentional, prefix it with an underscore',
@@ -276,7 +270,6 @@ export const cargoCheckFailedOutput: CargoMessage[] = [
         'warning: unused variable: `foo`\n  --> src/main.rs:15:11\n   |\n15 |       let foo = foo();\n   |           ^^^ help: if this is intentional, prefix it with an underscore: `_foo`\n   |\n   = note: `#[warn(unused_variables)]` on by default\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[warn(unused_variables)]` on by default',
@@ -284,7 +277,6 @@ export const cargoCheckFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'if this is intentional, prefix it with an underscore',
@@ -362,7 +354,6 @@ export const cargoCheckFailedOutput: CargoMessage[] = [
         'warning: unused variable: `f`\n  --> src/main.rs:20:9\n   |\n20 |     let f = File::open("foo.txt");\n   |         ^ help: if this is intentional, prefix it with an underscore: `_f`\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'if this is intentional, prefix it with an underscore',
@@ -440,7 +431,6 @@ export const cargoCheckFailedOutput: CargoMessage[] = [
         'warning: unused variable: `f`\n  --> src/main.rs:20:9\n   |\n20 |     let f = File::open("foo.txt");\n   |         ^ help: if this is intentional, prefix it with an underscore: `_f`\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'if this is intentional, prefix it with an underscore',
@@ -518,7 +508,6 @@ export const cargoCheckFailedOutput: CargoMessage[] = [
         'warning: value assigned to `foo` is never read\n  --> src/main.rs:29:9\n   |\n29 |     let mut foo = 0;\n   |         ^^^^^^^\n   |\n   = note: `#[warn(unused_assignments)]` on by default\n   = help: maybe it is overwritten before being read?\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[warn(unused_assignments)]` on by default',
@@ -526,7 +515,6 @@ export const cargoCheckFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'maybe it is overwritten before being read?',
@@ -582,7 +570,6 @@ export const cargoCheckFailedOutput: CargoMessage[] = [
         'warning: value assigned to `foo` is never read\n  --> src/main.rs:29:9\n   |\n29 |     let mut foo = 0;\n   |         ^^^^^^^\n   |\n   = note: `#[warn(unused_assignments)]` on by default\n   = help: maybe it is overwritten before being read?\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[warn(unused_assignments)]` on by default',
@@ -590,7 +577,6 @@ export const cargoCheckFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'maybe it is overwritten before being read?',
@@ -646,7 +632,6 @@ export const cargoCheckFailedOutput: CargoMessage[] = [
         'warning: value assigned to `bar` is never read\n  --> src/main.rs:33:5\n   |\n33 |     bar = foo;\n   |     ^^^\n   |\n   = help: maybe it is overwritten before being read?\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'maybe it is overwritten before being read?',
@@ -702,7 +687,6 @@ export const cargoCheckFailedOutput: CargoMessage[] = [
         'warning: value assigned to `bar` is never read\n  --> src/main.rs:33:5\n   |\n33 |     bar = foo;\n   |     ^^^\n   |\n   = help: maybe it is overwritten before being read?\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'maybe it is overwritten before being read?',
@@ -758,7 +742,6 @@ export const cargoCheckFailedOutput: CargoMessage[] = [
         'warning: unused `std::result::Result` that must be used\n  --> src/main.rs:25:5\n   |\n25 |     f.read(&mut buf);\n   |     ^^^^^^^^^^^^^^^^^\n   |\n   = note: `#[warn(unused_must_use)]` on by default\n   = note: this `Result` may be an `Err` variant, which should be handled\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[warn(unused_must_use)]` on by default',
@@ -766,7 +749,6 @@ export const cargoCheckFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'note',
           message: 'this `Result` may be an `Err` variant, which should be handled',
@@ -822,7 +804,6 @@ export const cargoCheckFailedOutput: CargoMessage[] = [
         'warning: unused `std::result::Result` that must be used\n  --> src/main.rs:25:5\n   |\n25 |     f.read(&mut buf);\n   |     ^^^^^^^^^^^^^^^^^\n   |\n   = note: `#[warn(unused_must_use)]` on by default\n   = note: this `Result` may be an `Err` variant, which should be handled\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[warn(unused_must_use)]` on by default',
@@ -830,7 +811,6 @@ export const cargoCheckFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'note',
           message: 'this `Result` may be an `Err` variant, which should be handled',
