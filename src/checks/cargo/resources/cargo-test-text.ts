@@ -93,7 +93,6 @@ export const cargoTestFailedOutput: CargoMessage[] = [
     type: 'test',
     name: 'can_session::tests::tp2_stays_alive_after_applayer_error',
     event: 'failed',
-    exec_time: '0.000s',
     stdout:
       "thread 'can_session::tests::tp2_stays_alive_after_applayer_error' panicked at 'assertion failed: false', can/src/can_session.rs:535:9\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n"
   },
@@ -106,8 +105,7 @@ export const cargoTestFailedOutput: CargoMessage[] = [
     type: 'test',
     name:
       'passive_listeners::tester_detector::tests::detects_frames_on_diagnostic_relevant_arbitration_ids_sent_by_someone_else',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
@@ -117,8 +115,7 @@ export const cargoTestFailedOutput: CargoMessage[] = [
   {
     type: 'test',
     name: 'passive_listeners::tester_detector::tests::doesnt_hardcode_obd2',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
@@ -128,8 +125,7 @@ export const cargoTestFailedOutput: CargoMessage[] = [
   {
     type: 'test',
     name: 'passive_listeners::tester_detector::tests::functionally_addressed_but_not_obd2',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
@@ -139,8 +135,7 @@ export const cargoTestFailedOutput: CargoMessage[] = [
   {
     type: 'test',
     name: 'passive_listeners::tester_detector::tests::obd2',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
@@ -150,8 +145,7 @@ export const cargoTestFailedOutput: CargoMessage[] = [
   {
     type: 'test',
     name: 'passive_listeners::tester_detector::tests::obd2_but_not_functionally_addressed',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
@@ -161,8 +155,7 @@ export const cargoTestFailedOutput: CargoMessage[] = [
   {
     type: 'test',
     name: 'server::tests::it_deserialize_null_sessions',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
@@ -172,8 +165,7 @@ export const cargoTestFailedOutput: CargoMessage[] = [
   {
     type: 'test',
     name: 'server::tests::it_deserialize_sessions_with_numbered_level',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
@@ -183,8 +175,7 @@ export const cargoTestFailedOutput: CargoMessage[] = [
   {
     type: 'test',
     name: 'server::tests::it_fails_empty_sessions',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
@@ -194,8 +185,7 @@ export const cargoTestFailedOutput: CargoMessage[] = [
   {
     type: 'test',
     name: 'server::tests::it_fails_malformed_ecu_formats',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
@@ -205,8 +195,7 @@ export const cargoTestFailedOutput: CargoMessage[] = [
   {
     type: 'test',
     name: 'server::tests::it_fails_nonsense_sessions',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
@@ -216,8 +205,7 @@ export const cargoTestFailedOutput: CargoMessage[] = [
   {
     type: 'test',
     name: 'server::tests::it_works_on_wellformed_ecus',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
@@ -227,8 +215,7 @@ export const cargoTestFailedOutput: CargoMessage[] = [
   {
     type: 'test',
     name: 'transport::isotp::transfer_in::test::check_sn_according_to_fiat',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
@@ -238,8 +225,7 @@ export const cargoTestFailedOutput: CargoMessage[] = [
   {
     type: 'test',
     name: 'transport::isotp::transfer_in::test::check_sn_according_to_iso',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
@@ -249,8 +235,7 @@ export const cargoTestFailedOutput: CargoMessage[] = [
   {
     type: 'test',
     name: 'transport::isotp::transfer_in::test::test_flow_control',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
@@ -270,8 +255,7 @@ export const cargoTestFailedOutput: CargoMessage[] = [
   {
     type: 'test',
     name: 'transport::isotp::transfer_in::test::test_frame_type_from_pci1',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
@@ -281,8 +265,7 @@ export const cargoTestFailedOutput: CargoMessage[] = [
   {
     type: 'test',
     name: 'transport::isotp::transfer_in::test::test_handle_first_frame',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
@@ -292,8 +275,7 @@ export const cargoTestFailedOutput: CargoMessage[] = [
   {
     type: 'test',
     name: 'transport::isotp::transfer_in::test::test_handle_first_frame_unexpected',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
@@ -303,8 +285,7 @@ export const cargoTestFailedOutput: CargoMessage[] = [
   {
     type: 'test',
     name: 'transport::isotp::transfer_in::test::test_handle_single_frame',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
@@ -314,8 +295,7 @@ export const cargoTestFailedOutput: CargoMessage[] = [
   {
     type: 'test',
     name: 'transport::isotp::transfer_in::test::test_handle_single_frame_invalid_length',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
@@ -325,8 +305,7 @@ export const cargoTestFailedOutput: CargoMessage[] = [
   {
     type: 'test',
     name: 'transport::isotp::transfer_in::test::test_handle_single_frame_unexpected',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
@@ -336,8 +315,7 @@ export const cargoTestFailedOutput: CargoMessage[] = [
   {
     type: 'test',
     name: 'transport::isotp::transfer_in::test::test_is_frame_for_us',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
@@ -347,26 +325,22 @@ export const cargoTestFailedOutput: CargoMessage[] = [
   {
     type: 'test',
     name: 'transport::isotp::transfer_in::test::test_waiting_for_first_or_single_frame_timeout',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
     name: 'transport::isotp::transfer_out::test::test_send',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
     name: 'transport::isotp::transfer_out::test::test_send_not_ready',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'test',
     name: 'transport::isotp::transfer_out::test::test_single_frame',
-    event: 'ok',
-    exec_time: '0.000s'
+    event: 'ok'
   },
   {
     type: 'suite',

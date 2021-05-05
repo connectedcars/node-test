@@ -1,6 +1,5 @@
 import { filterDuplicates } from '../../common'
 import { CheckAnnotation, CheckRunCompleted } from '../checks-common'
-import { getCompilerAnnotations } from './cargo'
 import { CargoMessage, CargoTestMessage } from './cargo-types'
 
 export interface CargoTestInput {
@@ -9,35 +8,31 @@ export interface CargoTestInput {
 }
 
 function getTestAnnotations(item: CargoTestMessage): CheckAnnotation[] {
-  const lines = item.stdout?.split('\n')
-  if (!lines?.length) {
-    return []
-  }
-  const match = lines[0].match(/([a-zA-Z0-9]+\/)*([a-zA-Z0-9_-]+)\.rs/)
-  if (!match) {
-    return []
-  }
-
-  const relPath = match[0]
+  // JSON output from `cargo test` is currently
+  // unstable, and the path to the test case or
+  // test suite is not emitted.
+  // While `cargo test` does emit "compiler-artifact"
+  // messages, these cannot be used to reliably infer
+  // the test case or test suite's path.
+  const relPath = item.name
   return [
     {
       path: relPath,
       start_line: 0,
       end_line: 0,
       annotation_level: 'failure',
-      message: item.name,
-      raw_details: JSON.stringify(item, null, '    ')
+      message: item.stdout ?? item.name,
+      title: item.name,
+      raw_details: JSON.stringify(item, null, 4)
     }
   ]
 }
 
 function getAnnotations(data: CargoMessage[]): CheckAnnotation[] {
-  let annotations: CheckAnnotation[] = []
+  const annotations: CheckAnnotation[] = []
   for (const item of data) {
-    if (item.reason === 'compiler-message' && item.message && item.message.level === 'error') {
-      annotations = annotations.concat(getCompilerAnnotations(item))
-    } else if (item.type === 'test' && item.event === 'failed') {
-      annotations = annotations.concat(getTestAnnotations(item))
+    if (item.type === 'test' && item.event === 'failed') {
+      annotations.push(...getTestAnnotations(item))
     }
   }
   return annotations

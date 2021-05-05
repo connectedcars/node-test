@@ -10,88 +10,23 @@ Object {
     "annotations": Array [
       Object {
         "annotation_level": "failure",
-        "end_line": 536,
-        "message": "error: expected one of \`.\`, \`;\`, \`?\`, \`}\`, or an operator, found \`assert_eq\`
-   --> can/src/can_session.rs:536:9
-    |
-535 |         assert!(false) 
-    |                       - expected one of \`.\`, \`;\`, \`?\`, \`}\`, or an operator
-536 |         assert_eq!(session.typ, SessionType::TP2(0x89));
-    |         ^^^^^^^^^ unexpected token
-
-",
-        "path": "can/src/can_session.rs",
-        "raw_details": "{
-    \\"rendered\\": \\"error: expected one of \`.\`, \`;\`, \`?\`, \`}\`, or an operator, found \`assert_eq\`\\\\n   --> can/src/can_session.rs:536:9\\\\n    |\\\\n535 |         assert!(false) \\\\n    |                       - expected one of \`.\`, \`;\`, \`?\`, \`}\`, or an operator\\\\n536 |         assert_eq!(session.typ, SessionType::TP2(0x89));\\\\n    |         ^^^^^^^^^ unexpected token\\\\n\\\\n\\",
-    \\"children\\": [],
-    \\"code\\": null,
-    \\"level\\": \\"error\\",
-    \\"message\\": \\"expected one of \`.\`, \`;\`, \`?\`, \`}\`, or an operator, found \`assert_eq\`\\",
-    \\"spans\\": [
-        {
-            \\"byte_end\\": 17846,
-            \\"byte_start\\": 17846,
-            \\"column_end\\": 23,
-            \\"column_start\\": 23,
-            \\"expansion\\": null,
-            \\"file_name\\": \\"can/src/can_session.rs\\",
-            \\"is_primary\\": false,
-            \\"label\\": \\"expected one of \`.\`, \`;\`, \`?\`, \`}\`, or an operator\\",
-            \\"line_end\\": 535,
-            \\"line_start\\": 535,
-            \\"suggested_replacement\\": null,
-            \\"suggestion_applicability\\": null,
-            \\"text\\": [
-                {
-                    \\"highlight_end\\": 23,
-                    \\"highlight_start\\": 23,
-                    \\"text\\": \\"        assert!(false) \\"
-                }
-            ]
-        },
-        {
-            \\"byte_end\\": 17865,
-            \\"byte_start\\": 17856,
-            \\"column_end\\": 18,
-            \\"column_start\\": 9,
-            \\"expansion\\": null,
-            \\"file_name\\": \\"can/src/can_session.rs\\",
-            \\"is_primary\\": true,
-            \\"label\\": \\"unexpected token\\",
-            \\"line_end\\": 536,
-            \\"line_start\\": 536,
-            \\"suggested_replacement\\": null,
-            \\"suggestion_applicability\\": null,
-            \\"text\\": [
-                {
-                    \\"highlight_end\\": 18,
-                    \\"highlight_start\\": 9,
-                    \\"text\\": \\"        assert_eq!(session.typ, SessionType::TP2(0x89));\\"
-                }
-            ]
-        }
-    ]
-}",
-        "start_line": 536,
-        "title": "expected one of \`.\`, \`;\`, \`?\`, \`}\`, or an operator, found \`assert_eq\`",
-      },
-      Object {
-        "annotation_level": "failure",
         "end_line": 0,
-        "message": "can_session::tests::tp2_stays_alive_after_applayer_error",
-        "path": "can/src/can_session.rs",
+        "message": "thread 'can_session::tests::tp2_stays_alive_after_applayer_error' panicked at 'assertion failed: false', can/src/can_session.rs:535:9
+note: run with \`RUST_BACKTRACE=1\` environment variable to display a backtrace
+",
+        "path": "can_session::tests::tp2_stays_alive_after_applayer_error",
         "raw_details": "{
     \\"type\\": \\"test\\",
     \\"name\\": \\"can_session::tests::tp2_stays_alive_after_applayer_error\\",
     \\"event\\": \\"failed\\",
-    \\"exec_time\\": \\"0.000s\\",
     \\"stdout\\": \\"thread 'can_session::tests::tp2_stays_alive_after_applayer_error' panicked at 'assertion failed: false', can/src/can_session.rs:535:9\\\\nnote: run with \`RUST_BACKTRACE=1\` environment variable to display a backtrace\\\\n\\"
 }",
         "start_line": 0,
+        "title": "can_session::tests::tp2_stays_alive_after_applayer_error",
       },
     ],
-    "summary": "Total of 2 issues",
-    "title": "Total of 2 issues",
+    "summary": "Total of 1 issue",
+    "title": "Total of 1 issue",
   },
   "status": "completed",
 }

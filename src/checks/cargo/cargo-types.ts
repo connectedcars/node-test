@@ -9,19 +9,39 @@ export type CargoMessage =
   | CargoTestMessage
   | CargoSuiteMessage
 
+// JSON output from `cargo test` is currently
+// unstable, so the format is undocumented,
+// and this is entirely inferred.
 export interface CargoTestMessage {
   type: 'test'
   reason?: undefined
   name: string
-  event: string
-  exec_time?: string
+  event: TestEvent
+  // exec_time?: string
   stdout?: string
 }
 
-export interface CargoSuiteMessage {
+export type TestEvent = 'ok' | 'failed' | 'ignored' | 'started' | string
+
+export type CargoSuiteMessage = CargoSuiteStartedMessage | CargoSuiteFinishedMessage
+
+export interface CargoSuiteStartedMessage {
   type: 'suite'
   reason?: undefined
-  event: string
+  event: 'started'
+  // If the test suite is ignored by the use of the
+  // FILTER CLI arg, then `test_count` is `0`.
+  test_count: number
+}
+
+// If the test suite is ignored by the use of the
+// FILTER CLI arg, then `test_count` is `0`, which
+// in turn means all other counts, `passed`, `failed`,
+// etc. are also `0`.
+export interface CargoSuiteFinishedMessage {
+  type: 'suite'
+  reason?: undefined
+  event: 'ok' | 'failed' | string
   passed: number
   failed: number
   allowed_fail: number

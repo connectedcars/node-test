@@ -11,7 +11,7 @@ export async function runCargoTest(args: string[] = []): Promise<CargoMessage[]>
     '--',
     '-Zunstable-options',
     '--format=json',
-    '--report-time',
+    // '--report-time',
     ...args
   ])
   return json
