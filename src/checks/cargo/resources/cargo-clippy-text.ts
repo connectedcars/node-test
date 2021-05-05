@@ -18,7 +18,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'warning: unused import: `std::io::BufReader`\n --> src/main.rs:3:5\n  |\n3 | use std::io::BufReader;\n  |     ^^^^^^^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` on by default\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[warn(unused_imports)]` on by default',
@@ -26,7 +25,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'remove the whole `use` item',
@@ -104,7 +102,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'warning: unused import: `std::io::BufReader`\n --> src/main.rs:3:5\n  |\n3 | use std::io::BufReader;\n  |     ^^^^^^^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` on by default\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[warn(unused_imports)]` on by default',
@@ -112,7 +109,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'remove the whole `use` item',
@@ -190,7 +186,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'warning: unused variable: `foo`\n  --> src/main.rs:15:11\n   |\n15 |       let foo = foo();\n   |           ^^^ help: if this is intentional, prefix it with an underscore: `_foo`\n   |\n   = note: `#[warn(unused_variables)]` on by default\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[warn(unused_variables)]` on by default',
@@ -198,7 +193,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'if this is intentional, prefix it with an underscore',
@@ -276,7 +270,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'warning: unused variable: `f`\n  --> src/main.rs:20:9\n   |\n20 |     let f = File::open("foo.txt");\n   |         ^ help: if this is intentional, prefix it with an underscore: `_f`\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'if this is intentional, prefix it with an underscore',
@@ -354,7 +347,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'warning: value assigned to `foo` is never read\n  --> src/main.rs:29:9\n   |\n29 |     let mut foo = 0;\n   |         ^^^^^^^\n   |\n   = note: `#[warn(unused_assignments)]` on by default\n   = help: maybe it is overwritten before being read?\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[warn(unused_assignments)]` on by default',
@@ -362,7 +354,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'maybe it is overwritten before being read?',
@@ -418,7 +409,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'warning: value assigned to `bar` is never read\n  --> src/main.rs:33:5\n   |\n33 |     bar = foo;\n   |     ^^^\n   |\n   = help: maybe it is overwritten before being read?\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'maybe it is overwritten before being read?',
@@ -474,7 +464,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'warning: unused variable: `foo`\n  --> src/main.rs:15:11\n   |\n15 |       let foo = foo();\n   |           ^^^ help: if this is intentional, prefix it with an underscore: `_foo`\n   |\n   = note: `#[warn(unused_variables)]` on by default\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[warn(unused_variables)]` on by default',
@@ -482,7 +471,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'if this is intentional, prefix it with an underscore',
@@ -560,7 +548,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'warning: unused variable: `f`\n  --> src/main.rs:20:9\n   |\n20 |     let f = File::open("foo.txt");\n   |         ^ help: if this is intentional, prefix it with an underscore: `_f`\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'if this is intentional, prefix it with an underscore',
@@ -638,7 +625,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'warning: value assigned to `foo` is never read\n  --> src/main.rs:29:9\n   |\n29 |     let mut foo = 0;\n   |         ^^^^^^^\n   |\n   = note: `#[warn(unused_assignments)]` on by default\n   = help: maybe it is overwritten before being read?\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[warn(unused_assignments)]` on by default',
@@ -646,7 +632,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'maybe it is overwritten before being read?',
@@ -702,7 +687,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'warning: value assigned to `bar` is never read\n  --> src/main.rs:33:5\n   |\n33 |     bar = foo;\n   |     ^^^\n   |\n   = help: maybe it is overwritten before being read?\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'maybe it is overwritten before being read?',
@@ -758,7 +742,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'error: this looks like you are trying to swap `foo` and `bar`\n  --> src/main.rs:32:5\n   |\n32 | /     foo = bar;\n33 | |     bar = foo;\n   | |_____________^ help: try: `std::mem::swap(&mut foo, &mut bar)`\n   |\n   = note: `#[deny(clippy::almost_swapped)]` on by default\n   = note: or maybe you should use `std::mem::replace`?\n   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#almost_swapped\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[deny(clippy::almost_swapped)]` on by default',
@@ -766,7 +749,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'note',
           message: 'or maybe you should use `std::mem::replace`?',
@@ -774,7 +756,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message:
@@ -783,7 +764,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'try',
@@ -871,7 +851,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'warning: use of a blacklisted/placeholder name `foo`\n  --> src/main.rs:15:11\n   |\n15 |       let foo = foo();\n   |           ^^^\n   |\n   = note: `#[warn(clippy::blacklisted_name)]` on by default\n   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#blacklisted_name\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[warn(clippy::blacklisted_name)]` on by default',
@@ -879,7 +858,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message:
@@ -936,7 +914,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'warning: use of a blacklisted/placeholder name `foo`\n  --> src/main.rs:29:13\n   |\n29 |     let mut foo = 0;\n   |             ^^^\n   |\n   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#blacklisted_name\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'help',
           message:
@@ -993,7 +970,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'warning: in an `if` condition, avoid complex blocks or closures with blocks; instead, move the block or closure higher and bind it with a `let`\n  --> src/main.rs:37:5\n   |\n37 |     if { let b = false; b } {}\n   |     ^^^^^^^^^^^^^^^^^^^^^^^ help: try: `let res = { let b = false; b }; if res`\n   |\n   = note: `#[warn(clippy::blocks_in_if_conditions)]` on by default\n   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#blocks_in_if_conditions\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[warn(clippy::blocks_in_if_conditions)]` on by default',
@@ -1001,7 +977,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message:
@@ -1010,7 +985,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'try',
@@ -1089,7 +1063,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'warning: returning the result of a `let` binding from a block\n  --> src/main.rs:37:25\n   |\n37 |     if { let b = false; b } {}\n   |          -------------- ^\n   |          |\n   |          unnecessary `let` binding\n   |\n   = note: `#[warn(clippy::let_and_return)]` on by default\n   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#let_and_return\nhelp: return the expression directly\n   |\n37 |     if {  false } {}\n   |         --^^^^^\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[warn(clippy::let_and_return)]` on by default',
@@ -1097,7 +1070,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message:
@@ -1106,7 +1078,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'return the expression directly',
@@ -1226,7 +1197,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'error: this looks like you are trying to swap `foo` and `bar`\n  --> src/main.rs:32:5\n   |\n32 | /     foo = bar;\n33 | |     bar = foo;\n   | |_____________^ help: try: `std::mem::swap(&mut foo, &mut bar)`\n   |\n   = note: `#[deny(clippy::almost_swapped)]` on by default\n   = note: or maybe you should use `std::mem::replace`?\n   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#almost_swapped\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[deny(clippy::almost_swapped)]` on by default',
@@ -1234,7 +1204,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'note',
           message: 'or maybe you should use `std::mem::replace`?',
@@ -1242,7 +1211,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message:
@@ -1251,7 +1219,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'try',
@@ -1339,7 +1306,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'warning: use of a blacklisted/placeholder name `foo`\n  --> src/main.rs:15:11\n   |\n15 |       let foo = foo();\n   |           ^^^\n   |\n   = note: `#[warn(clippy::blacklisted_name)]` on by default\n   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#blacklisted_name\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[warn(clippy::blacklisted_name)]` on by default',
@@ -1347,7 +1313,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message:
@@ -1404,7 +1369,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'warning: use of a blacklisted/placeholder name `foo`\n  --> src/main.rs:29:13\n   |\n29 |     let mut foo = 0;\n   |             ^^^\n   |\n   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#blacklisted_name\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'help',
           message:
@@ -1461,7 +1425,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'warning: in an `if` condition, avoid complex blocks or closures with blocks; instead, move the block or closure higher and bind it with a `let`\n  --> src/main.rs:37:5\n   |\n37 |     if { let b = false; b } {}\n   |     ^^^^^^^^^^^^^^^^^^^^^^^ help: try: `let res = { let b = false; b }; if res`\n   |\n   = note: `#[warn(clippy::blocks_in_if_conditions)]` on by default\n   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#blocks_in_if_conditions\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[warn(clippy::blocks_in_if_conditions)]` on by default',
@@ -1469,7 +1432,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message:
@@ -1478,7 +1440,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'try',
@@ -1557,7 +1518,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'warning: returning the result of a `let` binding from a block\n  --> src/main.rs:37:25\n   |\n37 |     if { let b = false; b } {}\n   |          -------------- ^\n   |          |\n   |          unnecessary `let` binding\n   |\n   = note: `#[warn(clippy::let_and_return)]` on by default\n   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#let_and_return\nhelp: return the expression directly\n   |\n37 |     if {  false } {}\n   |         --^^^^^\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[warn(clippy::let_and_return)]` on by default',
@@ -1565,7 +1525,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message:
@@ -1574,7 +1533,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'return the expression directly',
@@ -1694,7 +1652,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'warning: unused `std::result::Result` that must be used\n  --> src/main.rs:25:5\n   |\n25 |     f.read(&mut buf);\n   |     ^^^^^^^^^^^^^^^^^\n   |\n   = note: `#[warn(unused_must_use)]` on by default\n   = note: this `Result` may be an `Err` variant, which should be handled\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[warn(unused_must_use)]` on by default',
@@ -1702,7 +1659,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'note',
           message: 'this `Result` may be an `Err` variant, which should be handled',
@@ -1779,7 +1735,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'warning: `assert!(true)` will be optimized out by the compiler\n  --> src/main.rs:51:9\n   |\n51 |         assert!(true);\n   |         ^^^^^^^^^^^^^^\n   |\n   = note: `#[warn(clippy::assertions_on_constants)]` on by default\n   = help: remove it\n   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#assertions_on_constants\n   = note: this warning originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[warn(clippy::assertions_on_constants)]` on by default',
@@ -1787,7 +1742,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'remove it',
@@ -1795,7 +1749,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message:
@@ -1912,7 +1865,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'warning: `assert!(false)` should probably be replaced\n  --> src/main.rs:56:5\n   |\n56 |     assert!(false);\n   |     ^^^^^^^^^^^^^^^\n   |\n   = help: use `panic!()` or `unreachable!()`\n   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#assertions_on_constants\n   = note: this warning originates in a macro (in Nightly builds, run with -Z macro-backtrace for more info)\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'help',
           message: 'use `panic!()` or `unreachable!()`',
@@ -1920,7 +1872,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'help',
           message:
@@ -2037,7 +1988,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
         'warning: unused `std::result::Result` that must be used\n  --> src/main.rs:25:5\n   |\n25 |     f.read(&mut buf);\n   |     ^^^^^^^^^^^^^^^^^\n   |\n   = note: `#[warn(unused_must_use)]` on by default\n   = note: this `Result` may be an `Err` variant, which should be handled\n\n',
       children: [
         {
-          children: [],
           code: null,
           level: 'note',
           message: '`#[warn(unused_must_use)]` on by default',
@@ -2045,7 +1995,6 @@ export const cargoClippyFailedOutput: CargoMessage[] = [
           spans: []
         },
         {
-          children: [],
           code: null,
           level: 'note',
           message: 'this `Result` may be an `Err` variant, which should be handled',
