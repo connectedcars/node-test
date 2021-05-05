@@ -24,7 +24,7 @@ Object {
     "annotations": Array [
       Object {
         "annotation_level": "failure",
-        "end_line": 2,
+        "end_line": 7,
         "message": "Original: 
 
 pub fn bar(
@@ -48,7 +48,7 @@ Expected: pub fn bar() {
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 1,
+        "end_line": 5,
         "message": "Original: 
 
 mod bar
@@ -86,7 +86,7 @@ Expected: mod foo;",
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 12,
+        "end_line": 10,
         "message": "Original:  mod foo  ;
 
 Expected: fn main() {
@@ -104,7 +104,7 @@ Expected: fn main() {
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 14,
+        "end_line": 16,
         "message": "Original: 
 fn main()
 {
@@ -125,7 +125,7 @@ Expected: ",
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 16,
+        "end_line": 19,
         "message": "Original: 
 
 Expected: ",
@@ -142,7 +142,7 @@ Expected: ",
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 23,
+        "end_line": 28,
         "message": "Original: 
 
 
@@ -160,7 +160,7 @@ Expected: ",
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 32,
+        "end_line": 38,
         "message": "Original: 
 
     if { let b = false; b } {}
@@ -183,7 +183,7 @@ Expected:     if {
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 50,
+        "end_line": 56,
         "message": "Original:     assert!(false);
 
 Expected:         assert!(false);",
@@ -200,7 +200,7 @@ Expected:         assert!(false);",
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 65,
+        "end_line": 72,
         "message": "Original: 
 
 
@@ -218,7 +218,7 @@ Expected: ",
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 66,
+        "end_line": 75,
         "message": "Original: 
 
 

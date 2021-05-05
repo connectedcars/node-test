@@ -1,4 +1,4 @@
-import { filterDuplicates } from '../../common'
+import { filterDuplicates, stripPrefix } from '../../common'
 import { CheckAnnotation, CheckRunCompleted } from '../checks-common'
 import { CargoFmtFile } from './cargo-types'
 
@@ -10,13 +10,14 @@ export interface CargoFmtInput {
 export function cargoFmtCheck({ data, sha }: CargoFmtInput): CheckRunCompleted {
   if (Array.isArray(data)) {
     let annotations: CheckAnnotation[] = []
+    const cwd = `${process.cwd()}/`
     for (const file of data) {
       for (const mismatch of file.mismatches) {
         const annotation: CheckAnnotation = {
-          path: file.name,
+          path: stripPrefix(file.name, cwd),
           annotation_level: 'failure',
           start_line: mismatch.original_begin_line,
-          end_line: mismatch.expected_end_line,
+          end_line: mismatch.original_end_line,
           message: `Original: ${mismatch.original}\n\nExpected: ${mismatch.expected}`,
           raw_details: JSON.stringify(mismatch, null, '    ')
         }
