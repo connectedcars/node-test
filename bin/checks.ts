@@ -99,8 +99,8 @@ async function main(argv: string[]) {
           completed_at: new Date().toISOString(),
           started_at: startedAt,
           output: {
-            title: summary,
-            summary
+            title: summary.slice(0, 255),
+            summary: summary.slice(0, 255)
           }
         },
         flags.ci
@@ -145,8 +145,9 @@ async function main(argv: string[]) {
           completed_at: new Date().toISOString(),
           started_at: startedAt,
           output: {
-            title: `Failed converting check: ${e.message}`,
-            summary: JSON.stringify(e, null, 2)
+            title: `Failed converting check`,
+            summary: e.message.slice(0, 255),
+            text: '```json\n' + JSON.stringify(e, null, 2) + '```\n'
           }
         })
         if (flags.hardFail) {
@@ -161,8 +162,9 @@ async function main(argv: string[]) {
         completed_at: new Date().toISOString(),
         started_at: startedAt,
         output: {
-          title: `Failed for unknown reason: ${e.message}`,
-          summary: JSON.stringify(e, null, 2)
+          title: `Failed for unknown reason`,
+          summary: e.message.slice(0, 255),
+          text: '```json\n' + JSON.stringify(e, null, 2) + '```\n'
         }
       })
       if (flags.hardFail) {
