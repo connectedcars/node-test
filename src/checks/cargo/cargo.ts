@@ -2,6 +2,21 @@ import { touchFiles } from '../../unix'
 import { CheckAnnotation } from '../checks-common'
 import { CargoBuildFinishedMessage, CargoCompilerMessage, CargoMessage, DiagnosticSpan } from './cargo-types'
 
+const DEFAULT_CI_RUSTFLAGS = '-F warnings -D unused'
+
+export function updateEnvRustFlags(ci: boolean): void {
+  let rustFlags = process.env['RUSTFLAGS'] || ''
+
+  if (ci) {
+    rustFlags += ' --cfg ci_build'
+
+    const ciRustFlags = process.env['CI_RUSTFLAGS'] ?? DEFAULT_CI_RUSTFLAGS
+    rustFlags += ` ${ciRustFlags}`
+  }
+
+  process.env['RUSTFLAGS'] = rustFlags.trim()
+}
+
 export function getCompilerAnnotations(item: CargoCompilerMessage): CheckAnnotation[] {
   // The `children` i.e. the child diagnostic messages can safely
   // be ignored, as they only provide additional information to
