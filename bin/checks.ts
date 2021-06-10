@@ -4,7 +4,7 @@ import fs from 'fs'
 import util from 'util'
 import yargs from 'yargs'
 
-import { cargoHasBuildFinished } from '../src/checks/cargo/cargo'
+import { cargoHasBuildFinished, updateEnvRustFlags } from '../src/checks/cargo/cargo'
 import { cargoCheckCheck } from '../src/checks/cargo/cargo-check'
 import { cargoClippyCheck } from '../src/checks/cargo/cargo-clippy'
 import { cargoFmtCheck } from '../src/checks/cargo/cargo-fmt'
@@ -70,6 +70,10 @@ async function main(argv: string[]) {
   if (!COMMIT_SHA) {
     console.error('Missing environment variable "COMMIT_SHA"')
     return 1
+  }
+
+  if (flags.ci) {
+    updateEnvRustFlags(flags.ci)
   }
 
   const startedAt = new Date().toISOString()
