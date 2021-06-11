@@ -9,6 +9,7 @@ import { cargoCheckCheck } from '../src/checks/cargo/cargo-check'
 import { cargoClippyCheck } from '../src/checks/cargo/cargo-clippy'
 import { cargoFmtCheck } from '../src/checks/cargo/cargo-fmt'
 import { cargoTestCheck } from '../src/checks/cargo/cargo-test'
+import { CargoMessage } from '../src/checks/cargo/cargo-types'
 import { runCargoCheck } from '../src/checks/cargo/run-cargo-check'
 import { runCargoClippy } from '../src/checks/cargo/run-cargo-clippy'
 import { runCargoFmt } from '../src/checks/cargo/run-cargo-fmt'
@@ -281,9 +282,13 @@ async function lookupConvertFunction(
         return null
       }
       return async () => {
-        const output = await runCargoCheck(args)
-        const skipRest = !cargoHasBuildFinished(output)
-
+        // To maximize the amount of lints caught across features, then
+        // then `cargo check` needs to be executed twice, both with and
+        // without `--all-features`.
+        // See more at https://github.com/connectedcars/node-test/pull/55
+        const outputs = [await runCargoCheck(args, false), await runCargoCheck(args, true)]
+        const output = ([] as CargoMessage[]).concat(...outputs)
+        const skipRest = outputs.some(output => !cargoHasBuildFinished(output))
         return [
           skipRest,
           cargoCheckCheck({
