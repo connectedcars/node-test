@@ -4,7 +4,7 @@ import fs from 'fs'
 import util from 'util'
 import yargs from 'yargs'
 
-import { cargoHasBuildFinished, updateEnvRustFlags } from '../src/checks/cargo/cargo'
+import { cargoHasBuildFinished } from '../src/checks/cargo/cargo'
 import { cargoCheckCheck } from '../src/checks/cargo/cargo-check'
 import { cargoClippyCheck } from '../src/checks/cargo/cargo-clippy'
 import { cargoFmtCheck } from '../src/checks/cargo/cargo-fmt'
@@ -72,10 +72,6 @@ async function main(argv: string[]) {
     return 1
   }
 
-  if (flags.ci) {
-    updateEnvRustFlags(flags.ci)
-  }
-
   const startedAt = new Date().toISOString()
 
   const ALL_CARGO_COMMANDS = ['cargo-check', 'cargo-clippy', 'cargo-test', 'cargo-fmt']
@@ -114,7 +110,7 @@ async function main(argv: string[]) {
     }
 
     try {
-      const convertFunction = await lookupConvertFunction(cmd, args, COMMIT_SHA, command === 'auto')
+      const convertFunction = await lookupConvertFunction(cmd, args, COMMIT_SHA, command === 'auto', flags.ci)
       if (convertFunction === null) {
         continue
       }
@@ -185,7 +181,8 @@ async function lookupConvertFunction(
   command: string,
   args: string[],
   commitSha: string,
-  detect = false
+  detect = false,
+  ci = true
 ): Promise<(() => Promise<[boolean, CheckRunCompleted]>) | null> {
   switch (command) {
     case 'jest': {
@@ -290,7 +287,7 @@ async function lookupConvertFunction(
         // then `cargo check` needs to be executed twice, both with and
         // without `--all-features`.
         // See more at https://github.com/connectedcars/node-test/pull/55
-        const outputs = [await runCargoCheck(args, false), await runCargoCheck(args, true)]
+        const outputs = [await runCargoCheck(args, false, ci), await runCargoCheck(args, true, ci)]
         const output = ([] as CargoMessage[]).concat(...outputs)
         const skipRest = outputs.some(output => !cargoHasBuildFinished(output))
         return [
@@ -307,7 +304,7 @@ async function lookupConvertFunction(
         return null
       }
       return async () => {
-        const output = await runCargoClippy(args)
+        const output = await runCargoClippy(args, ci)
         return [
           false,
           cargoClippyCheck({
@@ -322,7 +319,7 @@ async function lookupConvertFunction(
         return null
       }
       return async () => {
-        const output = await runCargoTest(args)
+        const output = await runCargoTest(args, ci)
         return [
           false,
           cargoTestCheck({
@@ -337,7 +334,7 @@ async function lookupConvertFunction(
         return null
       }
       return async () => {
-        const output = await runCargoFmt(args)
+        const output = await runCargoFmt(args, ci)
         return [
           false,
           cargoFmtCheck({

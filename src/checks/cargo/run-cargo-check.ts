@@ -1,15 +1,9 @@
-import { runJsonLinesCommand } from '../checks-common'
-import { touchRustFiles } from './cargo'
 import { CargoMessage } from './cargo-types'
+import { runCargo } from './run-cargo'
 
-export async function runCargoCheck(args: string[] = [], allFeatures = false): Promise<CargoMessage[]> {
-  // Description for why this is needed, can be found
-  // at the `touchRustFiles` definition
-  await touchRustFiles()
-
+export async function runCargoCheck(args: string[] = [], allFeatures = false, ci = true): Promise<CargoMessage[]> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [exitInfo, json] = await runJsonLinesCommand<CargoMessage>(
-    'cargo',
+  const [exitInfo, json] = await runCargo(
     [
       'check',
       '--all-targets',
@@ -18,8 +12,8 @@ export async function runCargoCheck(args: string[] = [], allFeatures = false): P
       '--message-format=json',
       '--',
       ...args
-    ].filter(Boolean)
+    ].filter(Boolean),
+    ci
   )
-
   return json
 }
