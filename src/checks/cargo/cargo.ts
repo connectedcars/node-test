@@ -4,7 +4,7 @@ import { CargoBuildFinishedMessage, CargoCompilerMessage, CargoMessage, Diagnost
 
 const DEFAULT_CI_RUSTFLAGS = '-F warnings -D unused'
 
-export function updateEnvRustFlags(ci: boolean): void {
+export function getEnvRustFlags(ci: boolean): string {
   let rustFlags = process.env['RUSTFLAGS'] || ''
 
   if (ci) {
@@ -14,7 +14,7 @@ export function updateEnvRustFlags(ci: boolean): void {
     rustFlags += ` ${ciRustFlags}`
   }
 
-  process.env['RUSTFLAGS'] = rustFlags.trim()
+  return rustFlags.trim()
 }
 
 export function getCompilerAnnotations(item: CargoCompilerMessage): CheckAnnotation[] {
