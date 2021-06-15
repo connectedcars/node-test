@@ -3,7 +3,7 @@ import { runCargo } from './run-cargo'
 
 export async function runCargoCheck(args: string[] = [], allFeatures = false, ci = true): Promise<CargoMessage[]> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [exitInfo, json] = await runCargo(
+  return runCargo(
     [
       'check',
       '--all-targets',
@@ -15,5 +15,4 @@ export async function runCargoCheck(args: string[] = [], allFeatures = false, ci
     ].filter(Boolean),
     ci
   )
-  return json
 }
