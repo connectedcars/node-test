@@ -66,8 +66,8 @@ async function main(argv: string[]) {
 
   const [command, ...args] = commandAndArgs.map(a => a.toString())
 
-  const COMMIT_SHA = process.env.COMMIT_SHA
-  if (!COMMIT_SHA) {
+  const COMMIT_SHA = process.env.COMMIT_SHA || ''
+  if (flags.ci && COMMIT_SHA.length == 0) {
     console.error('Missing environment variable "COMMIT_SHA"')
     return 1
   }
