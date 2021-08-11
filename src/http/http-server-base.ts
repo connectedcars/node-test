@@ -19,6 +19,8 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
   protected httpServer: T
   protected requests: HttpRequest[]
   private baseUrl: string
+  private socketId = 0
+  private sockets: Record<number, net.Socket> = {}
 
   // TODO: Move to options instead of adding more params
   public constructor(baseUrl: string, httpServer: T, listenPort = 0, requests: HttpRequest[] = []) {
@@ -40,6 +42,15 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
       this.listenPort = addressInfo.port
       this.listenUrl = `${this.baseUrl}:${this.listenPort}`
     })
+    this.httpServer.on('connection', socket => {
+      // https://stackoverflow.com/questions/14626636/how-do-i-shutdown-a-node-js-https-server-immediately/14636625#14636625
+      const socketId = this.socketId++
+      this.sockets[socketId] = socket
+
+      socket.on('close', () => {
+        delete this.sockets[socketId]
+      })
+    })
     return new Promise(resolve => {
       this.httpServer.listen(this.listenPort, () => {
         // TODO: Error handling, fx if the port is used
@@ -54,6 +65,9 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
       this.httpServer.close(() => {
         resolve()
       })
+      for (const socketId in this.sockets) {
+        this.sockets[socketId].destroy()
+      }
     })
   }
 
