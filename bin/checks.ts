@@ -13,7 +13,7 @@ import { CargoMessage } from '../src/checks/cargo/cargo-types'
 import { runCargoCheck } from '../src/checks/cargo/run-cargo-check'
 import { runCargoClippy } from '../src/checks/cargo/run-cargo-clippy'
 import { runCargoFmt } from '../src/checks/cargo/run-cargo-fmt'
-import { runCargoTest } from '../src/checks/cargo/run-cargo-test'
+import { runCargoDocTest, runCargoTest } from '../src/checks/cargo/run-cargo-test'
 import { CheckConversionError, CheckRunCompleted, printSummary } from '../src/checks/checks-common'
 import { eslintCheck } from '../src/checks/eslint/eslint'
 import { runEslint } from '../src/checks/eslint/run-eslint'
@@ -319,7 +319,8 @@ async function lookupConvertFunction(
         return null
       }
       return async () => {
-        const output = await runCargoTest(args, ci)
+        const outputs = [await runCargoTest(args, ci), await runCargoDocTest(args, ci)]
+        const output = ([] as CargoMessage[]).concat(...outputs)
         return [
           false,
           cargoTestCheck({
