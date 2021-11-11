@@ -287,7 +287,16 @@ async function lookupConvertFunction(
         // then `cargo check` needs to be executed twice, both with and
         // without `--all-features`.
         // See more at https://github.com/connectedcars/node-test/pull/55
-        const outputs = [await runCargoCheck(args, false, ci), await runCargoCheck(args, true, ci)]
+        const outputs = [
+          // Debug build
+          await runCargoCheck(args, false, ci),
+          // Debug build - all features
+          await runCargoCheck(args, true, ci),
+          // Release build
+          await runCargoCheck(args, false, ci, true),
+          // Release build - all features
+          await runCargoCheck(args, true, ci, true)
+        ]
         const output = ([] as CargoMessage[]).concat(...outputs)
         const skipRest = outputs.some(output => !cargoHasBuildFinished(output))
         return [
