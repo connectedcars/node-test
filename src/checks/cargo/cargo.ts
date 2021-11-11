@@ -2,7 +2,11 @@ import { touchFiles } from '../../unix'
 import { CheckAnnotation } from '../checks-common'
 import { CargoBuildFinishedMessage, CargoCompilerMessage, CargoMessage, DiagnosticSpan } from './cargo-types'
 
-const DEFAULT_CI_RUSTFLAGS = '-F warnings -D unused'
+// In newer versions, doing `#![forbid(warnings)]` is not allowed
+// and triggers the `forbidden_lint_groups` lint.
+// Issue: https://github.com/rust-lang/rust/issues/81670
+// Reference: https://doc.rust-lang.org/rustc/lints/listing/warn-by-default.html#forbidden-lint-groups
+const DEFAULT_CI_RUSTFLAGS = '-D warnings -D unused'
 
 export function getEnvRustFlags(ci: boolean): string {
   let rustFlags = process.env['RUSTFLAGS'] || ''
