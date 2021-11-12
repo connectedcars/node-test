@@ -21,6 +21,40 @@ export function getEnvRustFlags(ci: boolean): string {
   return rustFlags.trim()
 }
 
+export function getRustEnv(
+  workspacePath: string,
+  releaseBuild: boolean,
+  allFeatures: boolean,
+  ci: boolean
+): { [key: string]: string } {
+  return {
+    ...process.env,
+    RUSTFLAGS: getEnvRustFlags(ci),
+    CARGO_TARGET_DIR: createRustTargetPath(workspacePath, releaseBuild, allFeatures, ci)
+  }
+}
+
+// Assumes that `CARGO_MANIFEST_DIR` is not present, or that
+// it is not different from the current working directory.
+export function createRustTargetPath(
+  workspacePath: string,
+  releaseBuild: boolean,
+  allFeatures: boolean,
+  ci: boolean
+): string {
+  // Currently we don't have anything where using `--all-targets`
+  // triggers any dependencies to get rebuild. So currently, it is
+  // not used.
+  // This also means that build times are quicker, since half the
+  // builds will share the same target directory.
+  return (
+    `${workspacePath}/target/checks-` +
+    (releaseBuild ? 'release' : 'debug') +
+    // (allFeatures ? '-all' : '') +
+    (ci ? '-ci' : '')
+  )
+}
+
 export function getCompilerAnnotations(item: CargoCompilerMessage): CheckAnnotation[] {
   // The `children` i.e. the child diagnostic messages can safely
   // be ignored, as they only provide additional information to
