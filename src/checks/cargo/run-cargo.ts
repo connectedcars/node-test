@@ -2,7 +2,8 @@ import { SpawnOptions } from 'child_process'
 
 import { ExitInformation } from '../../unix'
 import { runJsonLinesCommand } from '../checks-common'
-import { getEnvRustFlags, touchRustFiles } from './cargo'
+import { getRustEnv, touchRustFiles } from './cargo'
+import { runCargoLocateWorkspace } from './run-cargo-locate-workspace'
 
 export type CargoRunCommand<T> = (
   command: string,
@@ -19,12 +20,14 @@ export async function runCargo<T>(
   // at the `touchRustFiles` definition
   await touchRustFiles()
 
+  const workspacePath = await runCargoLocateWorkspace()
+
+  const isReleaseBuild = args.indexOf('--release') !== -1
+  const isAllFeatures = args.indexOf('--all-features') !== -1
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [exitInfo, json] = await runCommand('cargo', args, {
-    env: {
-      ...process.env,
-      RUSTFLAGS: getEnvRustFlags(ci)
-    }
+    env: getRustEnv(workspacePath, isReleaseBuild, isAllFeatures, ci)
   })
   return json
 }

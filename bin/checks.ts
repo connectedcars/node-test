@@ -297,8 +297,8 @@ async function lookupConvertFunction(
           // Release build - all features
           await runCargoCheck(args, true, ci, true)
         ]
-        const output = ([] as CargoMessage[]).concat(...outputs)
         const skipRest = outputs.some(output => !cargoHasBuildFinished(output))
+        const output = ([] as CargoMessage[]).concat(...outputs)
         return [
           skipRest,
           cargoCheckCheck({
