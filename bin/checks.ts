@@ -313,7 +313,13 @@ async function lookupConvertFunction(
         return null
       }
       return async () => {
-        const output = await runCargoClippy(args, ci)
+        const outputs = [
+          // Debug build
+          await runCargoClippy(args, ci, false),
+          // Release build
+          await runCargoClippy(args, ci, true)
+        ]
+        const output = ([] as CargoMessage[]).concat(...outputs)
         return [
           false,
           cargoClippyCheck({
