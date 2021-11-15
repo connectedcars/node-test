@@ -1,11 +1,23 @@
 import { CargoMessage } from './cargo-types'
 import { runCargo } from './run-cargo'
 
-export async function runCargoClippy(args: string[] = [], ci = true): Promise<CargoMessage[]> {
+export async function runCargoClippy(args: string[] = [], ci = true, releaseBuild = false): Promise<CargoMessage[]> {
   if (args.length == 0) {
     args = ['-D', 'clippy::all']
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  return runCargo(['clippy', '--all-targets', '--all-features', '--locked', '--message-format=json', '--', ...args], ci)
+  return runCargo(
+    [
+      'clippy',
+      releaseBuild ? '--release' : '',
+      '--all-targets',
+      '--all-features',
+      '--locked',
+      '--message-format=json',
+      '--',
+      ...args
+    ].filter(Boolean),
+    ci
+  )
 }
