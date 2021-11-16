@@ -8,6 +8,7 @@ export async function runCargoFmt(args: string[] = [], ci = true): Promise<Cargo
   return runCargo<CargoFmtFile>(
     ['+nightly', 'fmt', '--', '--emit=json', '--color', 'never', ...args],
     ci,
+    true,
     runJsonCommand
   )
   // TODO: If there is syntax errors then `cargo fmt` fails, which results in `json` being empty

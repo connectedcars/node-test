@@ -39,6 +39,18 @@ describe('run-cargo-clippy', () => {
       null,
       cargoClippyFailedOutput as any
     )
+    await commandEmulation.registerCommand(
+      'rustc',
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      data => {
+        process.stdout.end('rustc 1.54.0 (a178d0322 2021-07-26)\n')
+
+        process.stdout.on('finish', () => {
+          process.exit(0)
+        })
+      },
+      null
+    )
     const cargoJson = await runCargoClippy()
     expect(cargoJson).toEqual(cargoClippyFailedOutput)
   })

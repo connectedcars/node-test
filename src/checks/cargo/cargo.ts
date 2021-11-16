@@ -1,6 +1,7 @@
 import { touchFiles } from '../../unix'
 import { CheckAnnotation } from '../checks-common'
 import { CargoBuildFinishedMessage, CargoCompilerMessage, CargoMessage, DiagnosticSpan } from './cargo-types'
+import { RustVersion } from './run-rustc-version'
 
 // In newer versions, doing `#![forbid(warnings)]` is not allowed
 // and triggers the `forbidden_lint_groups` lint.
@@ -108,6 +109,19 @@ export function cargoHasBuildFinished(output: CargoMessage[]): boolean {
   const buildSuccess = buildFinished?.success ?? true
 
   return buildSuccess
+}
+
+export function isTouchingWorkspaceRequired(version: RustVersion | null): boolean {
+  // For more information, see the docs for `touchRustFiles`.
+  // Issue: https://github.com/rust-lang/rust-clippy/issues/4612
+  if (version == null) {
+    // If it was unable to obtain the Rust version,
+    // then assume touching is required.
+    return true
+  }
+
+  // Reference: https://blog.rust-lang.org/2021/05/06/Rust-1.52.0.html
+  return version.major < 1 || (version.major == 1 && version.minor < 52)
 }
 
 // Clippy shares the same build cache as Cargo,
