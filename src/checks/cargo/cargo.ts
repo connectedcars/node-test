@@ -7,7 +7,7 @@ import { RustVersion } from './run-rustc-version'
 // and triggers the `forbidden_lint_groups` lint.
 // Issue: https://github.com/rust-lang/rust/issues/81670
 // Reference: https://doc.rust-lang.org/rustc/lints/listing/warn-by-default.html#forbidden-lint-groups
-const DEFAULT_CI_RUSTFLAGS = '-D warnings -D unused'
+const DEFAULT_CI_RUSTFLAGS = '-W warnings -W unused'
 
 export function getEnvRustFlags(ci: boolean): string {
   let rustFlags = process.env['RUSTFLAGS'] || ''
