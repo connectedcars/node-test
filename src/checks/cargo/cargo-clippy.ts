@@ -1,6 +1,6 @@
 import { filterDuplicates } from '../../common'
 import { CheckAnnotation, CheckRunCompleted } from '../checks-common'
-import { getCompilerAnnotations } from './cargo'
+import { getCompilerAnnotations, isMessageFromDependency } from './cargo'
 import { CargoMessage } from './cargo-types'
 
 // TODO: Implement more than just errors: https://github.com/actions-rs/clippy-check/blob/master/src/check.ts
@@ -23,10 +23,14 @@ export function cargoClippyCheck({ data, sha }: CargoClippyInput): CheckRunCompl
     for (const item of data) {
       if (item.reason === 'compiler-message') {
         // All clippy lints contains "clippy" in their message, so
-        // filter all compiler messages that does not contain the
+        // filter all compiler messages that does not contain
         // "clippy". This is to avoid repeating all issues already
         // found by `cargo check`.
         if (!item.message.rendered?.includes('clippy')) {
+          continue
+        }
+
+        if (isMessageFromDependency(item)) {
           continue
         }
 
