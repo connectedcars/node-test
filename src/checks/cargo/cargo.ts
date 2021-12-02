@@ -56,6 +56,15 @@ export function createRustTargetPath(
   )
 }
 
+export function isMessageFromDependency(item: CargoCompilerMessage): boolean | null {
+  const span = getPrimaryOrFirstSpan(item.message.spans)
+  if (span) {
+    return span.file_name.indexOf('/.cargo/registry/') !== -1
+  } else {
+    return null
+  }
+}
+
 export function getCompilerAnnotations(item: CargoCompilerMessage): CheckAnnotation[] {
   // The `children` i.e. the child diagnostic messages can safely
   // be ignored, as they only provide additional information to
