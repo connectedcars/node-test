@@ -8,6 +8,7 @@ import {
   CargoMessage,
   DiagnosticSpan
 } from './cargo-types'
+import { CargoLocateWorkspaceError } from './run-cargo-locate-workspace'
 import { RustVersion } from './run-rustc-version'
 
 // In newer versions, doing `#![forbid(warnings)]` is not allowed
@@ -170,16 +171,21 @@ export async function tryCargoRun<T>(exec: () => Promise<T[][]>): Promise<(T | C
         const msg = parseCargoManifestParseError(err.stderr)
         return [msg]
       }
+    } else if (err instanceof CargoLocateWorkspaceError) {
+      if (isParseManifestError(err.stderr)) {
+        const msg = parseCargoManifestParseError(err.stderr)
+        return [msg]
+      }
     }
 
     throw err
   }
 }
 
-function isParseManifestError(str: string): boolean {
+function isParseManifestError(error: string): boolean {
   // `rustfmt` outputs the same error, but prefixed with more info,
   // so using `.trimLeft().startsWith("...")` is not sufficient
-  return str.indexOf('error: failed to parse manifest') !== -1
+  return error.indexOf('error: failed to parse manifest') !== -1
 }
 
 function parseCargoManifestParseError(error: string): CargoManifestParseError {
