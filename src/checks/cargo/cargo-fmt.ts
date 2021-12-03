@@ -1,27 +1,32 @@
 import { filterDuplicates, stripPrefix } from '../../common'
 import { CheckAnnotation, CheckRunCompleted } from '../checks-common'
-import { CargoFmtFile } from './cargo-types'
+import { createAnnotationFromManifestError } from './cargo'
+import { CargoFmtMessage } from './cargo-types'
 
 export interface CargoFmtInput {
   sha: string
-  data: CargoFmtFile[]
+  data: CargoFmtMessage[]
 }
 
 export function cargoFmtCheck({ data, sha }: CargoFmtInput): CheckRunCompleted {
   if (Array.isArray(data)) {
     let annotations: CheckAnnotation[] = []
     const cwd = `${process.cwd()}/`
-    for (const file of data) {
-      for (const mismatch of file.mismatches) {
-        const annotation: CheckAnnotation = {
-          path: stripPrefix(file.name, cwd),
-          annotation_level: 'failure',
-          start_line: mismatch.original_begin_line,
-          end_line: mismatch.original_end_line,
-          message: `Original: ${mismatch.original}\n\nExpected: ${mismatch.expected}`,
-          raw_details: JSON.stringify(mismatch, null, '    ')
+    for (const msg of data) {
+      if (msg.reason == 'manifest-parse-error') {
+        annotations.push(createAnnotationFromManifestError(msg))
+      } else {
+        for (const mismatch of msg.mismatches) {
+          const annotation: CheckAnnotation = {
+            path: stripPrefix(msg.name, cwd),
+            annotation_level: 'failure',
+            start_line: mismatch.original_begin_line,
+            end_line: mismatch.original_end_line,
+            message: `Original: ${mismatch.original}\n\nExpected: ${mismatch.expected}`,
+            raw_details: JSON.stringify(mismatch, null, '    ')
+          }
+          annotations.push(annotation)
         }
-        annotations.push(annotation)
       }
     }
     if (annotations.length > 0) {

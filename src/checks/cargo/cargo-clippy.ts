@@ -1,6 +1,6 @@
 import { filterDuplicates } from '../../common'
 import { CheckAnnotation, CheckRunCompleted } from '../checks-common'
-import { getCompilerAnnotations, isMessageFromDependency } from './cargo'
+import { createAnnotationFromManifestError, getCompilerAnnotations, isMessageFromDependency } from './cargo'
 import { CargoMessage } from './cargo-types'
 
 // TODO: Implement more than just errors: https://github.com/actions-rs/clippy-check/blob/master/src/check.ts
@@ -59,6 +59,9 @@ export function cargoClippyCheck({ data, sha }: CargoClippyInput): CheckRunCompl
         // is already regarded as something that must be resolved.
         // Thus map all messages into failures.
         annotations.push(...getCompilerAnnotations(item))
+      } else if (item.reason === 'manifest-parse-error') {
+        stats.error += 1
+        annotations.push(createAnnotationFromManifestError(item))
       }
     }
 

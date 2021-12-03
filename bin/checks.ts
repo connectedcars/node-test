@@ -4,12 +4,11 @@ import fs from 'fs'
 import util from 'util'
 import yargs from 'yargs'
 
-import { cargoHasBuildFinished } from '../src/checks/cargo/cargo'
+import { isCargoBuildSuccessful, tryCargoRun } from '../src/checks/cargo/cargo'
 import { cargoCheckCheck } from '../src/checks/cargo/cargo-check'
 import { cargoClippyCheck } from '../src/checks/cargo/cargo-clippy'
 import { cargoFmtCheck } from '../src/checks/cargo/cargo-fmt'
 import { cargoTestCheck } from '../src/checks/cargo/cargo-test'
-import { CargoMessage } from '../src/checks/cargo/cargo-types'
 import { runCargoCheck } from '../src/checks/cargo/run-cargo-check'
 import { runCargoClippy } from '../src/checks/cargo/run-cargo-clippy'
 import { runCargoFmt } from '../src/checks/cargo/run-cargo-fmt'
@@ -287,7 +286,7 @@ async function lookupConvertFunction(
         // then `cargo check` needs to be executed twice, both with and
         // without `--all-features`.
         // See more at https://github.com/connectedcars/node-test/pull/55
-        const outputs = [
+        const output = await tryCargoRun(async () => [
           // Debug build
           await runCargoCheck(args, false, ci),
           // Debug build - all features
@@ -296,9 +295,8 @@ async function lookupConvertFunction(
           await runCargoCheck(args, false, ci, true),
           // Release build - all features
           await runCargoCheck(args, true, ci, true)
-        ]
-        const skipRest = outputs.some(output => !cargoHasBuildFinished(output))
-        const output = ([] as CargoMessage[]).concat(...outputs)
+        ])
+        const skipRest = !isCargoBuildSuccessful(output)
         return [
           skipRest,
           cargoCheckCheck({
@@ -313,13 +311,12 @@ async function lookupConvertFunction(
         return null
       }
       return async () => {
-        const outputs = [
+        const output = await tryCargoRun(async () => [
           // Debug build
           await runCargoClippy(args, ci, false),
           // Release build
           await runCargoClippy(args, ci, true)
-        ]
-        const output = ([] as CargoMessage[]).concat(...outputs)
+        ])
         return [
           false,
           cargoClippyCheck({
@@ -334,8 +331,12 @@ async function lookupConvertFunction(
         return null
       }
       return async () => {
-        const outputs = [await runCargoTest(args, ci), await runCargoDocTest(args, ci)]
-        const output = ([] as CargoMessage[]).concat(...outputs)
+        const output = await tryCargoRun(async () => [
+          // Run unit tests and integration tests
+          await runCargoTest(args, ci),
+          // Run doc tests
+          await runCargoDocTest(args, ci)
+        ])
         return [
           false,
           cargoTestCheck({
@@ -350,7 +351,7 @@ async function lookupConvertFunction(
         return null
       }
       return async () => {
-        const output = await runCargoFmt(args, ci)
+        const output = await tryCargoRun(async () => [await runCargoFmt(args, ci)])
         return [
           false,
           cargoFmtCheck({

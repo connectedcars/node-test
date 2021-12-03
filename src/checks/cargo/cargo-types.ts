@@ -8,6 +8,7 @@ export type CargoMessage =
   | CargoCompilerArtifact
   | CargoTestMessage
   | CargoSuiteMessage
+  | CargoManifestParseError
 
 // JSON output from `cargo test` is currently
 // unstable, so the format is undocumented,
@@ -181,7 +182,10 @@ export interface DiagnosticExpansion {
   def_site_span: DiagnosticSpan | null
 }
 
+export type CargoFmtMessage = CargoFmtFile | CargoManifestParseError
+
 export interface CargoFmtFile {
+  reason?: undefined
   name: string
   mismatches: CargoFmtMismatch[]
 }
@@ -193,4 +197,14 @@ export interface CargoFmtMismatch {
   expected_end_line: number
   original: string
   expected: string
+}
+
+// Not an official Rust nor Cargo message, it's
+// one `checks` produces on the given error.
+export interface CargoManifestParseError {
+  type?: undefined
+  reason: 'manifest-parse-error'
+  path: string
+  title: string
+  error: string
 }
