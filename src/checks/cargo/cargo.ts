@@ -1,6 +1,13 @@
+import { stripPrefix } from '../../common'
 import { touchFiles } from '../../unix'
-import { CheckAnnotation } from '../checks-common'
-import { CargoBuildFinishedMessage, CargoCompilerMessage, CargoMessage, DiagnosticSpan } from './cargo-types'
+import { CheckAnnotation, CommandJSONConversionError } from '../checks-common'
+import {
+  CargoBuildFinishedMessage,
+  CargoCompilerMessage,
+  CargoManifestParseError,
+  CargoMessage,
+  DiagnosticSpan
+} from './cargo-types'
 import { RustVersion } from './run-rustc-version'
 
 // In newer versions, doing `#![forbid(warnings)]` is not allowed
@@ -65,6 +72,18 @@ export function isMessageFromDependency(item: CargoCompilerMessage): boolean | n
   }
 }
 
+export function createAnnotationFromManifestError(item: CargoManifestParseError): CheckAnnotation {
+  return {
+    path: item.path,
+    start_line: 0,
+    end_line: 0,
+    annotation_level: 'failure',
+    message: item.error,
+    title: item.title,
+    raw_details: JSON.stringify(item.error, null, 4)
+  }
+}
+
 export function getCompilerAnnotations(item: CargoCompilerMessage): CheckAnnotation[] {
   // The `children` i.e. the child diagnostic messages can safely
   // be ignored, as they only provide additional information to
@@ -105,7 +124,14 @@ function getPrimaryOrFirstSpan(spans: DiagnosticSpan[]): DiagnosticSpan | null {
   return primarySpan ?? spans[0]
 }
 
-export function cargoHasBuildFinished(output: CargoMessage[]): boolean {
+export function isCargoBuildSuccessful(output: CargoMessage[]): boolean {
+  const manifestParseFailed = output.find(msg => msg.reason == 'manifest-parse-error') as
+    | CargoManifestParseError
+    | undefined
+  if (manifestParseFailed !== undefined) {
+    return false
+  }
+
   // If the `build-finished` message has `success: false` it implies
   // there is syntax errors in the code. In that case running clippy,
   // tests, rustfmt is needless, as they'll fail with the same syntax
@@ -131,6 +157,61 @@ export function isTouchingWorkspaceRequired(version: RustVersion | null): boolea
 
   // Reference: https://blog.rust-lang.org/2021/05/06/Rust-1.52.0.html
   return version.major < 1 || (version.major == 1 && version.minor < 52)
+}
+
+export async function tryCargoRun<T>(exec: () => Promise<T[][]>): Promise<(T | CargoManifestParseError)[]> {
+  try {
+    const outputs = await exec()
+    const output = ([] as T[]).concat(...outputs)
+    return output
+  } catch (err: unknown) {
+    if (err instanceof CommandJSONConversionError) {
+      if (isParseManifestError(err.stderr)) {
+        const msg = parseCargoManifestParseError(err.stderr)
+        return [msg]
+      }
+    }
+
+    throw err
+  }
+}
+
+function isParseManifestError(str: string): boolean {
+  // `rustfmt` outputs the same error, but prefixed with more info,
+  // so using `.trimLeft().startsWith("...")` is not sufficient
+  return str.indexOf('error: failed to parse manifest') !== -1
+}
+
+function parseCargoManifestParseError(error: string): CargoManifestParseError {
+  error = error.trimLeft()
+
+  return {
+    reason: 'manifest-parse-error',
+    // Path must be relative to the root of the repository
+    path: parseCargoManifestParseErrorPath(error) ?? 'Cargo.toml',
+    title: error.split('\n')[0],
+    error
+  }
+}
+
+function parseCargoManifestParseErrorPath(error: string): string | null {
+  const RE_PATH = /^[^\n]+at[^\n]+`([^`\n]+)`/gm
+
+  const matchPath = RE_PATH.exec(error)
+  if (matchPath !== null) {
+    // FIXME: Using cwd produces the wrong path if cwd is not the workspace path
+    // In this case it's not possible to use `runCargoLocateWorkspace()` as that
+    // requires parsing the Cargo.toml, which then produces the same error again,
+    // which is currently being parsed
+    const cwd = `${process.cwd()}/`
+    const path = matchPath[1]
+
+    if (path.trimLeft().startsWith(cwd)) {
+      return stripPrefix(matchPath[1], cwd)
+    }
+  }
+
+  return null
 }
 
 // Clippy shares the same build cache as Cargo,

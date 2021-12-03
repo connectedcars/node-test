@@ -23,7 +23,7 @@ export function filterDuplicates<T>(items: T[]): T[] {
 }
 
 export function stripPrefix(str: string, prefix: string): string {
-  if (str.indexOf(prefix) === 0) {
+  if (str.startsWith(prefix)) {
     return str.slice(prefix.length)
   } else {
     return str

@@ -1,5 +1,6 @@
 import { filterDuplicates } from '../../common'
 import { CheckAnnotation, CheckRunCompleted } from '../checks-common'
+import { createAnnotationFromManifestError } from './cargo'
 import { CargoMessage, CargoTestMessage } from './cargo-types'
 
 export interface CargoTestInput {
@@ -31,7 +32,9 @@ function getTestAnnotations(item: CargoTestMessage): CheckAnnotation[] {
 function getAnnotations(data: CargoMessage[]): CheckAnnotation[] {
   const annotations: CheckAnnotation[] = []
   for (const item of data) {
-    if (item.type === 'test' && item.event === 'failed') {
+    if (item.reason === 'manifest-parse-error') {
+      annotations.push(createAnnotationFromManifestError(item))
+    } else if (item.type === 'test' && item.event === 'failed') {
       annotations.push(...getTestAnnotations(item))
     }
   }
