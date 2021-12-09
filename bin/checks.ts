@@ -109,7 +109,7 @@ async function main(argv: string[]) {
     }
 
     try {
-      const convertFunction = await lookupConvertFunction(cmd, args, COMMIT_SHA, command === 'auto', flags.ci)
+      const convertFunction = await lookupConvertFunction(cmd, args, COMMIT_SHA, command === 'auto', flags.ci, command)
       if (convertFunction === null) {
         continue
       }
@@ -181,7 +181,8 @@ async function lookupConvertFunction(
   args: string[],
   commitSha: string,
   detect = false,
-  ci = true
+  ci = true,
+  cliCommand?: string
 ): Promise<(() => Promise<[boolean, CheckRunCompleted]>) | null> {
   switch (command) {
     case 'jest': {
@@ -299,10 +300,13 @@ async function lookupConvertFunction(
         const skipRest = !isCargoBuildSuccessful(output)
         return [
           skipRest,
-          cargoCheckCheck({
-            data: output,
-            sha: commitSha
-          })
+          cargoCheckCheck(
+            {
+              data: output,
+              sha: commitSha
+            },
+            command !== cliCommand
+          )
         ]
       }
     }
@@ -319,10 +323,13 @@ async function lookupConvertFunction(
         ])
         return [
           false,
-          cargoClippyCheck({
-            data: output,
-            sha: commitSha
-          })
+          cargoClippyCheck(
+            {
+              data: output,
+              sha: commitSha
+            },
+            command !== cliCommand
+          )
         ]
       }
     }

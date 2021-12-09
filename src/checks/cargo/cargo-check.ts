@@ -10,7 +10,7 @@ export interface CargoCheckInput {
   data: CargoMessage[]
 }
 
-export function cargoCheckCheck({ data, sha }: CargoCheckInput): CheckRunCompleted {
+export function cargoCheckCheck({ data, sha }: CargoCheckInput, skipOtherLints = true): CheckRunCompleted {
   if (Array.isArray(data)) {
     let annotations: CheckAnnotation[] = []
     const stats = {
@@ -22,7 +22,7 @@ export function cargoCheckCheck({ data, sha }: CargoCheckInput): CheckRunComplet
     }
     for (const item of data) {
       if (item.reason === 'compiler-message') {
-        if (item.message.rendered?.includes('clippy')) {
+        if (skipOtherLints && item.message.rendered?.includes('clippy')) {
           continue
         }
 
