@@ -1,4 +1,4 @@
-import { isTouchingWorkspaceRequired } from './cargo'
+import { isTouchingWorkspaceRequired } from './run-cargo'
 import { parseRustVersion, RustVersion } from './run-rustc-version'
 
 describe('cargo-utils', () => {
