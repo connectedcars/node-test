@@ -10,7 +10,7 @@ export interface CargoClippyInput {
   data: CargoMessage[]
 }
 
-export function cargoClippyCheck({ data, sha }: CargoClippyInput): CheckRunCompleted {
+export function cargoClippyCheck({ data, sha }: CargoClippyInput, skipOtherLints = true): CheckRunCompleted {
   if (Array.isArray(data)) {
     let annotations: CheckAnnotation[] = []
     const stats = {
@@ -26,7 +26,7 @@ export function cargoClippyCheck({ data, sha }: CargoClippyInput): CheckRunCompl
         // filter all compiler messages that does not contain
         // "clippy". This is to avoid repeating all issues already
         // found by `cargo check`.
-        if (!item.message.rendered?.includes('clippy')) {
+        if (skipOtherLints && !item.message.rendered?.includes('clippy')) {
           continue
         }
 
