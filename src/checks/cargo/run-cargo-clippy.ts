@@ -2,7 +2,7 @@ import { CargoMessage } from './cargo-types'
 import { runCargo } from './run-cargo'
 
 export async function runCargoClippy(args: string[] = [], ci = true, releaseBuild = false): Promise<CargoMessage[]> {
-  if (args.length == 0) {
+  if (args.length === 0) {
     args = ['-D', 'clippy::all']
   }
 

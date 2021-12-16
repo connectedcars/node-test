@@ -1,14 +1,17 @@
+/* eslint no-param-reassign: "error" */
+
 import { CheckAnnotation } from '../checks-common'
 import {
   CargoBuildFinishedMessage,
   CargoCompilerMessage,
+  CargoFmtMessage,
   CargoManifestParseError,
   CargoMessage,
   DiagnosticSpan
 } from './cargo-types'
 
 export function isCargoBuildSuccessful(output: CargoMessage[]): boolean {
-  const manifestParseFailed = output.find(msg => msg.reason == 'manifest-parse-error') as
+  const manifestParseFailed = output.find(msg => msg.reason === 'manifest-parse-error') as
     | CargoManifestParseError
     | undefined
   if (manifestParseFailed !== undefined) {
@@ -19,7 +22,7 @@ export function isCargoBuildSuccessful(output: CargoMessage[]): boolean {
   // there is syntax errors in the code. In that case running clippy,
   // tests, rustfmt is needless, as they'll fail with the same syntax
   // errors.
-  const buildFinished = output.find(msg => msg.reason == 'build-finished') as CargoBuildFinishedMessage | undefined
+  const buildFinished = output.find(msg => msg.reason === 'build-finished') as CargoBuildFinishedMessage | undefined
 
   // If the `build-finished` message is not found in `output`, then
   // assume it passed, and run the other checks regardless. Worst case
@@ -38,6 +41,47 @@ export function isMessageFromDependency(item: CargoCompilerMessage): boolean | n
   }
 }
 
+export interface CargoCheckStats {
+  help: number
+  note: number
+  warning: number
+  error: number
+  /// Internal Compiler Error
+  ice: number
+}
+
+type CollectFn<T> = (item: T, annotations: CheckAnnotation[], stats: CargoCheckStats) => void
+
+export function collectAnnotations<T>(data: readonly T[], collect: CollectFn<T>): [CheckAnnotation[], CargoCheckStats] {
+  const annotations: CheckAnnotation[] = []
+  const stats: CargoCheckStats = {
+    help: 0,
+    note: 0,
+    warning: 0,
+    error: 0,
+    ice: 0
+  }
+
+  for (const item of data) {
+    collect(item, annotations, stats)
+  }
+
+  return [annotations, stats]
+}
+
+export function collectCargoManifestParseErrors(
+  item: CargoMessage | CargoFmtMessage,
+  annotations: CheckAnnotation[],
+  stats: CargoCheckStats
+): void {
+  if (item.reason !== 'manifest-parse-error') {
+    return
+  }
+
+  annotations.push(createAnnotationFromManifestError(item))
+  stats.error += 1
+}
+
 export function createAnnotationFromManifestError(item: CargoManifestParseError): CheckAnnotation {
   return {
     path: item.path,
@@ -50,40 +94,25 @@ export function createAnnotationFromManifestError(item: CargoManifestParseError)
   }
 }
 
-export function getCompilerAnnotations(item: CargoCompilerMessage): CheckAnnotation[] {
-  // The `children` i.e. the child diagnostic messages can safely
-  // be ignored, as they only provide additional information to
-  // the main diagnostic. Such as "machine information" which can
-  // be used to automatically resolve the issue.
-  const diagnostic = item.message
-  const span = getPrimaryOrFirstSpan(diagnostic.spans)
-
-  // If the diagnostic has no spans, then it implies that
-  // the issue exists outside of this crate. Such as a
-  // warning in a dependency. If the dependency is one of
-  // our own crates, then this issue will already have been
-  // caught.
-  if (span == null) {
-    return []
-  }
-
-  const annotations: CheckAnnotation[] = []
-
-  annotations.push({
-    path: span?.file_name ?? 'Cargo.toml',
-    start_line: span?.line_start ?? 0,
-    end_line: span?.line_end ?? 0,
-    annotation_level: 'failure',
-    message: diagnostic.rendered ?? diagnostic.message,
-    title: diagnostic.message,
-    raw_details: JSON.stringify(diagnostic, null, 4)
-  })
-
-  return annotations
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function filterNone<T>(item: T): boolean {
+  return true
 }
 
-function getPrimaryOrFirstSpan(spans: DiagnosticSpan[]): DiagnosticSpan | null {
-  if (spans.length == 0) {
+export function filterClippyLints(item: CargoCompilerMessage): boolean {
+  return !item.message.rendered?.includes('clippy')
+}
+
+export function filterNonClippyLints(item: CargoCompilerMessage): boolean {
+  // All clippy lints contains "clippy" in their message, so
+  // filter all compiler messages that does not contain
+  // "clippy". This is to avoid repeating all issues already
+  // found by `cargo check`.
+  return !filterClippyLints(item)
+}
+
+export function getPrimaryOrFirstSpan(spans: DiagnosticSpan[]): DiagnosticSpan | null {
+  if (spans.length === 0) {
     return null
   }
   const primarySpan = spans.find(span => span.is_primary)
