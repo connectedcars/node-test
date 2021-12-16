@@ -163,7 +163,7 @@ export function isTouchingWorkspaceRequired(version: RustVersion | null): boolea
   }
 
   // Reference: https://blog.rust-lang.org/2021/05/06/Rust-1.52.0.html
-  return version.major < 1 || (version.major == 1 && version.minor < 52)
+  return version.major < 1 || (version.major === 1 && version.minor < 52)
 }
 
 // Clippy shares the same build cache as Cargo,
