@@ -1,3 +1,4 @@
+import { splitLines } from '../../common'
 import { RunProcess } from '../../unix/run-process'
 import { TscData } from './tsc-types'
 
@@ -12,7 +13,7 @@ function matchToObj(match: RegExpExecArray): TscData {
 }
 
 export function parseTsc(output: string): TscData[] {
-  const messages = output.split('\n')
+  const messages = splitLines(output)
 
   const tscErrorRegex = /^((?:[\w-]+\/)*[\w.-]+)\((\d+),(\d+)\): error (TS\d+): (.*)/
 

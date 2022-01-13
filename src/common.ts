@@ -8,6 +8,8 @@ export type Json = null | boolean | number | string | Json[] | { [prop: string]:
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type TypedSinonStub<A extends (...args: any) => any> = sinon.SinonStub<Parameters<A>, ReturnType<A>>
 
+const RE_LINES = /\r?\n/
+
 // Returns a new array of all unique items in `items`.
 // Filters duplicates based on structural equality, i.e.
 // it uses `deepEqual()`.
@@ -28,4 +30,8 @@ export function stripPrefix(str: string, prefix: string): string {
   } else {
     return str
   }
+}
+
+export function splitLines(str: string): string[] {
+  return str.split(RE_LINES)
 }

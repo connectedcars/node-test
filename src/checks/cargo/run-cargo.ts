@@ -1,6 +1,6 @@
 import { SpawnOptions } from 'child_process'
 
-import { stripPrefix } from '../../common'
+import { splitLines, stripPrefix } from '../../common'
 import { ExitInformation, touchFiles } from '../../unix'
 import { CommandJSONConversionError, runJsonLinesCommand } from '../checks-common'
 import { CargoManifestParseError } from './cargo-types'
@@ -128,7 +128,7 @@ function parseCargoManifestParseError(error: string): CargoManifestParseError {
     reason: 'manifest-parse-error',
     // Path must be relative to the root of the repository
     path: parseCargoManifestParseErrorPath(error) ?? 'Cargo.toml',
-    title: error.split('\n')[0],
+    title: splitLines(error)[0],
     error
   }
 }
