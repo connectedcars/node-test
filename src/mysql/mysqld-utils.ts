@@ -3,6 +3,7 @@ import os from 'os'
 import path from 'path'
 import util from 'util'
 
+import { splitLines } from '../common'
 import { pathExists, RunProcess } from '../unix'
 import { isFileNotFoundError } from '../unix/errors'
 
@@ -55,7 +56,7 @@ export async function getMySQLServerDefaults(mysqldPath: string, mysqlBaseDir?: 
   const variables: { [key: string]: string } = {}
   const variablesSection = output.toString().match(/Variables.+?Value.+?-{50,}\s+-{10}.+?\n(.+?)\n\n/s)
   if (variablesSection != null) {
-    for (const variableLine of variablesSection[1].split('\n')) {
+    for (const variableLine of splitLines(variablesSection[1])) {
       const variableMatch = variableLine.match(/^([^\s]+)\s+(.+?)$/)
       if (variableMatch) {
         variables[variableMatch[1]] = variableMatch[2]

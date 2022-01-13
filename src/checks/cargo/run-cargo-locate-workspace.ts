@@ -1,6 +1,7 @@
 import path from 'path'
 
 import { ExitInformation } from '../..'
+import { splitLines } from '../../common'
 import { runCommand } from '../checks-common'
 
 let WORKSPACE_PATH: string | null = null
@@ -31,7 +32,7 @@ export class CargoLocateWorkspaceError extends Error {
   public stderr: string
 
   public constructor(exitInfo: ExitInformation, stdout: string, stderr: string) {
-    const err = stderr.split('\n')[0]
+    const err = splitLines(stderr)[0]
 
     super(`cargo locate workspace failed: ${err}`)
 

@@ -1,6 +1,6 @@
 // https://docs.github.com/en/rest/reference/checks#runs
 
-import { Json } from '../common'
+import { Json, splitLines } from '../common'
 import { ExitInformation, RunProcess } from '../unix/run-process'
 
 export type CheckAnnotationLevel = 'notice' | 'warning' | 'failure'
@@ -124,10 +124,7 @@ export async function runJsonLinesCommand<T = Json>(
   try {
     // Trimming whitespace from the ends, as otherwise an empty line
     // would result in `Unexpected end of JSON input`
-    const blobs = stdout
-      .trim()
-      .split('\n')
-      .map(line => JSON.parse(line))
+    const blobs = splitLines(stdout.trim()).map(line => JSON.parse(line))
     return [exitInfo, blobs]
   } catch (e) {
     throw new CommandJSONConversionError(command, args, stdout, stderr, e)
