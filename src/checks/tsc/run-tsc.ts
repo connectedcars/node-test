@@ -31,8 +31,10 @@ export function parseTsc(output: string): TscData[] {
   return errors
 }
 
-export async function runTsc(): Promise<TscData[]> {
-  const cmd = new RunProcess('tsc', ['--pretty', 'false', '--noErrorTruncation', '--noEmit'])
+const ALLOWED_FLAGS = new Set(['--noEmit'])
+export async function runTsc(extraArgs: string[] = []): Promise<TscData[]> {
+  const filteredArgs = extraArgs.filter(arg => ALLOWED_FLAGS.has(arg))
+  const cmd = new RunProcess('tsc', ['--pretty', 'false', '--noErrorTruncation', ...filteredArgs])
   const data: Buffer[] = []
   cmd.stdout?.on('data', chunk => {
     data.push(chunk)
