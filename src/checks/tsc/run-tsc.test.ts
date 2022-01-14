@@ -29,7 +29,7 @@ describe('run-tsc', () => {
       null,
       tscErrorOutput
     )
-    const tscOutput = await runTsc()
+    const tscOutput = await runTsc(['--emitDeclarationFiles'])
     expect(tscOutput).toEqual(parseTsc(tscErrorOutput))
   })
 })

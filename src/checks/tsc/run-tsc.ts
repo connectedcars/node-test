@@ -31,10 +31,14 @@ export function parseTsc(output: string): TscData[] {
   return errors
 }
 
-const ALLOWED_FLAGS = new Set(['--noEmit'])
 export async function runTsc(extraArgs: string[] = []): Promise<TscData[]> {
-  const filteredArgs = extraArgs.filter(arg => ALLOWED_FLAGS.has(arg))
-  const cmd = new RunProcess('tsc', ['--pretty', 'false', '--noErrorTruncation', ...filteredArgs])
+  const args = ['--pretty', 'false', '--noErrorTruncation']
+
+  if (!extraArgs.includes('--emitDeclarationFiles')) {
+    args.push('--noEmit')
+  }
+
+  const cmd = new RunProcess('tsc', args)
   const data: Buffer[] = []
   cmd.stdout?.on('data', chunk => {
     data.push(chunk)
