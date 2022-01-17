@@ -8,11 +8,13 @@ import { isCargoBuildSuccessful } from '../src/checks/cargo/cargo'
 import { cargoCheckCheck } from '../src/checks/cargo/cargo-check'
 import { cargoClippyCheck } from '../src/checks/cargo/cargo-clippy'
 import { cargoFmtCheck } from '../src/checks/cargo/cargo-fmt'
+import { cargoSortCheck } from '../src/checks/cargo/cargo-sort'
 import { cargoTestCheck } from '../src/checks/cargo/cargo-test'
 import { tryCargoRun } from '../src/checks/cargo/run-cargo'
 import { runCargoCheck } from '../src/checks/cargo/run-cargo-check'
 import { runCargoClippy } from '../src/checks/cargo/run-cargo-clippy'
 import { runCargoFmt } from '../src/checks/cargo/run-cargo-fmt'
+import { runCargoSort } from '../src/checks/cargo/run-cargo-sort'
 import { runCargoDocTest, runCargoTest } from '../src/checks/cargo/run-cargo-test'
 import { CheckConversionError, CheckRunCompleted, printSummary } from '../src/checks/checks-common'
 import { eslintCheck } from '../src/checks/eslint/eslint'
@@ -58,7 +60,8 @@ async function main(argv: string[]) {
     .command('cargo-clippy', 'Runs cargo clippy with CI output')
     .command('cargo-test', 'Runs cargo test with CI output')
     .command('cargo-fmt', 'Runs cargo fmt with CI output')
-    .command('cargo-all', 'Runs all cargo checks with CI output')
+    .command('cargo-all', 'Runs all default installed cargo checks with CI output')
+    .command('cargo-sort', 'Runs cargo sort with CI output')
     .command('auto', 'Runs all relevant checks')
     .strict()
     .help()
@@ -74,6 +77,7 @@ async function main(argv: string[]) {
 
   const startedAt = new Date().toISOString()
 
+  // `cargo-sort` is excluded as it requires being manually installed first
   const ALL_CARGO_COMMANDS = ['cargo-check', 'cargo-clippy', 'cargo-test', 'cargo-fmt']
   const ALL_COMMANDS = ['jest', 'eslint', 'jest-cra', 'mocha', 'audit', 'tsc', ...ALL_CARGO_COMMANDS]
 
@@ -363,6 +367,21 @@ async function lookupConvertFunction(
         return [
           false,
           cargoFmtCheck({
+            data: output,
+            sha: commitSha
+          })
+        ]
+      }
+    }
+    case 'cargo-sort': {
+      if (detect && !(await isFileReadable('Cargo.toml'))) {
+        return null
+      }
+      return async () => {
+        const output = await tryCargoRun(async () => [await runCargoSort(args)])
+        return [
+          false,
+          await cargoSortCheck({
             data: output,
             sha: commitSha
           })
