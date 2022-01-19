@@ -8,7 +8,7 @@ Object {
   "name": "cargo-clippy",
   "output": Object {
     "summary": "",
-    "title": "Unexpected clippy output",
+    "title": "Unexpected cargo-clippy output",
   },
   "status": "completed",
 }

@@ -8,7 +8,7 @@ Object {
   "name": "cargo-check",
   "output": Object {
     "summary": "",
-    "title": "Unexpected check output",
+    "title": "Unexpected cargo-check output",
   },
   "status": "completed",
 }

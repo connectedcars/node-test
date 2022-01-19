@@ -1,6 +1,13 @@
 import { filterDuplicates } from '../../common'
 import { CheckAnnotation, CheckRunCompleted } from '../checks-common'
-import { CargoCheckStats, collectAnnotations, collectCargoManifestParseErrors } from './cargo'
+import {
+  CargoCheckStats,
+  cargoFoundIssues,
+  cargoFoundNoIssues,
+  cargoUnexpectedOutput,
+  collectAnnotations,
+  collectCargoManifestParseErrors
+} from './cargo'
 import { CargoMessage, CargoTestMessage } from './cargo-types'
 
 export interface CargoTestInput {
@@ -10,17 +17,7 @@ export interface CargoTestInput {
 
 export function cargoTestCheck({ data, sha }: CargoTestInput): CheckRunCompleted {
   if (!Array.isArray(data)) {
-    return {
-      conclusion: 'skipped',
-      name: 'cargo-test',
-      head_sha: sha,
-      status: 'completed',
-      completed_at: new Date().toISOString(),
-      output: {
-        title: 'Unexpected test output',
-        summary: ''
-      }
-    }
+    return cargoUnexpectedOutput('cargo-test', sha)
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, prefer-const
@@ -32,31 +29,9 @@ export function cargoTestCheck({ data, sha }: CargoTestInput): CheckRunCompleted
   if (annotations.length > 0) {
     annotations = filterDuplicates(annotations)
 
-    const summary = `Total of ${annotations.length} ${annotations.length === 1 ? 'issue' : 'issues'}`
-    return {
-      name: 'cargo-test',
-      head_sha: sha,
-      conclusion: 'failure',
-      status: 'completed',
-      completed_at: new Date().toISOString(),
-      output: {
-        title: summary,
-        summary,
-        annotations
-      }
-    }
+    return cargoFoundIssues('cargo-test', sha, annotations, stats)
   } else {
-    return {
-      conclusion: 'success',
-      name: 'cargo-test',
-      head_sha: sha,
-      status: 'completed',
-      completed_at: new Date().toISOString(),
-      output: {
-        title: 'Tests passed',
-        summary: 'Tests passed'
-      }
-    }
+    return cargoFoundNoIssues('cargo-test', sha)
   }
 }
 
@@ -69,11 +44,8 @@ export function collectCargoTestIssues(
     return
   }
 
-  const annotation = createAnnotationFromTestMessage(item)
-  if (annotation) {
-    annotations.push(annotation)
-    stats.error += 1
-  }
+  annotations.push(createAnnotationFromTestMessage(item))
+  stats.error += 1
 }
 
 function createAnnotationFromTestMessage(item: CargoTestMessage): CheckAnnotation {

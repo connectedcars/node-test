@@ -1,6 +1,13 @@
 import { filterDuplicates, stripPrefix } from '../../common'
 import { CheckAnnotation, CheckRunCompleted } from '../checks-common'
-import { CargoCheckStats, collectAnnotations, collectCargoManifestParseErrors } from './cargo'
+import {
+  CargoCheckStats,
+  cargoFoundIssues,
+  cargoFoundNoIssues,
+  cargoUnexpectedOutput,
+  collectAnnotations,
+  collectCargoManifestParseErrors
+} from './cargo'
 import { CargoFmtFile, CargoFmtMessage, CargoFmtMismatch } from './cargo-types'
 
 export interface CargoFmtInput {
@@ -10,17 +17,7 @@ export interface CargoFmtInput {
 
 export function cargoFmtCheck({ data, sha }: CargoFmtInput): CheckRunCompleted {
   if (!Array.isArray(data)) {
-    return {
-      name: 'cargo-fmt',
-      head_sha: sha,
-      conclusion: 'skipped',
-      status: 'completed',
-      completed_at: new Date().toISOString(),
-      output: {
-        title: 'Unexpected cargo fmt output',
-        summary: ''
-      }
-    }
+    return cargoUnexpectedOutput('cargo-fmt', sha)
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, prefer-const
@@ -32,32 +29,9 @@ export function cargoFmtCheck({ data, sha }: CargoFmtInput): CheckRunCompleted {
   if (annotations.length > 0) {
     annotations = filterDuplicates(annotations)
 
-    const summary = `Total of ${annotations.length} ${annotations.length === 1 ? 'issue' : 'issues'}`
-    return {
-      name: 'cargo-fmt',
-      head_sha: sha,
-      conclusion: 'failure',
-      status: 'completed',
-      completed_at: new Date().toISOString(),
-      output: {
-        title: summary,
-        summary,
-        annotations
-      }
-    }
+    return cargoFoundIssues('cargo-fmt', sha, annotations, stats)
   } else {
-    return {
-      name: 'cargo-fmt',
-      head_sha: sha,
-      conclusion: 'success',
-      status: 'completed',
-      completed_at: new Date().toISOString(),
-      output: {
-        title: 'Found no issues',
-        summary: 'Found no issues',
-        annotations: []
-      }
-    }
+    return cargoFoundNoIssues('cargo-fmt', sha)
   }
 }
 
