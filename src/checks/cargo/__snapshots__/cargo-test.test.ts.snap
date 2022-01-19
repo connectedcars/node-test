@@ -26,6 +26,15 @@ note: run with \`RUST_BACKTRACE=1\` environment variable to display a backtrace
       },
     ],
     "summary": "Total of 1 issue",
+    "text": "## Results
+
+| Message level           | Amount |
+| ----------------------- | ------ |
+| Internal compiler error |      0 |
+| Error                   |      1 |
+| Warning                 |      0 |
+| Note                    |      0 |
+| Help                    |      0 |",
     "title": "Total of 1 issue",
   },
   "status": "completed",
@@ -40,7 +49,7 @@ Object {
   "name": "cargo-test",
   "output": Object {
     "summary": "",
-    "title": "Unexpected test output",
+    "title": "Unexpected cargo-test output",
   },
   "status": "completed",
 }
@@ -53,8 +62,9 @@ Object {
   "head_sha": "11963e3cb7ecbb9247f638cc0fb047173a62cf7a",
   "name": "cargo-test",
   "output": Object {
-    "summary": "Tests passed",
-    "title": "Tests passed",
+    "annotations": Array [],
+    "summary": "Found no issues",
+    "title": "Found no issues",
   },
   "status": "completed",
 }

@@ -2,7 +2,13 @@ import { basename } from 'path'
 
 import { filterDuplicates } from '../../common'
 import { CheckAnnotation, CheckRunCompleted } from '../checks-common'
-import { collectAnnotations, collectCargoManifestParseErrors } from './cargo'
+import {
+  cargoFoundIssues,
+  cargoFoundNoIssues,
+  cargoUnexpectedOutput,
+  collectAnnotations,
+  collectCargoManifestParseErrors
+} from './cargo'
 import { CargoManifestParseError } from './cargo-types'
 import { runCargoLocateWorkspace } from './run-cargo-locate-workspace'
 import { CargoSortMessage } from './run-cargo-sort'
@@ -14,17 +20,7 @@ export interface CargoSortInput {
 
 export async function cargoSortCheck({ data, sha }: CargoSortInput): Promise<CheckRunCompleted> {
   if (!Array.isArray(data)) {
-    return {
-      name: 'cargo-sort',
-      head_sha: sha,
-      conclusion: 'skipped',
-      status: 'completed',
-      completed_at: new Date().toISOString(),
-      output: {
-        title: 'Unexpected sort output',
-        summary: ''
-      }
-    }
+    return cargoUnexpectedOutput('cargo-sort', sha)
   }
 
   const workspacePath = await runCargoLocateWorkspace()
@@ -61,42 +57,8 @@ export async function cargoSortCheck({ data, sha }: CargoSortInput): Promise<Che
   if (annotations.length > 0) {
     annotations = filterDuplicates(annotations)
 
-    const summary = `Total of ${annotations.length} ${annotations.length === 1 ? 'issue' : 'issues'}`
-    return {
-      name: 'cargo-sort',
-      head_sha: sha,
-      conclusion: 'failure',
-      status: 'completed',
-      completed_at: new Date().toISOString(),
-      output: {
-        title: summary,
-        summary,
-        text: [
-          '## Results',
-          '',
-          '| Message level           | Amount |',
-          '| ----------------------- | ------ |',
-          '| Internal compiler error | ' + `${stats.ice}`.padStart(6) + ' |',
-          '| Error                   | ' + `${stats.error}`.padStart(6) + ' |',
-          '| Warning                 | ' + `${stats.warning}`.padStart(6) + ' |',
-          '| Note                    | ' + `${stats.note}`.padStart(6) + ' |',
-          '| Help                    | ' + `${stats.help}`.padStart(6) + ' |'
-        ].join('\n'),
-        annotations
-      }
-    }
+    return cargoFoundIssues('cargo-sort', sha, annotations, stats)
   } else {
-    return {
-      name: 'cargo-sort',
-      head_sha: sha,
-      conclusion: 'success',
-      status: 'completed',
-      completed_at: new Date().toISOString(),
-      output: {
-        title: 'Found no issues',
-        summary: 'Found no issues',
-        annotations: []
-      }
-    }
+    return cargoFoundNoIssues('cargo-sort', sha)
   }
 }

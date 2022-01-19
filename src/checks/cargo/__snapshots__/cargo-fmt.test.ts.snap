@@ -8,7 +8,7 @@ Object {
   "name": "cargo-fmt",
   "output": Object {
     "summary": "",
-    "title": "Unexpected cargo fmt output",
+    "title": "Unexpected cargo-fmt output",
   },
   "status": "completed",
 }
@@ -236,6 +236,15 @@ Expected: ",
       },
     ],
     "summary": "Total of 11 issues",
+    "text": "## Results
+
+| Message level           | Amount |
+| ----------------------- | ------ |
+| Internal compiler error |      0 |
+| Error                   |     11 |
+| Warning                 |      0 |
+| Note                    |      0 |
+| Help                    |      0 |",
     "title": "Total of 11 issues",
   },
   "status": "completed",
