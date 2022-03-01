@@ -3,7 +3,7 @@ import { runCargo } from './run-cargo'
 
 export async function runCargoClippy(args: string[] = [], ci = true, releaseBuild = false): Promise<CargoMessage[]> {
   if (args.length === 0) {
-    args = ['-D', 'clippy::all']
+    args = ['-W', 'clippy::all']
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
