@@ -16,10 +16,13 @@ const DEFAULT_CI_RUSTFLAGS = '-W warnings -W unused'
 export function getEnvRustFlags(ci: boolean): string {
   let rustFlags = process.env['RUSTFLAGS'] || ''
 
+  rustFlags += ' --cfg cc_build'
+
   if (ci) {
     rustFlags += ' --cfg ci_build'
+    rustFlags += ' --cfg cc_ci_build'
 
-    const ciRustFlags = process.env['CI_RUSTFLAGS'] ?? DEFAULT_CI_RUSTFLAGS
+    const ciRustFlags = process.env['CC_CI_RUSTFLAGS'] ?? process.env['CI_RUSTFLAGS'] ?? DEFAULT_CI_RUSTFLAGS
     rustFlags += ` ${ciRustFlags}`
   }
 
