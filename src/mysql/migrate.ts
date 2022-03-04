@@ -213,6 +213,9 @@ export class Migrate {
 
     const result: Migration[] = []
     for (const migration of migrations) {
+      if (until && until <= migration.timestamp) {
+        break
+      }
       // Skip if the full migration has been applied
       if (appliedMigrations.find(v => v.timestamp === migration.timestamp && v.name === migration.name)) {
         continue
@@ -240,10 +243,6 @@ export class Migrate {
             migrationStatementName
           ])
           result.push(migration)
-
-          if (until && until <= migration.timestamp) {
-            break
-          }
         }
       } catch (e) {
         throw new Error(`Failed applying migration "${migration.path}: ${e}"`)
