@@ -279,6 +279,7 @@ export async function startMySQLd(
     ],
     {
       env: {
+        TZ: 'UTC',
         ...process.env
         // TODO Try to disable on mac
         // EVENT_NOKQUEUE: '1'
