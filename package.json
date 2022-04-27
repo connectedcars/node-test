@@ -73,7 +73,7 @@
     "yargs": "^16.2.0"
   },
   "engines": {
-    "node": ">=12.10.0"
+    "node": ">=16.0.0"
   },
   "files": [
     "build/dist"
