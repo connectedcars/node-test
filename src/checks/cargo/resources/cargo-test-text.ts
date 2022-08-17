@@ -103,8 +103,7 @@ export const cargoTestFailedOutput: CargoMessage[] = [
   },
   {
     type: 'test',
-    name:
-      'passive_listeners::tester_detector::tests::detects_frames_on_diagnostic_relevant_arbitration_ids_sent_by_someone_else',
+    name: 'passive_listeners::tester_detector::tests::detects_frames_on_diagnostic_relevant_arbitration_ids_sent_by_someone_else',
     event: 'ok'
   },
   {

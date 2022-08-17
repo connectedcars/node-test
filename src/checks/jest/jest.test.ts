@@ -29,7 +29,7 @@ describe('checks/jest', () => {
   it('handles empty input', () => {
     const sampleOutput = ''
     const output = jestCheck({
-      data: (sampleOutput as unknown) as FormattedTestResults,
+      data: sampleOutput as unknown as FormattedTestResults,
       sha: '1234567890'
     })
     expect(output).toStrictEqual({

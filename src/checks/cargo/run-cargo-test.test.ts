@@ -25,7 +25,7 @@ describe('run-cargo-clippy', () => {
         // Cargo emits message as individual json objects line-by-line,
         // so a single `process.stdout.end(JSON.stringify(data))` will not
         // suffice, as it would wrap it all in an array.
-        const msgs = (data as any[]) as CargoMessage[]
+        const msgs = data as any[] as CargoMessage[]
         for (const msg of msgs) {
           process.stdout.write(JSON.stringify(msg))
           process.stdout.write('\n')

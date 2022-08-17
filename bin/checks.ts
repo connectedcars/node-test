@@ -71,8 +71,8 @@ async function main(argv: string[]) {
   // when default parameters are `true`, as then the argument becomes
   // `true` instead of `false`. To avoid issues, just set the flags
   // to `false` if undefined.
-  flags.ci = flags.ci || false;
-  flags.hardFail = flags.hardFail || false;
+  flags.ci = flags.ci || false
+  flags.hardFail = flags.hardFail || false
 
   const [command, ...args] = commandAndArgs.map(a => a.toString())
 
