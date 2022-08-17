@@ -39,7 +39,10 @@ export async function runTsc(): Promise<TscData[]> {
     data.push(chunk)
   })
   await cmd.waitForStarted()
-  await cmd.waitForExit()
+  const { code } = await cmd.waitForExit()
+  if (code != 0) {
+    throw new Error(`tsc failed: ${data.toString()}`)
+  }
   const compileResult = Buffer.concat(data).toString('utf8')
   return parseTsc(compileResult)
 }

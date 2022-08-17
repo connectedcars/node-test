@@ -1,5 +1,5 @@
 import { CommandEmulation, RunProcess } from '../..'
-import { tscErrorOutput } from './resources/tsc-help-text'
+import { tscCommandErrorOutput, tscErrorOutput } from './resources/tsc-help-text'
 import { parseTsc, runTsc } from './run-tsc'
 
 describe('run-tsc', () => {
@@ -31,5 +31,20 @@ describe('run-tsc', () => {
     )
     const tscOutput = await runTsc()
     expect(tscOutput).toEqual(parseTsc(tscErrorOutput))
+  })
+
+  it('should fail when tsc process exits with non-zero code', async () => {
+    await commandEmulation.registerCommand(
+      'tsc',
+      data => {
+        process.stdout.end(data?.toString() || '')
+        process.stdout.on('finish', () => {
+          process.exit(130)
+        })
+      },
+      null,
+      tscCommandErrorOutput
+    )
+    await expect(runTsc()).rejects.toThrow(new Error(`tsc failed: ${tscCommandErrorOutput}`))
   })
 })
