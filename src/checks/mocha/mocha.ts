@@ -32,7 +32,7 @@ export function mochaCheck({ data, sha }: MochaInput): CheckRunCompleted {
         continue
       }
       // Find file path from stack
-      const matches = test.err.stack.match(/Context\.(?:[^\s]+) \((.+)\)/s)
+      const matches = test.err.stack.match(/Context\.(?:[^\s]+) \((.+?)\)/s)
       if (!matches) {
         console.log('fail', test.err.stack)
         continue
