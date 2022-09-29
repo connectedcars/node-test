@@ -40,7 +40,12 @@ export function mochaCheck({ data, sha }: MochaInput): CheckRunCompleted {
       const [filePath, line, column] = matches[1].split(':')
       const lineNumber = parseInt(line)
 
-      const message = `${line}:${column}`.padEnd(10) + `${test.title} ${test.err.message}`
+      if (test.err.message && test.err.message.length > 4 * 1024) {
+        test.err.message = test.err.message.substring(0, 4 * 1024)
+      }
+      if (test.err.stack && test.err.stack.length > 4 * 1024) {
+        test.err.stack = test.err.stack.substring(0, 4 * 1024)
+      }
 
       // Generate an annotation
       annotations.push({
@@ -48,7 +53,7 @@ export function mochaCheck({ data, sha }: MochaInput): CheckRunCompleted {
         start_line: lineNumber,
         end_line: lineNumber,
         annotation_level: 'failure',
-        message: message.substring(0, 5 * 1024),
+        message: `${line}:${column}`.padEnd(10) + `${test.title} ${test.err.message}`,
         title: `${filePath}#L${line}`,
         raw_details: JSON.stringify(test, null, '    ')
       })
