@@ -40,13 +40,15 @@ export function mochaCheck({ data, sha }: MochaInput): CheckRunCompleted {
       const [filePath, line, column] = matches[1].split(':')
       const lineNumber = parseInt(line)
 
+      const message = `${line}:${column}`.padEnd(10) + `${test.title} ${test.err.message}`
+
       // Generate an annotation
       annotations.push({
         path: filePath,
         start_line: lineNumber,
         end_line: lineNumber,
         annotation_level: 'failure',
-        message: `${line}:${column}`.padEnd(10) + `${test.title} ${test.err.message}`,
+        message: message.substring(0, 5 * 1024),
         title: `${filePath}#L${line}`,
         raw_details: JSON.stringify(test, null, '    ')
       })
