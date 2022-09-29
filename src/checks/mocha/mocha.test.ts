@@ -35,4 +35,16 @@ describe('checks/mocha', () => {
       completed_at: expect.stringMatching(/^\d{4}/)
     })
   })
+
+  it('truncates very long mocha output while maintaining checks structure', () => {
+    const data = mochaFailedOutput
+
+    const output = mochaCheck({
+      data,
+      sha: 'c61a4ae014360e064eb2a9f76c8a6a55d05e5b88'
+    })
+    expect(output).toMatchSnapshot({
+      completed_at: expect.stringMatching(/^\d{4}/)
+    })
+  })
 })

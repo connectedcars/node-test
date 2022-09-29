@@ -9,6 +9,7 @@ export interface MochaData {
 interface MochaTest {
   title?: string
   fullTitle?: string
+  file?: string
   duration: number
   currentRetry: number
   err: MochaError
@@ -21,6 +22,7 @@ interface MochaError {
   parent?: MochaParent
   name?: string
   hasSerializedErrorMessage?: boolean
+  _hasSerializedErrorMessage?: boolean
   fullTitle?: string
   title?: string
 }
