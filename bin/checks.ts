@@ -85,7 +85,7 @@ async function main(argv: string[]) {
   const startedAt = new Date().toISOString()
 
   // `cargo-sort` is excluded as it requires being manually installed first
-  const ALL_CARGO_COMMANDS = ['cargo-check', 'cargo-clippy', 'cargo-test', 'cargo-fmt']
+  const ALL_CARGO_COMMANDS = ['cargo-fmt', 'cargo-check', 'cargo-clippy', 'cargo-test']
   const ALL_COMMANDS = ['jest', 'eslint', 'jest-cra', 'mocha', 'audit', 'tsc', ...ALL_CARGO_COMMANDS]
 
   let commands
