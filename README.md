@@ -2,8 +2,6 @@
 
 Connected Cars JavaScript/TypeScript testing utilities
 
-https://wiki.connectedcars.io/en/backend/working-on-projects
-
 ## Install
 
 ``` bash
