@@ -1,4 +1,4 @@
-export { Json, TypedSinonStub } from './common'
+export { Json, TypedSinonSpy, TypedSinonStub } from './common'
 export { EnvStub } from './env/env-stub'
 export {
   HttpIncomingMessage,
