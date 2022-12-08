@@ -8,6 +8,9 @@ export type Json = null | boolean | number | string | Json[] | { [prop: string]:
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type TypedSinonStub<A extends (...args: any) => any> = sinon.SinonStub<Parameters<A>, ReturnType<A>>
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type TypedSinonSpy<A extends (...args: any) => any> = sinon.SinonSpy<Parameters<A>, ReturnType<A>>
+
 const RE_LINES = /\r?\n/
 
 // Returns a new array of all unique items in `items`.
