@@ -89,7 +89,7 @@ export const jestCheck = ({ data, sha, name = 'jest' }: JestInput): CheckRunComp
       return result
     }
 
-    result.conclusion = data.success ? 'success' : 'failure'
+    result.conclusion = data.success && !data.snapshot.failure ? 'success' : 'failure'
 
     if (result.output) {
       result.output.annotations = data.testResults
