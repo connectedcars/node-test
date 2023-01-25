@@ -11,6 +11,8 @@ async function time<T>(promise: Promise<T>): Promise<[T, number]> {
 
 describe('Migrate', () => {
   const mysqldPath = process.env['MYSQLD']
+  const defaultTestMigrationPaths = ['src/mysql/resources/migrations']
+  const testBadMigrationPaths = ['src/mysql/resources/bad-migrations']
 
   let mySqlClient: MySQLClient
 
@@ -27,7 +29,7 @@ describe('Migrate', () => {
   it('should migrate schema over two migration runs', async () => {
     const migrate = new Migrate({
       mysqlClient: mySqlClient,
-      migrationsPaths: ['src/mysql/resources/migrations'],
+      migrationsPaths: defaultTestMigrationPaths,
       ignoreCache: true
     })
     await migrate.cleanup()
@@ -65,7 +67,7 @@ describe('Migrate', () => {
     // Do initial migration and without using cache
     const initialMigrate = new Migrate({
       mysqlClient: mySqlClient,
-      migrationsPaths: ['src/mysql/resources/migrations'],
+      migrationsPaths: defaultTestMigrationPaths,
       ignoreCache: true
     })
     await initialMigrate.cleanup()
@@ -75,7 +77,7 @@ describe('Migrate', () => {
 
     const cachedMigrate = new Migrate({
       mysqlClient: mySqlClient,
-      migrationsPaths: ['src/mysql/resources/migrations']
+      migrationsPaths: defaultTestMigrationPaths
     })
 
     await cachedMigrate.cleanup()
@@ -87,12 +89,78 @@ describe('Migrate', () => {
     // Do initial migration and without using cache
     const initialMigrate = new Migrate({
       mysqlClient: mySqlClient,
-      migrationsPaths: ['src/mysql/resources/bad-migrations'],
+      migrationsPaths: testBadMigrationPaths,
       ignoreCache: true
     })
     await initialMigrate.cleanup()
     await expect(initialMigrate.migrate()).rejects.toThrowError(/ER_PARSE_ERROR:.*BAD SQL/)
     await expect(initialMigrate.migrate()).rejects.toThrowError(/ER_PARSE_ERROR:.*BAD SQL/)
+  })
+
+  const characterSetsCollationTestCases = [
+    [
+      'character sets on tables',
+      'bad-charset-on-table',
+      "Migration sets disallowed character set 'utf8mb3', use 'utf8mb4' instead"
+    ],
+    [
+      'character sets in alter table statements',
+      'bad-charset-alter-table',
+      "Migration sets disallowed character set 'latin7', use 'utf8mb4' instead"
+    ],
+    [
+      'collations on tables',
+      'bad-collation-on-table',
+      "Migration sets disallowed collation 'utf8mb4_0900_ai_ci', use 'utf8mb4_general_ci' instead"
+    ],
+    [
+      'collations in alter table statements',
+      'bad-collation-alter-table',
+      "Migration sets disallowed collation 'utf8mb4_da_0900_ai_ci', use 'utf8mb4_general_ci' instead"
+    ]
+  ]
+
+  test.each(characterSetsCollationTestCases)(
+    'should throw an error for disallowed %s',
+    async (_, migrationsPaths, errorMessage) => {
+      // Do initial migration without using cache
+      const initialMigrate = new Migrate({
+        mysqlClient: mySqlClient,
+        migrationsPaths: [`src/mysql/resources/${migrationsPaths}`],
+        ignoreCache: true
+      })
+      await initialMigrate.cleanup()
+
+      await expect(initialMigrate.migrate()).rejects.toThrowError(errorMessage)
+    }
+  )
+
+  it('should throw an error when the number of create table statements and character set statements do not match', async () => {
+    // Do initial migration without using cache
+    const initialMigrate = new Migrate({
+      mysqlClient: mySqlClient,
+      migrationsPaths: ['src/mysql/resources/create-table-statements-charset-count-mismatch'],
+      ignoreCache: true
+    })
+    await initialMigrate.cleanup()
+
+    await expect(initialMigrate.migrate()).rejects.toThrowError(
+      "There are 1 'create table' statement(s) that do not explicitly set the character set to 'utf8mb4'"
+    )
+  })
+
+  it('should throw an error when the number of create table statements and collation statements do not match', async () => {
+    // Do initial migration without using cache
+    const initialMigrate = new Migrate({
+      mysqlClient: mySqlClient,
+      migrationsPaths: ['src/mysql/resources/create-table-statements-collation-count-mismatch'],
+      ignoreCache: true
+    })
+    await initialMigrate.cleanup()
+
+    await expect(initialMigrate.migrate()).rejects.toThrowError(
+      "There are 1 'create table' statement(s) that do not explicitly set the collation to 'utf8mb4_general_ci'"
+    )
   })
 
   /* it.skip('should migrate data repo to newest version', async () => {
