@@ -1,20 +1,13 @@
 CREATE TABLE `VehicleInfo` (
     `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `vin` VARCHAR(17) NOT NULL,
-    `vendor` VARCHAR(255) NOT NULL, -- VAG
-    `make` VARCHAR(255) NOT NULL, -- Audi
-    `name` VARCHAR(255) NOT NULL, -- Audi Q2 Sport
-    `year` YEAR(4) NOT NULL, -- 2018
-
     `createdAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updatedAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     PRIMARY KEY (`id`),
     UNIQUE KEY `vin` (`vin`)
 )
-ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
-COMMENT 'Basic vehicle information'
-;
+ENGINE=InnoDB DEFAULT cHaRsEt=utf8mb4 CoLlAtE=utf8mb4_0900_ai_ci COMMENT 'Basic vehicle information';
 
 EXIT -- ROLLBACK
 
