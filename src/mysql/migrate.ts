@@ -297,7 +297,7 @@ export class Migrate {
     for (const characterSetMatch of characterSetMatches) {
       if (characterSetMatch[1] !== allowedCharSet) {
         throw new Error(
-          `Migration sets disallowed character set '${characterSetMatch[1]}', use '${allowedCharSet}' instead`
+          `Migration sets disallowed character set '${characterSetMatch[1]}', use '${allowedCharSet}' instead (${migration.path})`
         )
       }
     }
@@ -307,7 +307,7 @@ export class Migrate {
       const mismatchCount = createTableMatches.length - characterSetMatches.length
 
       throw new Error(
-        `There are ${mismatchCount} 'create table' statement(s) that do not explicitly set the character set to '${allowedCharSet}'`
+        `There are ${mismatchCount} 'create table' statement(s) that do not explicitly set the character set to '${allowedCharSet}' (${migration.path})`
       )
     }
   }
@@ -321,7 +321,9 @@ export class Migrate {
     // Check if a disallowed collation is used
     for (const collationMatch of collationMatches) {
       if (collationMatch[1] !== 'utf8mb4_general_ci') {
-        throw new Error(`Migration sets disallowed collation '${collationMatch[1]}', use '${allowedCollation}' instead`)
+        throw new Error(
+          `Migration sets disallowed collation '${collationMatch[1]}', use '${allowedCollation}' instead (${migration.path})`
+        )
       }
     }
 
@@ -330,7 +332,7 @@ export class Migrate {
       const mismatchCount = createTableMatches.length - collationMatches.length
 
       throw new Error(
-        `There are ${mismatchCount} 'create table' statement(s) that do not explicitly set the collation to '${allowedCollation}'`
+        `There are ${mismatchCount} 'create table' statement(s) that do not explicitly set the collation to '${allowedCollation}' (${migration.path})`
       )
     }
   }

@@ -102,22 +102,22 @@ describe('Migrate', () => {
     [
       'character sets on tables',
       'bad-charset-on-table',
-      "Migration sets disallowed character set 'utf8mb3', use 'utf8mb4' instead"
+      "Migration sets disallowed character set 'utf8mb3', use 'utf8mb4' instead (test/2023-01-25T133454_DisallowedCharSetOnTable.sql)"
     ],
     [
       'character sets in alter table statements',
       'bad-charset-alter-table',
-      "Migration sets disallowed character set 'latin7', use 'utf8mb4' instead"
+      "Migration sets disallowed character set 'latin7', use 'utf8mb4' instead (test/2023-01-25T133454_DisallowedCharSetInAlterTable.sql)"
     ],
     [
       'collations on tables',
       'bad-collation-on-table',
-      "Migration sets disallowed collation 'utf8mb4_0900_ai_ci', use 'utf8mb4_general_ci' instead"
+      "Migration sets disallowed collation 'utf8mb4_0900_ai_ci', use 'utf8mb4_general_ci' instead (test/2023-01-25T133454_DisallowedCollationOnTable.sql)"
     ],
     [
       'collations in alter table statements',
       'bad-collation-alter-table',
-      "Migration sets disallowed collation 'utf8mb4_da_0900_ai_ci', use 'utf8mb4_general_ci' instead"
+      "Migration sets disallowed collation 'utf8mb4_da_0900_ai_ci', use 'utf8mb4_general_ci' instead (test/2023-01-25T133454_DisallowedCollationInAlterTable.sql)"
     ]
   ]
 
@@ -138,7 +138,7 @@ describe('Migrate', () => {
     })
 
     await expect(initialMigrate.migrate()).rejects.toThrowError(
-      "There are 1 'create table' statement(s) that do not explicitly set the character set to 'utf8mb4'"
+      "There are 1 'create table' statement(s) that do not explicitly set the character set to 'utf8mb4' (test/2023-01-25T125135_CreateTableStatementCharSetCountMismatch.sql)"
     )
   })
 
@@ -148,7 +148,7 @@ describe('Migrate', () => {
     })
 
     await expect(initialMigrate.migrate()).rejects.toThrowError(
-      "There are 1 'create table' statement(s) that do not explicitly set the collation to 'utf8mb4_general_ci'"
+      "There are 1 'create table' statement(s) that do not explicitly set the collation to 'utf8mb4_general_ci' (test/2023-01-25T125135_CreateTableStatementCollationCountMismatch.sql)"
     )
   })
 
