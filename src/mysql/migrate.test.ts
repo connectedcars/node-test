@@ -1,4 +1,4 @@
-import { Migrate } from './migrate'
+import { Migrate, MigrateOptions } from './migrate'
 import { MySQLClient } from './mysql-client'
 import { MySQLServer } from './mysql-server'
 
@@ -16,6 +16,21 @@ describe('Migrate', () => {
 
   let mySqlClient: MySQLClient
 
+  async function doInitialMigrate(migrateOptions: Partial<MigrateOptions> = {}): Promise<Migrate> {
+    const mergedOptions = {
+      mysqlClient: mySqlClient,
+      migrationsPaths: defaultTestMigrationPaths,
+      ignoreCache: true,
+      ...migrateOptions
+    }
+
+    // Do initial migration and without using cache
+    const initialMigrate = new Migrate(mergedOptions)
+    await initialMigrate.cleanup()
+
+    return initialMigrate
+  }
+
   beforeAll(async () => {
     const mySqlServer = new MySQLServer({ mysqlBaseDir: 'mysql-context', mysqldPath })
     console.log(await mySqlServer.getTimings())
@@ -27,13 +42,8 @@ describe('Migrate', () => {
   })
 
   it('should migrate schema over two migration runs', async () => {
-    const migrate = new Migrate({
-      mysqlClient: mySqlClient,
-      migrationsPaths: defaultTestMigrationPaths,
-      ignoreCache: true
-    })
-    await migrate.cleanup()
-    const [migrationResultBefore, timingBefore] = await time(migrate.migrate('2020-04-02T165700'))
+    const initialMigrate = await doInitialMigrate()
+    const [migrationResultBefore, timingBefore] = await time(initialMigrate.migrate('2020-04-02T165700'))
     console.log(timingBefore / 1000)
     const pool = await mySqlClient.getConnectionPool('my_test01')
     const columnsBefore = await mySqlClient.queryArray<string>(
@@ -48,7 +58,7 @@ describe('Migrate', () => {
     expect(columnsBefore.sort()).toMatchSnapshot()
     expect(migrationResultBefore).toMatchSnapshot()
 
-    const [migrationResultAfter, timingAfter] = await time(migrate.migrate('2020-04-02T165700'))
+    const [migrationResultAfter, timingAfter] = await time(initialMigrate.migrate('2020-04-02T165700'))
     console.log(timingAfter / 1000)
     const columnsAfter = await mySqlClient.queryArray<string>(
       pool,
@@ -64,13 +74,7 @@ describe('Migrate', () => {
   })
 
   it('should migrate schema creating cache and use this to restore state when migrating again', async () => {
-    // Do initial migration and without using cache
-    const initialMigrate = new Migrate({
-      mysqlClient: mySqlClient,
-      migrationsPaths: defaultTestMigrationPaths,
-      ignoreCache: true
-    })
-    await initialMigrate.cleanup()
+    const initialMigrate = await doInitialMigrate()
     const migrationResultBefore = await initialMigrate.migrate()
     await initialMigrate.cacheSchemas()
     expect(migrationResultBefore).toMatchSnapshot()
@@ -86,13 +90,10 @@ describe('Migrate', () => {
   })
 
   it('should migrate until bad sql and not redo the succeeded statements', async () => {
-    // Do initial migration and without using cache
-    const initialMigrate = new Migrate({
-      mysqlClient: mySqlClient,
-      migrationsPaths: testBadMigrationPaths,
-      ignoreCache: true
+    const initialMigrate = await doInitialMigrate({
+      migrationsPaths: testBadMigrationPaths
     })
-    await initialMigrate.cleanup()
+
     await expect(initialMigrate.migrate()).rejects.toThrowError(/ER_PARSE_ERROR:.*BAD SQL/)
     await expect(initialMigrate.migrate()).rejects.toThrowError(/ER_PARSE_ERROR:.*BAD SQL/)
   })
@@ -123,26 +124,18 @@ describe('Migrate', () => {
   test.each(characterSetsCollationTestCases)(
     'should throw an error for disallowed %s',
     async (_, migrationsPaths, errorMessage) => {
-      // Do initial migration without using cache
-      const initialMigrate = new Migrate({
-        mysqlClient: mySqlClient,
-        migrationsPaths: [`src/mysql/resources/${migrationsPaths}`],
-        ignoreCache: true
+      const initialMigrate = await doInitialMigrate({
+        migrationsPaths: [`src/mysql/resources/${migrationsPaths}`]
       })
-      await initialMigrate.cleanup()
 
       await expect(initialMigrate.migrate()).rejects.toThrowError(errorMessage)
     }
   )
 
   it('should throw an error when the number of create table statements and character set statements do not match', async () => {
-    // Do initial migration without using cache
-    const initialMigrate = new Migrate({
-      mysqlClient: mySqlClient,
-      migrationsPaths: ['src/mysql/resources/create-table-statements-charset-count-mismatch'],
-      ignoreCache: true
+    const initialMigrate = await doInitialMigrate({
+      migrationsPaths: ['src/mysql/resources/create-table-statements-charset-count-mismatch']
     })
-    await initialMigrate.cleanup()
 
     await expect(initialMigrate.migrate()).rejects.toThrowError(
       "There are 1 'create table' statement(s) that do not explicitly set the character set to 'utf8mb4'"
@@ -150,13 +143,9 @@ describe('Migrate', () => {
   })
 
   it('should throw an error when the number of create table statements and collation statements do not match', async () => {
-    // Do initial migration without using cache
-    const initialMigrate = new Migrate({
-      mysqlClient: mySqlClient,
-      migrationsPaths: ['src/mysql/resources/create-table-statements-collation-count-mismatch'],
-      ignoreCache: true
+    const initialMigrate = await doInitialMigrate({
+      migrationsPaths: ['src/mysql/resources/create-table-statements-collation-count-mismatch']
     })
-    await initialMigrate.cleanup()
 
     await expect(initialMigrate.migrate()).rejects.toThrowError(
       "There are 1 'create table' statement(s) that do not explicitly set the collation to 'utf8mb4_general_ci'"
