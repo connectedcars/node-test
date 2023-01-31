@@ -306,19 +306,18 @@ export class Migrate {
     allowed: string,
     regexes: RegExp[],
     createTableMatches: RegExpMatchArray[]
-  ): void {
-    // Sanity checks for disallowed collations
+  ): void | never {
     const sql = migration.sql
     const matches = regexes.flatMap(regex => [...sql.matchAll(regex)])
 
-    // Check if a disallowed collation is used
+    // Check if a disallowed character set or collation is used
     for (const match of matches) {
       if (match[1] !== allowed) {
         throw new Error(`Migration sets disallowed ${what} '${match[1]}', use '${allowed}' instead (${migration.path})`)
       }
     }
 
-    // Check that all create table statements explicitly set a collation
+    // Check that all create table statements explicitly set a character set or collation
     if (createTableMatches.length > 0 && createTableMatches.length !== matches.length) {
       const mismatchCount = createTableMatches.length - matches.length
 
