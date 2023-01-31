@@ -281,13 +281,12 @@ export class Migrate {
     }
 
     const createTableMatches = Array.from(migration.sql.matchAll(/create\s+table/gi))
-    // this.checkMigrationCharacterSets(migration, createTableMatches)
-    // this.checkMigrationCollations(migration, createTableMatches)
+
     this.checkMigrationCharacterSetsOrCollations(
       migration,
       'character set',
       'utf8mb4',
-      [/charset\s*=\s*(\w+)/gi, /character\s+set\s+(\w+)/gi],
+      [/charset\s*=\s*(\w+)/gi, /charset\s+(\w+)/gi, /character\s+set\s+(\w+)/gi, /character\s+set\s*=\s*(\w+)/gi],
       createTableMatches
     )
     this.checkMigrationCharacterSetsOrCollations(
