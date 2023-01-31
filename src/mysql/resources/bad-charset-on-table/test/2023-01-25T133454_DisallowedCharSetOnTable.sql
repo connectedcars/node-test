@@ -7,7 +7,7 @@ CREATE TABLE `VehicleInfo` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `vin` (`vin`)
 )
-ENGINE=InnoDB DEFAULT cHaRsEt=utf8mb3 COMMENT 'Basic vehicle information';
+ENGINE=InnoDB DEFAULT cHaRsEt= utf8mb3 COMMENT 'Basic vehicle information';
 
 EXIT -- ROLLBACK
 
