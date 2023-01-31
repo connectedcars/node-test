@@ -281,58 +281,50 @@ export class Migrate {
     }
 
     const createTableMatches = Array.from(migration.sql.matchAll(/create\s+table/gi))
-    this.checkMigrationCharacterSets(migration, createTableMatches)
-    this.checkMigrationCollations(migration, createTableMatches)
+    // this.checkMigrationCharacterSets(migration, createTableMatches)
+    // this.checkMigrationCollations(migration, createTableMatches)
+    this.checkMigrationCharacterSetsOrCollations(
+      migration,
+      'character set',
+      'utf8mb4',
+      [/charset\s*=\s*(\w+)/gi, /character\s+set\s+(\w+)/gi],
+      createTableMatches
+    )
+    this.checkMigrationCharacterSetsOrCollations(
+      migration,
+      'collation',
+      'utf8mb4_general_ci',
+      [/collate\s*=\s*(\w+)/gi, /collate\s+(\w+)/gi],
+      createTableMatches
+    )
 
     return migration
   }
 
-  private checkMigrationCharacterSets(migration: Migration, createTableMatches: RegExpMatchArray[]): void {
-    // Sanity checks for disallowed character sets
-    const sql = migration.sql
-    const allowedCharSet = 'utf8mb4'
-    const characterSetMatches = [...sql.matchAll(/charset\s*=\s*(\w+)/gi), ...sql.matchAll(/character\s+set\s+(\w+)/gi)]
-
-    // Check if a disallowed character set is used
-    for (const characterSetMatch of characterSetMatches) {
-      if (characterSetMatch[1] !== allowedCharSet) {
-        throw new Error(
-          `Migration sets disallowed character set '${characterSetMatch[1]}', use '${allowedCharSet}' instead (${migration.path})`
-        )
-      }
-    }
-
-    // Check that all create table statements explicitly set the character set
-    if (createTableMatches.length > 0 && createTableMatches.length !== characterSetMatches.length) {
-      const mismatchCount = createTableMatches.length - characterSetMatches.length
-
-      throw new Error(
-        `There are ${mismatchCount} 'create table' statement(s) that do not explicitly set the character set to '${allowedCharSet}' (${migration.path})`
-      )
-    }
-  }
-
-  private checkMigrationCollations(migration: Migration, createTableMatches: RegExpMatchArray[]): void {
+  private checkMigrationCharacterSetsOrCollations(
+    migration: Migration,
+    what: 'collation' | 'character set',
+    allowed: string,
+    regexes: RegExp[],
+    createTableMatches: RegExpMatchArray[]
+  ): void {
     // Sanity checks for disallowed collations
     const sql = migration.sql
-    const allowedCollation = 'utf8mb4_general_ci'
-    const collationMatches = [...sql.matchAll(/collate\s*=\s*(\w+)/gi), ...sql.matchAll(/collate\s+(\w+)/gi)]
+    const matches = regexes.flatMap(regex => [...sql.matchAll(regex)])
 
     // Check if a disallowed collation is used
-    for (const collationMatch of collationMatches) {
-      if (collationMatch[1] !== 'utf8mb4_general_ci') {
-        throw new Error(
-          `Migration sets disallowed collation '${collationMatch[1]}', use '${allowedCollation}' instead (${migration.path})`
-        )
+    for (const match of matches) {
+      if (match[1] !== allowed) {
+        throw new Error(`Migration sets disallowed ${what} '${match[1]}', use '${allowed}' instead (${migration.path})`)
       }
     }
 
     // Check that all create table statements explicitly set a collation
-    if (createTableMatches.length > 0 && createTableMatches.length !== collationMatches.length) {
-      const mismatchCount = createTableMatches.length - collationMatches.length
+    if (createTableMatches.length > 0 && createTableMatches.length !== matches.length) {
+      const mismatchCount = createTableMatches.length - matches.length
 
       throw new Error(
-        `There are ${mismatchCount} 'create table' statement(s) that do not explicitly set the collation to '${allowedCollation}' (${migration.path})`
+        `There are ${mismatchCount} 'create table' statement(s) that do not explicitly set the ${what} to '${allowed}' (${migration.path})`
       )
     }
   }
