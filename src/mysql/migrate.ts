@@ -280,7 +280,7 @@ export class Migrate {
       sql
     }
 
-    const createTableMatches = Array.from(migration.sql.matchAll(/create\s+table/gi))
+    const createTableMatches = [...migration.sql.matchAll(/create\s+table/gi)]
 
     this.checkMigrationCharacterSetsOrCollations(
       migration,
