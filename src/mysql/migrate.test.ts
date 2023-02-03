@@ -132,26 +132,6 @@ describe('Migrate', () => {
     }
   )
 
-  it('should throw an error when the number of create table statements and character set statements do not match', async () => {
-    const initialMigrate = await doInitialMigrate({
-      migrationsPaths: ['src/mysql/resources/create-table-statements-charset-count-mismatch']
-    })
-
-    await expect(initialMigrate.migrate()).rejects.toThrowError(
-      "There are 1 'create table' statement(s) that do not explicitly set the character set to 'utf8mb4' (test/2023-01-25T125135_CreateTableStatementCharSetCountMismatch.sql)"
-    )
-  })
-
-  it('should throw an error when the number of create table statements and collation statements do not match', async () => {
-    const initialMigrate = await doInitialMigrate({
-      migrationsPaths: ['src/mysql/resources/create-table-statements-collation-count-mismatch']
-    })
-
-    await expect(initialMigrate.migrate()).rejects.toThrowError(
-      "There are 1 'create table' statement(s) that do not explicitly set the collation to 'utf8mb4_general_ci' (test/2023-01-25T125135_CreateTableStatementCollationCountMismatch.sql)"
-    )
-  })
-
   /* it.skip('should migrate data repo to newest version', async () => {
     const migrate = new Migrate({
       mysqlClient: mySqlClient,

@@ -280,22 +280,16 @@ export class Migrate {
       sql
     }
 
-    const createTableMatches = [...migration.sql.matchAll(/create\s+table/gi)]
-
-    this.checkMigrationCharacterSetsOrCollations(
-      migration,
-      'character set',
-      'utf8mb4',
-      [/charset\s*=\s*(\w+)/gi, /charset\s+(\w+)/gi, /character\s+set\s+(\w+)/gi, /character\s+set\s*=\s*(\w+)/gi],
-      createTableMatches
-    )
-    this.checkMigrationCharacterSetsOrCollations(
-      migration,
-      'collation',
-      'utf8mb4_general_ci',
-      [/collate\s*=\s*(\w+)/gi, /collate\s+(\w+)/gi],
-      createTableMatches
-    )
+    this.checkMigrationCharacterSetsOrCollations(migration, 'character set', 'utf8mb4', [
+      /charset\s*=\s*(\w+)/gi,
+      /charset\s+(\w+)/gi,
+      /character\s+set\s+(\w+)/gi,
+      /character\s+set\s*=\s*(\w+)/gi
+    ])
+    this.checkMigrationCharacterSetsOrCollations(migration, 'collation', 'utf8mb4_general_ci', [
+      /collate\s*=\s*(\w+)/gi,
+      /collate\s+(\w+)/gi
+    ])
 
     return migration
   }
@@ -304,8 +298,7 @@ export class Migrate {
     migration: Migration,
     what: 'collation' | 'character set',
     allowed: string,
-    regexes: RegExp[],
-    createTableMatches: RegExpMatchArray[]
+    regexes: RegExp[]
   ): void | never {
     const sql = migration.sql
     const matches = regexes.flatMap(regex => [...sql.matchAll(regex)])
@@ -315,15 +308,6 @@ export class Migrate {
       if (match[1] !== allowed) {
         throw new Error(`Migration sets disallowed ${what} '${match[1]}', use '${allowed}' instead (${migration.path})`)
       }
-    }
-
-    // Check that all create table statements explicitly set a character set or collation
-    if (createTableMatches.length > 0 && createTableMatches.length !== matches.length) {
-      const mismatchCount = createTableMatches.length - matches.length
-
-      throw new Error(
-        `There are ${mismatchCount} 'create table' statement(s) that do not explicitly set the ${what} to '${allowed}' (${migration.path})`
-      )
     }
   }
 
