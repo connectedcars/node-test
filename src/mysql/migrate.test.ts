@@ -132,6 +132,14 @@ describe('Migrate', () => {
     }
   )
 
+  it('skips character set and collation checks for some migrations', async () => {
+    const initialMigrate = await doInitialMigrate({
+      migrationsPaths: ['src/mysql/resources/skip-migration-charactersets-collation-checks']
+    })
+
+    await expect(initialMigrate.migrate()).resolves.not.toThrow()
+  })
+
   /* it.skip('should migrate data repo to newest version', async () => {
     const migrate = new Migrate({
       mysqlClient: mySqlClient,
