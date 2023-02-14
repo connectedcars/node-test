@@ -21,7 +21,7 @@ Object {
     PRIMARY KEY (\`id\`),
     UNIQUE KEY \`vin\` (\`vin\`)
 )
-ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4
+ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 COMMENT 'Basic vehicle information'
 ;
 ",
@@ -62,7 +62,7 @@ ALTER TABLE \`VehicleInfo\` ADD \`fuelType\` VARCHAR(255) NULL AFTER \`model\`;
     PRIMARY KEY (\`id\`),
     UNIQUE KEY \`vin\` (\`vin\`)
 )
-ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4
+ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 COMMENT 'Basic vehicle information'
 ;
 ",
@@ -103,7 +103,7 @@ ALTER TABLE \`VehicleInfo\` ADD \`fuelType\` VARCHAR(255) NULL AFTER \`model\`;
     PRIMARY KEY (\`id\`),
     UNIQUE KEY \`vin\` (\`vin\`)
 )
-ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4
+ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 COMMENT 'Basic vehicle information'
 ;
 ",
