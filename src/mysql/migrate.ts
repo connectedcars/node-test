@@ -10,6 +10,9 @@ const readFile = util.promisify(fs.readFile)
 const mkdirAsync = util.promisify(fs.mkdir)
 const existsAsync = util.promisify(fs.exists)
 
+// List of migrations where we skip checking for correct character sets and collations
+const skipCharacterSetCollationChecks = ['connectedcars/2018-05-07T133403_AddPushTokens.sql']
+
 export interface MigrationRow {
   timestamp: string
   name: string
@@ -273,11 +276,43 @@ export class Migrate {
     if (!sql) {
       throw new Error(`Empty migration`)
     }
-    return {
+    const migration = {
       path: migrationFile,
       timestamp: match[1],
       name: match[2],
       sql
+    }
+
+    if (!skipCharacterSetCollationChecks.includes(migration.path)) {
+      this.checkMigrationCharacterSetsOrCollations(migration, 'character set', 'utf8mb4', [
+        /charset\s*=\s*(\w+)/gi,
+        /charset\s+(\w+)/gi,
+        /character\s+set\s+(\w+)/gi,
+        /character\s+set\s*=\s*(\w+)/gi
+      ])
+      this.checkMigrationCharacterSetsOrCollations(migration, 'collation', 'utf8mb4_general_ci', [
+        /collate\s*=\s*(\w+)/gi,
+        /collate\s+(\w+)/gi
+      ])
+    }
+
+    return migration
+  }
+
+  private checkMigrationCharacterSetsOrCollations(
+    migration: Migration,
+    what: 'collation' | 'character set',
+    allowed: string,
+    regexes: RegExp[]
+  ): void | never {
+    const sql = migration.sql
+    const matches = regexes.flatMap(regex => [...sql.matchAll(regex)])
+
+    // Check if a disallowed character set or collation is used
+    for (const match of matches) {
+      if (match[1] !== allowed) {
+        throw new Error(`Migration sets disallowed ${what} '${match[1]}', use '${allowed}' instead (${migration.path})`)
+      }
     }
   }
 
