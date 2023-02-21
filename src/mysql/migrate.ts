@@ -10,8 +10,39 @@ const readFile = util.promisify(fs.readFile)
 const mkdirAsync = util.promisify(fs.mkdir)
 const existsAsync = util.promisify(fs.exists)
 
-// List of migrations where we skip checking for correct character sets and collations
-const skipCharacterSetCollationChecks = ['connectedcars/2018-05-07T133403_AddPushTokens.sql']
+// Set of migrations where we skip checking for correct character sets and
+// collations. Most of these are production tables where the migration would
+// take too long and stall access to the tables
+const skipCharacterSetCollationChecks = new Set([
+  'connectedcars/2018-05-07T133403_AddPushTokens.sql',
+  'connectedcars/2018-02-23T154315_WorkshopChanges.sql',
+  'connectedcars/2018-07-25T082200_AddCarProviderRequests.sql',
+  'connectedcars/2019-05-15T111450_AuditAccesslogReferrerLength.sql',
+  'connectedcars/2018-04-16T130923_3rd-party-services.sql',
+  'connectedcars/2018-02-26T112537_CarActivationChanges.sql',
+  'connectedcars/2018-12-18T151349_AuditChangelogReferrerLength.sql',
+  'connectedcars/2018-09-19T120740_CarOwnershipConfirmations.sql',
+  'connectedcars/2018-02-26T112628_UserTermsAccepts.sql',
+  'connectedcars/2023-01-18T091332_UserTermsRejectionsTable.sql',
+  'connectedcars/2018-03-05T121421_createPwResetTable.sql',
+  'connectedcars/2018-02-26T112514_CarInvites.sql',
+  'connectedcars/2019-02-05T102920_Files.sql',
+  'connectedcars/2018-03-23T124509_addAccessLog.sql',
+  'connectedcars/2018-02-26T112444_GroupInvites.sql',
+  'connectedcars/2018-02-28T130719_create-auth-devices.sql',
+  'connectedcars/2018-02-26T112436_AddAuditChangelog.sql',
+  'connectedcars/2018-03-02T150621_CarSnoozes.sql',
+  'provisioning_api/2018-10-11T143308_AddUnits.sql',
+  'notifications/2019-10-09T141059_ProcessIndexVal.sql',
+  'connectedcars/2018-02-23T153615_NewPermissionModel.sql',
+  'performance/2017-12-08T132502_addExaminations.sql',
+  'provisioning_api/2018-09-23T143308_Initial.sql',
+  'provisioning_api/2020-01-16T093152_AddLatestUnitState.sql',
+  'performance/2017-12-08T132503_addPotentialCars.sql',
+  'reverse-engineering-provider/2019-05-27T205520_initial.sql',
+  'car_info/2018-08-30T090800_addProcessIndex.sql',
+  'car_info/2019-01-08T083126_AddMappedEventDescriptions.sql'
+])
 
 export interface MigrationRow {
   timestamp: string
@@ -283,7 +314,7 @@ export class Migrate {
       sql
     }
 
-    if (!skipCharacterSetCollationChecks.includes(migration.path)) {
+    if (!skipCharacterSetCollationChecks.has(migration.path)) {
       this.checkMigrationCharacterSetsOrCollations(migration, 'character set', 'utf8mb4', [
         /charset\s*=\s*(\w+)/gi,
         /charset\s+(\w+)/gi,
