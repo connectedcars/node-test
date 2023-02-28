@@ -34,6 +34,7 @@ const skipCharacterSetCollationChecks = new Set([
   'connectedcars/2018-03-02T150621_CarSnoozes.sql',
   'provisioning_api/2018-10-11T143308_AddUnits.sql',
   'notifications/2019-10-09T141059_ProcessIndexVal.sql',
+  'notifications/2018-02-26T154416_initial.sql',
   'connectedcars/2018-02-23T153615_NewPermissionModel.sql',
   'performance/2017-12-08T132502_addExaminations.sql',
   'provisioning_api/2018-09-23T143308_Initial.sql',
