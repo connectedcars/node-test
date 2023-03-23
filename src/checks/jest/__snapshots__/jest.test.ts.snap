@@ -10,7 +10,7 @@ Object {
     "annotations": Array [
       Object {
         "annotation_level": "failure",
-        "end_line": 1,
+        "end_line": 61,
         "message": "Error: expect(received).toStrictEqual(expected) // deep equality
 
 - Expected - 1
@@ -33,7 +33,9 @@ Object {
  at /home/jagdos/repos/node-ci-tools/node_modules/jest-jasmine2/build/queueRunner.js:75:41",
         "path": "src/eslint/eslint.test.ts",
         "raw_details": "{
-  \\"ancestorTitles\\": [],
+  \\"ancestorTitles\\": [
+    \\"describe/name\\"
+  ],
   \\"failureMessages\\": [
     \\"Error: expect(received).toStrictEqual(expected) // deep equality\\\\n\\\\n- Expected - 1\\\\n+ Received + 1\\\\n\\\\n Object {\\\\n \\\\\\"conclusion\\\\\\": \\\\\\"success\\\\\\",\\\\n \\\\\\"output\\\\\\": Object {\\\\n \\\\\\"annotations\\\\\\": Array [],\\\\n \\\\\\"summary\\\\\\": \\\\\\"No problems found\\\\\\",\\\\n- \\\\\\"title\\\\\\": \\\\\\"No problems found BUG\\\\\\",\\\\n+ \\\\\\"title\\\\\\": \\\\\\"No problems found\\\\\\",\\\\n },\\\\n }\\\\n at Object.<anonymous> (/home/jagdos/repos/node-ci-tools/src/eslint/eslint.test.ts:61:18)\\\\n at Object.asyncJestTest (/home/jagdos/repos/node-ci-tools/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)\\\\n at /home/jagdos/repos/node-ci-tools/node_modules/jest-jasmine2/build/queueRunner.js:45:12\\\\n at new Promise (<anonymous>)\\\\n at mapper (/home/jagdos/repos/node-ci-tools/node_modules/jest-jasmine2/build/queueRunner.js:28:19)\\\\n at /home/jagdos/repos/node-ci-tools/node_modules/jest-jasmine2/build/queueRunner.js:75:41\\"
   ],
@@ -43,7 +45,59 @@ Object {
   \\"title\\": \\"converts successful eslint with skipped file\\",
   \\"file\\": \\"/home/jagdos/repos/node-ci-tools/src/eslint/eslint.test.ts\\"
 }",
-        "start_line": 1,
+        "start_line": 61,
+        "title": "describe/name - converts successful eslint with skipped file",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 278,
+        "message": "Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoEqual[2m([22m[32mexpected[39m[2m) // deep equality[22m
+
+[32m- Expected  -  1[39m
+[31m+ Received  + 17[39m
+
+[32m- Array [][39m
+[31m+ Array [[39m
+[31m+   RowDataPacket {[39m
+[31m+     \\"attempts\\": 0,[39m
+[31m+     \\"carId\\": 124,[39m
+[31m+     \\"code\\": null,[39m
+[31m+     \\"createdAt\\": 2023-03-23T13:45:12.000Z,[39m
+[31m+     \\"id\\": 1,[39m
+[31m+     \\"primaryCanDtcId\\": 1,[39m
+[31m+     \\"rawCode\\": \\"0304\\",[39m
+[31m+     \\"resolution\\": null,[39m
+[31m+     \\"resolved\\": 0,[39m
+[31m+     \\"resolvedGeneric\\": 0,[39m
+[31m+     \\"task\\": \\"{\\\\\\"ecu\\\\\\": {\\\\\\"rxId\\\\\\": \\\\\\"7E8\\\\\\", \\\\\\"txId\\\\\\": \\\\\\"7E0\\\\\\", \\\\\\"category\\\\\\": \\\\\\"01\\\\\\", \\\\\\"transport\\\\\\": \\\\\\"ISOTP\\\\\\", \\\\\\"application\\\\\\": \\\\\\"UDS\\\\\\", \\\\\\"requestsAndResponses\\\\\\": [{\\\\\\"response\\\\\\": \\\\\\"something useful\\\\\\", \\\\\\"serviceAndDid\\\\\\": \\\\\\"22F19E\\\\\\"}, {\\\\\\"response\\\\\\": \\\\\\"something useful\\\\\\", \\\\\\"serviceAndDid\\\\\\": \\\\\\"22F1A2\\\\\\"}, {\\\\\\"response\\\\\\": \\\\\\"something useful\\\\\\", \\\\\\"serviceAndDid\\\\\\": \\\\\\"22F197\\\\\\"}, {\\\\\\"response\\\\\\": \\\\\\"5902FF030400\\\\\\", \\\\\\"serviceAndDid\\\\\\": \\\\\\"1902AE\\\\\\"}]}, \\\\\\"siblings\\\\\\": [{\\\\\\"rxId\\\\\\": \\\\\\"7E8\\\\\\", \\\\\\"txId\\\\\\": \\\\\\"7E0\\\\\\", \\\\\\"category\\\\\\": \\\\\\"01\\\\\\", \\\\\\"transport\\\\\\": \\\\\\"ISOTP\\\\\\", \\\\\\"application\\\\\\": \\\\\\"OBD\\\\\\", \\\\\\"requestsAndResponses\\\\\\": [{\\\\\\"response\\\\\\": \\\\\\"49026d7976696e\\\\\\", \\\\\\"serviceAndDid\\\\\\": \\\\\\"0902\\\\\\"}]}]}\\",[39m
+[31m+     \\"updatedAt\\": 2023-03-23T13:45:12.000Z,[39m
+[31m+     \\"vendor\\": \\"VAG\\",[39m
+[31m+   },[39m
+[31m+ ][39m
+    at Object.toEqual (/Users/michaelstorgaard/Sites/job-runner-reverse-engineering/src/jobs/process-vag-can-dtcs.it.test.ts:278:30)
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (node:internal/process/task_queues:96:5)",
+        "path": "src/eslint/eslint.test.ts",
+        "raw_details": "{
+  \\"ancestorTitles\\": [
+    \\"jobs/process-vag-can-dtcs\\"
+  ],
+  \\"duration\\": 549,
+  \\"failureDetails\\": [],
+  \\"failureMessages\\": [
+    \\"Error: \\\\u001b[2mexpect(\\\\u001b[22m\\\\u001b[31mreceived\\\\u001b[39m\\\\u001b[2m).\\\\u001b[22mtoEqual\\\\u001b[2m(\\\\u001b[22m\\\\u001b[32mexpected\\\\u001b[39m\\\\u001b[2m) // deep equality\\\\u001b[22m\\\\n\\\\n\\\\u001b[32m- Expected  -  1\\\\u001b[39m\\\\n\\\\u001b[31m+ Received  + 17\\\\u001b[39m\\\\n\\\\n\\\\u001b[32m- Array []\\\\u001b[39m\\\\n\\\\u001b[31m+ Array [\\\\u001b[39m\\\\n\\\\u001b[31m+   RowDataPacket {\\\\u001b[39m\\\\n\\\\u001b[31m+     \\\\\\"attempts\\\\\\": 0,\\\\u001b[39m\\\\n\\\\u001b[31m+     \\\\\\"carId\\\\\\": 124,\\\\u001b[39m\\\\n\\\\u001b[31m+     \\\\\\"code\\\\\\": null,\\\\u001b[39m\\\\n\\\\u001b[31m+     \\\\\\"createdAt\\\\\\": 2023-03-23T13:45:12.000Z,\\\\u001b[39m\\\\n\\\\u001b[31m+     \\\\\\"id\\\\\\": 1,\\\\u001b[39m\\\\n\\\\u001b[31m+     \\\\\\"primaryCanDtcId\\\\\\": 1,\\\\u001b[39m\\\\n\\\\u001b[31m+     \\\\\\"rawCode\\\\\\": \\\\\\"0304\\\\\\",\\\\u001b[39m\\\\n\\\\u001b[31m+     \\\\\\"resolution\\\\\\": null,\\\\u001b[39m\\\\n\\\\u001b[31m+     \\\\\\"resolved\\\\\\": 0,\\\\u001b[39m\\\\n\\\\u001b[31m+     \\\\\\"resolvedGeneric\\\\\\": 0,\\\\u001b[39m\\\\n\\\\u001b[31m+     \\\\\\"task\\\\\\": \\\\\\"{\\\\\\\\\\\\\\"ecu\\\\\\\\\\\\\\": {\\\\\\\\\\\\\\"rxId\\\\\\\\\\\\\\": \\\\\\\\\\\\\\"7E8\\\\\\\\\\\\\\", \\\\\\\\\\\\\\"txId\\\\\\\\\\\\\\": \\\\\\\\\\\\\\"7E0\\\\\\\\\\\\\\", \\\\\\\\\\\\\\"category\\\\\\\\\\\\\\": \\\\\\\\\\\\\\"01\\\\\\\\\\\\\\", \\\\\\\\\\\\\\"transport\\\\\\\\\\\\\\": \\\\\\\\\\\\\\"ISOTP\\\\\\\\\\\\\\", \\\\\\\\\\\\\\"application\\\\\\\\\\\\\\": \\\\\\\\\\\\\\"UDS\\\\\\\\\\\\\\", \\\\\\\\\\\\\\"requestsAndResponses\\\\\\\\\\\\\\": [{\\\\\\\\\\\\\\"response\\\\\\\\\\\\\\": \\\\\\\\\\\\\\"something useful\\\\\\\\\\\\\\", \\\\\\\\\\\\\\"serviceAndDid\\\\\\\\\\\\\\": \\\\\\\\\\\\\\"22F19E\\\\\\\\\\\\\\"}, {\\\\\\\\\\\\\\"response\\\\\\\\\\\\\\": \\\\\\\\\\\\\\"something useful\\\\\\\\\\\\\\", \\\\\\\\\\\\\\"serviceAndDid\\\\\\\\\\\\\\": \\\\\\\\\\\\\\"22F1A2\\\\\\\\\\\\\\"}, {\\\\\\\\\\\\\\"response\\\\\\\\\\\\\\": \\\\\\\\\\\\\\"something useful\\\\\\\\\\\\\\", \\\\\\\\\\\\\\"serviceAndDid\\\\\\\\\\\\\\": \\\\\\\\\\\\\\"22F197\\\\\\\\\\\\\\"}, {\\\\\\\\\\\\\\"response\\\\\\\\\\\\\\": \\\\\\\\\\\\\\"5902FF030400\\\\\\\\\\\\\\", \\\\\\\\\\\\\\"serviceAndDid\\\\\\\\\\\\\\": \\\\\\\\\\\\\\"1902AE\\\\\\\\\\\\\\"}]}, \\\\\\\\\\\\\\"siblings\\\\\\\\\\\\\\": [{\\\\\\\\\\\\\\"rxId\\\\\\\\\\\\\\": \\\\\\\\\\\\\\"7E8\\\\\\\\\\\\\\", \\\\\\\\\\\\\\"txId\\\\\\\\\\\\\\": \\\\\\\\\\\\\\"7E0\\\\\\\\\\\\\\", \\\\\\\\\\\\\\"category\\\\\\\\\\\\\\": \\\\\\\\\\\\\\"01\\\\\\\\\\\\\\", \\\\\\\\\\\\\\"transport\\\\\\\\\\\\\\": \\\\\\\\\\\\\\"ISOTP\\\\\\\\\\\\\\", \\\\\\\\\\\\\\"application\\\\\\\\\\\\\\": \\\\\\\\\\\\\\"OBD\\\\\\\\\\\\\\", \\\\\\\\\\\\\\"requestsAndResponses\\\\\\\\\\\\\\": [{\\\\\\\\\\\\\\"response\\\\\\\\\\\\\\": \\\\\\\\\\\\\\"49026d7976696e\\\\\\\\\\\\\\", \\\\\\\\\\\\\\"serviceAndDid\\\\\\\\\\\\\\": \\\\\\\\\\\\\\"0902\\\\\\\\\\\\\\"}]}]}\\\\\\",\\\\u001b[39m\\\\n\\\\u001b[31m+     \\\\\\"updatedAt\\\\\\": 2023-03-23T13:45:12.000Z,\\\\u001b[39m\\\\n\\\\u001b[31m+     \\\\\\"vendor\\\\\\": \\\\\\"VAG\\\\\\",\\\\u001b[39m\\\\n\\\\u001b[31m+   },\\\\u001b[39m\\\\n\\\\u001b[31m+ ]\\\\u001b[39m\\\\n    at Object.toEqual (/Users/michaelstorgaard/Sites/job-runner-reverse-engineering/src/jobs/process-vag-can-dtcs.it.test.ts:278:30)\\\\n    at runMicrotasks (<anonymous>)\\\\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\\"
+  ],
+  \\"fullName\\": \\"jobs/process-vag-can-dtcs does not processes TL codes\\",
+  \\"invocations\\": 1,
+  \\"location\\": null,
+  \\"numPassingAsserts\\": 1,
+  \\"retryReasons\\": [],
+  \\"status\\": \\"failed\\",
+  \\"title\\": \\"does not processes TL codes\\",
+  \\"file\\": \\"/home/jagdos/repos/node-ci-tools/src/eslint/eslint.test.ts\\"
+}",
+        "start_line": 278,
+        "title": "jobs/process-vag-can-dtcs - does not processes TL codes",
       },
     ],
     "summary": "3 of 4 tests passed!",
@@ -78,6 +132,7 @@ Object {
   \\"file\\": \\"/Users/tlb/git/connectedcars/data/src/tests/integration/insert-ignore.test.ts\\"
 }",
         "start_line": 1,
+        "title": "Tests INSERT IGNORE warnings - is possible to distinguish between duplicates and all other errors",
       },
     ],
     "summary": "8 of 9 tests passed!",

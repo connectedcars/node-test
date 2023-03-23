@@ -828,7 +828,7 @@ export const jestFailedOutput: FormattedTestResults = {
           title: 'converts successful eslint'
         },
         {
-          ancestorTitles: [],
+          ancestorTitles: ['describe/name'],
           failureMessages: [
             'Error: expect(received).toStrictEqual(expected) // deep equality\n\n- Expected - 1\n+ Received + 1\n\n Object {\n "conclusion": "success",\n "output": Object {\n "annotations": Array [],\n "summary": "No problems found",\n- "title": "No problems found BUG",\n+ "title": "No problems found",\n },\n }\n at Object.<anonymous> (/home/jagdos/repos/node-ci-tools/src/eslint/eslint.test.ts:61:18)\n at Object.asyncJestTest (/home/jagdos/repos/node-ci-tools/node_modules/jest-jasmine2/build/jasmineAsyncInstall.js:100:37)\n at /home/jagdos/repos/node-ci-tools/node_modules/jest-jasmine2/build/queueRunner.js:45:12\n at new Promise (<anonymous>)\n at mapper (/home/jagdos/repos/node-ci-tools/node_modules/jest-jasmine2/build/queueRunner.js:28:19)\n at /home/jagdos/repos/node-ci-tools/node_modules/jest-jasmine2/build/queueRunner.js:75:41'
           ],
@@ -852,6 +852,21 @@ export const jestFailedOutput: FormattedTestResults = {
           location: null,
           status: 'passed',
           title: 'converts warned eslint'
+        },
+        {
+          ancestorTitles: ['jobs/process-vag-can-dtcs'],
+          duration: 549,
+          failureDetails: [],
+          failureMessages: [
+            'Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\n\u001b[32m- Expected  -  1\u001b[39m\n\u001b[31m+ Received  + 17\u001b[39m\n\n\u001b[32m- Array []\u001b[39m\n\u001b[31m+ Array [\u001b[39m\n\u001b[31m+   RowDataPacket {\u001b[39m\n\u001b[31m+     "attempts": 0,\u001b[39m\n\u001b[31m+     "carId": 124,\u001b[39m\n\u001b[31m+     "code": null,\u001b[39m\n\u001b[31m+     "createdAt": 2023-03-23T13:45:12.000Z,\u001b[39m\n\u001b[31m+     "id": 1,\u001b[39m\n\u001b[31m+     "primaryCanDtcId": 1,\u001b[39m\n\u001b[31m+     "rawCode": "0304",\u001b[39m\n\u001b[31m+     "resolution": null,\u001b[39m\n\u001b[31m+     "resolved": 0,\u001b[39m\n\u001b[31m+     "resolvedGeneric": 0,\u001b[39m\n\u001b[31m+     "task": "{\\"ecu\\": {\\"rxId\\": \\"7E8\\", \\"txId\\": \\"7E0\\", \\"category\\": \\"01\\", \\"transport\\": \\"ISOTP\\", \\"application\\": \\"UDS\\", \\"requestsAndResponses\\": [{\\"response\\": \\"something useful\\", \\"serviceAndDid\\": \\"22F19E\\"}, {\\"response\\": \\"something useful\\", \\"serviceAndDid\\": \\"22F1A2\\"}, {\\"response\\": \\"something useful\\", \\"serviceAndDid\\": \\"22F197\\"}, {\\"response\\": \\"5902FF030400\\", \\"serviceAndDid\\": \\"1902AE\\"}]}, \\"siblings\\": [{\\"rxId\\": \\"7E8\\", \\"txId\\": \\"7E0\\", \\"category\\": \\"01\\", \\"transport\\": \\"ISOTP\\", \\"application\\": \\"OBD\\", \\"requestsAndResponses\\": [{\\"response\\": \\"49026d7976696e\\", \\"serviceAndDid\\": \\"0902\\"}]}]}",\u001b[39m\n\u001b[31m+     "updatedAt": 2023-03-23T13:45:12.000Z,\u001b[39m\n\u001b[31m+     "vendor": "VAG",\u001b[39m\n\u001b[31m+   },\u001b[39m\n\u001b[31m+ ]\u001b[39m\n    at Object.toEqual (/Users/michaelstorgaard/Sites/job-runner-reverse-engineering/src/jobs/process-vag-can-dtcs.it.test.ts:278:30)\n    at runMicrotasks (<anonymous>)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)'
+          ],
+          fullName: 'jobs/process-vag-can-dtcs does not processes TL codes',
+          invocations: 1,
+          location: null,
+          numPassingAsserts: 1,
+          retryReasons: [],
+          status: 'failed',
+          title: 'does not processes TL codes'
         }
       ],
       endTime: 1586178581454,
