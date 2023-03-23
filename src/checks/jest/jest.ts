@@ -136,7 +136,7 @@ export const jestCheck = ({ data, sha, name = 'jest' }: JestInput): CheckRunComp
           const message = result.status === 'pending' ? `skipped test '${result.title}'` : failureMessage
 
           let start_line = 1
-          const lineColumnMatch = failureMessage.match(/s:(\d+):(\d+)\)/)
+          const lineColumnMatch = failureMessage.match(/sx?:(\d+):(\d+)\)/)
           if (lineColumnMatch) {
             start_line = parseInt(lineColumnMatch[1])
           }
