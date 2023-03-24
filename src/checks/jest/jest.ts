@@ -32,12 +32,17 @@ export interface FormattedTestResult {
 
 export interface FormattedAssertionResult {
   ancestorTitles: Array<string>
+  duration?: number
+  failureDetails?: unknown[]
   failureMessages: Array<string>
   fullName: string
+  invocations?: number
   location?: {
     column: number
     line: number
   } | null
+  numPassingAsserts?: number
+  retryReasons?: unknown[]
   status: 'passed' | 'failed' | 'skipped' | 'pending' | 'todo' | 'disabled'
   title: string
 }
@@ -127,13 +132,20 @@ export const jestCheck = ({ data, sha, name = 'jest' }: JestInput): CheckRunComp
             default:
               annotation_level = 'notice'
           }
-          const message =
-            result.status === 'pending' ? `skipped test '${result.title}'` : result.failureMessages?.join('\n')
+          const failureMessage = result.failureMessages?.join('\n')
+          const message = result.status === 'pending' ? `skipped test '${result.title}'` : failureMessage
+
+          let start_line = 1
+          const lineColumnMatch = failureMessage.match(/sx?:(\d+):(\d+)\)/)
+          if (lineColumnMatch) {
+            start_line = parseInt(lineColumnMatch[1])
+          }
 
           const annotation: CheckAnnotation = {
-            start_line: 1,
-            end_line: 1,
-            annotation_level: annotation_level,
+            start_line,
+            end_line: start_line,
+            annotation_level,
+            title: [...result.ancestorTitles, result.title].join(' - '),
             message: message || 'unknown issue',
             path: relPath,
             raw_details: JSON.stringify(result, null, 2)
