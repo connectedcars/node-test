@@ -75,6 +75,12 @@ export interface JestInput {
   name?: string
 }
 
+function getRelativePath(path: string): string {
+  const match = path.match(/^.*\/((?:src|bin)\/.+)$/)
+  // Path needs to be set so default to a file we know exists
+  return match && match.length === 2 ? match[1] : 'jest.config.js'
+}
+
 export const jestCheck = ({ data, sha, name = 'jest' }: JestInput): CheckRunCompleted => {
   try {
     const result: CheckRunCompleted = {
@@ -108,9 +114,7 @@ export const jestCheck = ({ data, sha, name = 'jest' }: JestInput): CheckRunComp
         })
         .filter(r => !['passed'].includes(r.status))
         .map<CheckAnnotation>(result => {
-          const match = result.file.match(/^.*\/((?:src|bin)\/.+)$/)
-          // Path needs to be set so default to a file we know exists
-          const relPath = match && match.length === 2 ? match[1] : 'jest.config.js'
+          const relPath = getRelativePath(result.file)
 
           let annotation_level: CheckAnnotationLevel
           switch (result.status) {
@@ -155,7 +159,26 @@ export const jestCheck = ({ data, sha, name = 'jest' }: JestInput): CheckRunComp
         // Limit to 50 annotations as this is the max per post for github
         .slice(0, 50)
 
-      result.output.summary = `${data.numPassedTests} of ${data.numTotalTests} tests passed!`
+      result.output.summary = `${data.numPassedTests} of ${data.numTotalTests} tests passed`
+      if (data.snapshot.failure) {
+        if (data.snapshot.unchecked > 0) {
+          result.output.summary += ` (with ${data.snapshot.unchecked} snapshots obsolete)`
+          for (const { filePath, keys } of data.snapshot.uncheckedKeysByFile) {
+            if (!result.output.annotations) {
+              result.output.annotations = []
+            }
+            result.output.annotations.push({
+              start_line: 1,
+              end_line: 1,
+              annotation_level: 'failure',
+              title: `${keys.length} snapshots obsolete`,
+              message: ` - ${keys.join('\n - ')}`,
+              path: getRelativePath(filePath),
+              raw_details: JSON.stringify(data.snapshot, null, 2)
+            })
+          }
+        }
+      }
       // note: check numTotalTestSuites for count?
       result.output.title = result.output.summary
     }

@@ -100,8 +100,8 @@ Object {
         "title": "jobs/process-vag-can-dtcs - does not processes TL codes",
       },
     ],
-    "summary": "3 of 4 tests passed!",
-    "title": "3 of 4 tests passed!",
+    "summary": "3 of 4 tests passed",
+    "title": "3 of 4 tests passed",
   },
   "status": "completed",
 }
@@ -135,8 +135,8 @@ Object {
         "title": "Tests INSERT IGNORE warnings - is possible to distinguish between duplicates and all other errors",
       },
     ],
-    "summary": "8 of 9 tests passed!",
-    "title": "8 of 9 tests passed!",
+    "summary": "8 of 9 tests passed",
+    "title": "8 of 9 tests passed",
   },
   "status": "completed",
 }

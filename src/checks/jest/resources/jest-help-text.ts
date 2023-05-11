@@ -997,3 +997,79 @@ export const jestSkippedOutput: FormattedTestResults = {
   ],
   wasInterrupted: false
 }
+
+export const jestSnapshotFailed: FormattedTestResults = {
+  numFailedTestSuites: 0,
+  numFailedTests: 0,
+  numPassedTestSuites: 1,
+  numPassedTests: 2,
+  numPendingTestSuites: 0,
+  numPendingTests: 0,
+  numRuntimeErrorTestSuites: 0,
+  numTodoTests: 0,
+  numTotalTestSuites: 1,
+  numTotalTests: 2,
+  openHandles: [],
+  snapshot: {
+    added: 0,
+    didUpdate: false,
+    failure: true,
+    filesAdded: 0,
+    filesRemoved: 0,
+    filesRemovedList: [],
+    filesUnmatched: 0,
+    filesUpdated: 0,
+    matched: 2,
+    total: 2,
+    unchecked: 2,
+    uncheckedKeysByFile: [
+      {
+        filePath: '/Users/michaelstorgaard/Sites/node-backend/src/analytics/analytics.test.ts',
+        keys: ['big-query/analytics getAnalyticsEvent no results 1', 'big-query/analytics getAnalyticsEvents 1']
+      }
+    ],
+    unmatched: 0,
+    updated: 0
+  },
+  startTime: 1683796913983,
+  success: false,
+  testResults: [
+    {
+      assertionResults: [
+        {
+          ancestorTitles: ['analytics/analytics'],
+          duration: 26,
+          failureDetails: [],
+          failureMessages: [],
+          fullName: 'analytics/analytics getAnalyticsEvents',
+          invocations: 1,
+          location: null,
+          numPassingAsserts: 0,
+          retryReasons: [],
+          status: 'passed',
+          title: 'getAnalyticsEvents'
+        },
+        {
+          ancestorTitles: ['analytics/analytics'],
+          duration: 4,
+          failureDetails: [],
+          failureMessages: [],
+          fullName: 'analytics/analytics getAnalyticsEvent no results',
+          invocations: 1,
+          location: null,
+          numPassingAsserts: 0,
+          retryReasons: [],
+          status: 'passed',
+          title: 'getAnalyticsEvent no results'
+        }
+      ],
+      endTime: 1683796914447,
+      message: '',
+      name: '/Users/michaelstorgaard/Sites/node-backend/src/analytics/analytics.test.ts',
+      startTime: 1683796914004,
+      status: 'passed',
+      summary: ''
+    }
+  ],
+  wasInterrupted: false
+}
