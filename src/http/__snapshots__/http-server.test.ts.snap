@@ -6,6 +6,7 @@ Array [
     "body": "Hello",
     "headers": Object {
       "accept": "application/json, text/plain, */*",
+      "accept-encoding": "gzip, compress, deflate, br",
       "connection": "close",
       "content-length": "5",
       "content-type": "application/x-www-form-urlencoded",
@@ -26,6 +27,7 @@ Array [
     },
     "headers": Object {
       "accept": "application/json, text/plain, */*",
+      "accept-encoding": "gzip, compress, deflate, br",
       "connection": "close",
       "content-length": "15",
       "content-type": "application/json",
