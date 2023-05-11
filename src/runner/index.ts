@@ -24,11 +24,23 @@ export default class SharedResourceTestRunner extends TestRunner {
     // Split tests based on if they can run parallel or serially
     const serialTests: Test[] = []
     const parallelTest: Test[] = []
+    const mutexTests: Record<string, Test[]> = {}
     for (const test of tests) {
       const parsed = parse(await readFile(test.path, 'utf8'))
-      if (test.path.match(/it\.test.(:?js|ts)$/)) {
+
+      if (parsed.testMutex) {
+        const testMutexes = Array.isArray(parsed.testMutex) ? parsed.testMutex : [parsed.testMutex]
+        for (const testMutex of testMutexes) {
+          if (mutexTests[testMutex] === undefined) {
+            mutexTests[testMutex] = [test]
+          } else {
+            mutexTests[testMutex].push(test)
+          }
+        }
+      } else if (test.path.match(/it\.test.(:?js|ts)$/)) {
         serialTests.push(test)
       } else {
+        parallelTest.push(test)
         parallelTest.push(test)
       }
     }

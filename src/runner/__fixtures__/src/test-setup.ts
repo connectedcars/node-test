@@ -1,4 +1,3 @@
 module.exports = async () => {
-  console.log(`Setup`)
-  process.env.TEST = `Hello`
+  process.env.INTEGRATION_STUFF = `Hello`
 }
