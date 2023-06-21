@@ -27,6 +27,8 @@ import { auditCheck } from '../src/checks/npm-audit/audit'
 import { runNpmAudit } from '../src/checks/npm-audit/run-audit'
 import { runTsc } from '../src/checks/tsc/run-tsc'
 import { tscCheck } from '../src/checks/tsc/tsc'
+import { runVitest } from '../src/checks/vitest/run-vitest'
+import { vitestCheck } from '../src/checks/vitest/vitest'
 
 process.env.PATH = `./node_modules/.bin:${process.env.PATH}`
 
@@ -51,6 +53,7 @@ async function main(argv: string[]) {
       }
     })
     .command('jest', 'Runs Jest with CI output')
+    .command('vitest', 'Runs Vitest with CI output')
     .command('eslint', 'Runs Eslint with CI output')
     .command('jest-cra', 'Runs react-scripts test with CI output')
     .command('mocha', 'Runs Mocha with CI output')
@@ -86,7 +89,7 @@ async function main(argv: string[]) {
 
   // `cargo-sort` is excluded as it requires being manually installed first
   const ALL_CARGO_COMMANDS = ['cargo-fmt', 'cargo-check', 'cargo-clippy', 'cargo-test']
-  const ALL_COMMANDS = ['jest', 'eslint', 'jest-cra', 'mocha', 'audit', 'tsc', ...ALL_CARGO_COMMANDS]
+  const ALL_COMMANDS = ['jest', 'vitest', 'eslint', 'jest-cra', 'mocha', 'audit', 'tsc', ...ALL_CARGO_COMMANDS]
 
   let commands
   if (command == 'auto') {
@@ -223,6 +226,23 @@ async function lookupConvertFunction(
           eslintCheck({
             data: output,
             sha: commitSha
+          })
+        ]
+      }
+    }
+    case 'vitest': {
+      if (detect) {
+        // TODO: Detect vitest somehow.
+        return null
+      }
+      return async () => {
+        const output = await runVitest()
+        return [
+          false,
+          vitestCheck({
+            data: output,
+            sha: commitSha,
+            name: 'vitest'
           })
         ]
       }
