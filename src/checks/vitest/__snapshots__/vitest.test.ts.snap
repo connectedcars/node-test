@@ -1,0 +1,136 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`checks/vitest processes failing vitest output to checks structure 1`] = `
+Object {
+  "completed_at": StringMatching /\\^\\\\d\\{4\\}/,
+  "conclusion": "failure",
+  "head_sha": "1234567890",
+  "name": "vitest",
+  "output": Object {
+    "annotations": Array [
+      Object {
+        "annotation_level": "failure",
+        "end_line": 1,
+        "message": "expected 'monday' to be 'tuesday' // Object.is equality",
+        "path": "src/utils/day.test.ts",
+        "raw_details": "{
+  \\"ancestorTitles\\": [
+    \\"\\",
+    \\"day\\",
+    \\"getDayFromDate\\"
+  ],
+  \\"fullName\\": \\" day getDayFromDate returns the correct day of week\\",
+  \\"status\\": \\"failed\\",
+  \\"title\\": \\"returns the correct day of week\\",
+  \\"duration\\": 3,
+  \\"failureMessages\\": [
+    \\"expected 'monday' to be 'tuesday' // Object.is equality\\"
+  ],
+  \\"location\\": {
+    \\"line\\": 17,
+    \\"column\\": 43
+  },
+  \\"file\\": \\"/Users/mia/Developer/@connectedcars/manage/src/utils/day.test.ts\\"
+}",
+        "start_line": 1,
+        "title": " - day - getDayFromDate - returns the correct day of week",
+      },
+    ],
+    "summary": "115 of 116 tests passed",
+    "title": "115 of 116 tests passed",
+  },
+  "status": "completed",
+}
+`;
+
+exports[`checks/vitest should handle skipped tests 1`] = `
+Object {
+  "completed_at": StringMatching /\\^\\\\d\\{4\\}/,
+  "conclusion": "success",
+  "head_sha": "1234567890",
+  "name": "vitest",
+  "output": Object {
+    "annotations": Array [
+      Object {
+        "annotation_level": "notice",
+        "end_line": 1,
+        "message": "unknown issue",
+        "path": "src/utils/graphql/query-generator.test.ts",
+        "raw_details": "{
+  \\"ancestorTitles\\": [
+    \\"\\",
+    \\"query-generator\\"
+  ],
+  \\"fullName\\": \\" query-generator parses columns to structure\\",
+  \\"status\\": \\"skipped\\",
+  \\"title\\": \\"parses columns to structure\\",
+  \\"failureMessages\\": [],
+  \\"file\\": \\"/Users/mia/Developer/@connectedcars/manage/src/utils/graphql/query-generator.test.ts\\"
+}",
+        "start_line": 1,
+        "title": " - query-generator - parses columns to structure",
+      },
+      Object {
+        "annotation_level": "notice",
+        "end_line": 1,
+        "message": "unknown issue",
+        "path": "src/utils/graphql/query-generator.test.ts",
+        "raw_details": "{
+  \\"ancestorTitles\\": [
+    \\"\\",
+    \\"query-generator\\"
+  ],
+  \\"fullName\\": \\" query-generator is immutableish\\",
+  \\"status\\": \\"skipped\\",
+  \\"title\\": \\"is immutableish\\",
+  \\"failureMessages\\": [],
+  \\"file\\": \\"/Users/mia/Developer/@connectedcars/manage/src/utils/graphql/query-generator.test.ts\\"
+}",
+        "start_line": 1,
+        "title": " - query-generator - is immutableish",
+      },
+      Object {
+        "annotation_level": "notice",
+        "end_line": 1,
+        "message": "unknown issue",
+        "path": "src/utils/graphql/query-generator.test.ts",
+        "raw_details": "{
+  \\"ancestorTitles\\": [
+    \\"\\",
+    \\"query-generator\\"
+  ],
+  \\"fullName\\": \\" query-generator adds variables to structure\\",
+  \\"status\\": \\"skipped\\",
+  \\"title\\": \\"adds variables to structure\\",
+  \\"failureMessages\\": [],
+  \\"file\\": \\"/Users/mia/Developer/@connectedcars/manage/src/utils/graphql/query-generator.test.ts\\"
+}",
+        "start_line": 1,
+        "title": " - query-generator - adds variables to structure",
+      },
+      Object {
+        "annotation_level": "notice",
+        "end_line": 1,
+        "message": "unknown issue",
+        "path": "src/utils/graphql/query-generator.test.ts",
+        "raw_details": "{
+  \\"ancestorTitles\\": [
+    \\"\\",
+    \\"query-generator\\"
+  ],
+  \\"fullName\\": \\" query-generator correctly renders graphql union/interface types\\",
+  \\"status\\": \\"skipped\\",
+  \\"title\\": \\"correctly renders graphql union/interface types\\",
+  \\"failureMessages\\": [],
+  \\"file\\": \\"/Users/mia/Developer/@connectedcars/manage/src/utils/graphql/query-generator.test.ts\\"
+}",
+        "start_line": 1,
+        "title": " - query-generator - correctly renders graphql union/interface types",
+      },
+    ],
+    "summary": "116 of 116 tests passed",
+    "title": "116 of 116 tests passed",
+  },
+  "status": "completed",
+}
+`;
