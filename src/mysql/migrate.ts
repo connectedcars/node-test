@@ -70,6 +70,7 @@ export interface MigrateOptions {
   migrationsPaths?: string[]
   cachePaths?: string[]
   ignoreCache?: boolean
+  subdirectories?: string[]
 }
 
 export class Migrate {
@@ -83,6 +84,7 @@ export class Migrate {
   private ignoreCache: boolean
   private timings: string[] = []
   private migrationsPaths: string[]
+  private subdirectories?: string[]
 
   public constructor(options: MigrateOptions) {
     this.mysqlClient = options.mysqlClient
@@ -93,6 +95,7 @@ export class Migrate {
     this.initPromise.catch(() => {
       // Ignore so we don't et unhandled promise rejection
     })
+    this.subdirectories = options.subdirectories
   }
 
   public async init(): Promise<void> {
@@ -113,6 +116,11 @@ export class Migrate {
       ])
       this.databaseMap = JSON.parse(databasesJSON)
       this.schemaFolders = schemaFolders.filter(s => s in this.databaseMap)
+
+      // If subdirectories was specified, only run migrations in those subdirectories
+      if (this.subdirectories) {
+        this.schemaFolders = schemaFolders.filter(s => this.subdirectories?.includes(s))
+      }
     })
     this.basePool = await this.mysqlClient.getConnectionPool('mysql')
   }
