@@ -71,6 +71,8 @@ export interface MigrateOptions {
   cachePaths?: string[]
   ignoreCache?: boolean
   subdirectories?: string[]
+  printStatements?: boolean
+  dryRun?: boolean
 }
 
 export class Migrate {
@@ -85,7 +87,8 @@ export class Migrate {
   private timings: string[] = []
   private migrationsPaths: string[]
   private subdirectories?: string[]
-
+  private printStatements: boolean
+  private dryRun: boolean
   public constructor(options: MigrateOptions) {
     this.mysqlClient = options.mysqlClient
     this.migrationsPaths = options.migrationsPaths || ['./migrations']
@@ -96,6 +99,9 @@ export class Migrate {
       // Ignore so we don't et unhandled promise rejection
     })
     this.subdirectories = options.subdirectories
+
+    this.printStatements = options.printStatements ?? false
+    this.dryRun = options.dryRun ?? false
   }
 
   public async init(): Promise<void> {
@@ -280,6 +286,14 @@ export class Migrate {
           if (appliedMigrations.find(m => m.timestamp === migration.timestamp && m.name === migrationStatementName)) {
             continue
           }
+          if (this.printStatements) {
+            console.log(`${migration.path} to be applied on ${database}:\n${migrationStatement}\n`)
+          }
+
+          if (this.dryRun) {
+            continue
+          }
+
           await this.mysqlClient.query(connection, migrationStatement)
           await this.mysqlClient.query(connection, 'INSERT INTO `Migrations` (`timestamp`, `name`) VALUES (?, ?)', [
             migration.timestamp,
