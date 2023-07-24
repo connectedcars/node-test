@@ -238,19 +238,25 @@ export class Migrate {
 
   public async migrateDatabase(database: string, migrations: Migration[], until?: string): Promise<Migration[]> {
     // Create the database and migration if they do not exist
-    await this.mysqlClient.query(
-      this.basePool,
-      `
-        CREATE DATABASE IF NOT EXISTS \`${database}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-        CREATE TABLE IF NOT EXISTS \`${database}\`.Migrations (
-          id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-          timestamp VARCHAR(255) NOT NULL,
-          name VARCHAR(255) NOT NULL,
-          createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          PRIMARY KEY (id)
-        );
-      `
-    )
+
+    const sql = `
+    CREATE DATABASE IF NOT EXISTS \`${database}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+    CREATE TABLE IF NOT EXISTS \`${database}\`.Migrations (
+      id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+      timestamp VARCHAR(255) NOT NULL,
+      name VARCHAR(255) NOT NULL,
+      createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (id)
+    );
+  `
+
+    if (this.printStatements) {
+      console.log(sql)
+    }
+
+    if (!this.dryRun) {
+      await this.mysqlClient.query(this.basePool, sql)
+    }
 
     const pool = await this.mysqlClient.getConnectionPool(database)
 
