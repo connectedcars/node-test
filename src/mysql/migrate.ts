@@ -260,11 +260,21 @@ export class Migrate {
 
     const pool = await this.mysqlClient.getConnectionPool(database)
 
-    // Fetch applied migrations
-    const appliedMigrations = await this.mysqlClient.query<MigrationRow>(
-      pool,
-      'SELECT `timestamp`, `name` FROM `Migrations`'
+    const tables = await this.mysqlClient.queryArray<string>(
+      this.basePool,
+      `SELECT 1 FROM information_schema.TABLES where TABLE_NAME='Migrations' and TABLE_SCHEMA='${database}'`
     )
+
+    const hasMigrationTable = tables.length >= 1
+
+    let appliedMigrations: MigrationRow[] = []
+    // Fetch applied migrations
+    if (hasMigrationTable) {
+      appliedMigrations = await this.mysqlClient.query<MigrationRow>(
+        pool,
+        'SELECT `timestamp`, `name` FROM `Migrations`'
+      )
+    }
 
     const result: Migration[] = []
     for (const migration of migrations) {

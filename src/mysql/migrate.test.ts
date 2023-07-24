@@ -140,6 +140,28 @@ describe('Migrate', () => {
     await expect(initialMigrate.migrate()).resolves.not.toThrow()
   })
 
+  it('should do no migrations under dryRun', async () => {
+    const pool = await mySqlClient.getConnectionPool('mysql')
+    await mySqlClient.query(pool, 'CREATE DATABASE `my_test01` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;')
+
+    const initialMigrate = await doInitialMigrate({
+      dryRun: true
+    })
+    const [, timingBefore] = await time(initialMigrate.migrate('2020-04-02T165700'))
+    console.log(timingBefore / 1000)
+
+    const tables = await mySqlClient.queryArray<string>(
+      pool,
+      `
+        SELECT *
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA like 'connectedcars%'
+        ORDER BY 'column';
+      `
+    )
+    expect(tables).toEqual([])
+  })
+
   /* it.skip('should migrate data repo to newest version', async () => {
     const migrate = new Migrate({
       mysqlClient: mySqlClient,
