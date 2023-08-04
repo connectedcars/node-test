@@ -193,15 +193,17 @@ export class Migrate {
       }
     }
 
-    // Find out if we should skip cache if all database already exists for this schemaFolder
     if (!this.ignoreCache && selectCacheFile) {
       const existingDatabases = await this.mysqlClient.queryArray<string>(
         this.basePool,
         `
-          SELECT SCHEMA_NAME as \`name\`
-          FROM information_schema.SCHEMATA;
+          SELECT TABLE_SCHEMA as \`name\`
+          FROM information_schema.TABLES
+          WHERE TABLE_NAME = 'Migrations'
         `
       )
+      // If the database exists AND has a Migrations table, then we will assume that one or more migrations
+      // has been executed. This means, that we must skip the cache-migrations as it requires a clean db.
       const skipCache = this.databaseMap[schemaFolder].some(d => existingDatabases.includes(d))
       if (!skipCache) {
         const cacheData = await readFile(selectCacheFile, 'utf8')
