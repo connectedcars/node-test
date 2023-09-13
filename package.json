@@ -70,6 +70,7 @@
     "@types/sinon": "*",
     "deep-equal": "2.0.5",
     "mysql": "^2.18.1",
+    "regexp.prototype.flags": "<1.5.1",
     "sinon": "^9.2.2",
     "yargs": "^16.2.0"
   },
