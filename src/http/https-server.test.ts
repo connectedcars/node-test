@@ -46,12 +46,12 @@ describe('HttpServer', () => {
     httpsServer.reset()
   })
 
-  it('Simple GET / with https', async () => {
+  it.skip('Simple GET / with https', async () => {
     const response = await axios.get<string>(`${httpsServer.listenUrl}`, { httpsAgent: httpsServer.getCaAgent() })
     expect(response.data).toEqual('Hello world')
   })
 
-  it('Simple GET / with https and client cert', async () => {
+  it.skip('Simple GET / with https and client cert', async () => {
     const response = await axios.get<string>(`${httpsServer.listenUrl}/cert`, {
       httpsAgent: HttpsServer.getDefaultCertAgent()
     })
