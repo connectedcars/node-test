@@ -20,7 +20,7 @@ class TestHttpsServer extends HttpsServer {
             return res.end('No client certificate provided or unknown ca')
           }
           const certificate = socket.getPeerCertificate(true)
-          return res.end(`Success for client ${certificate.subject.CN}`)
+          return res.end(`Success for client cert: ${certificate.subject.CN}`)
         }
         default: {
           res.statusCode = 404
@@ -32,6 +32,7 @@ class TestHttpsServer extends HttpsServer {
 }
 
 describe('HttpServer', () => {
+  process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0'
   const httpsServer = new TestHttpsServer()
 
   beforeAll(async () => {
@@ -46,15 +47,15 @@ describe('HttpServer', () => {
     httpsServer.reset()
   })
 
-  it.skip('Simple GET / with https', async () => {
+  it('Simple GET / with https', async () => {
     const response = await axios.get<string>(`${httpsServer.listenUrl}`, { httpsAgent: httpsServer.getCaAgent() })
     expect(response.data).toEqual('Hello world')
   })
 
-  it.skip('Simple GET / with https and client cert', async () => {
+  it('Simple GET / with https and client cert', async () => {
     const response = await axios.get<string>(`${httpsServer.listenUrl}/cert`, {
       httpsAgent: HttpsServer.getDefaultCertAgent()
     })
-    expect(response.data).toEqual('Success for client localhost')
+    expect(response.data).toEqual('Success for client cert: client')
   })
 })

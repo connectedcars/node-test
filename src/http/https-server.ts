@@ -28,14 +28,10 @@ export class HttpsServer extends HttpServerBase<https.Server> {
       rejectUnauthorized: false, // so we can do own error handling
       ...options
     }
-    super(
-      'https://localhost',
-      https.createServer(options, (req, res) => {
-        this.handleRequest(req as HttpIncomingMessage, res, requestListener)
-      }),
-      options.listenPort,
-      options.requests
-    )
+    const httpsServer = https.createServer(options, (req, res) => {
+      this.handleRequest(req as HttpIncomingMessage, res, requestListener)
+    })
+    super('https://localhost', httpsServer, options.listenPort, options.requests)
     this.cert = options.cert
     this.key = options.key
   }
