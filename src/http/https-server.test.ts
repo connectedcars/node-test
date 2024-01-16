@@ -32,7 +32,6 @@ class TestHttpsServer extends HttpsServer {
 }
 
 describe('HttpServer', () => {
-  process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0'
   const httpsServer = new TestHttpsServer()
 
   beforeAll(async () => {
