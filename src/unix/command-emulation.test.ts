@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { exec, ExecOptions } from 'child_process'
 
 import { CommandEmulation } from './command-emulation'

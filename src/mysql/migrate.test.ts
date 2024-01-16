@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Migrate, MigrateOptions } from './migrate'
 import { MySQLClient } from './mysql-client'
 import { MySQLServer } from './mysql-server'

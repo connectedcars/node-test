@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import fs from 'fs'
 import util from 'util'
 
@@ -138,7 +139,7 @@ describe('run-wrapper', () => {
     const cmd = new RunProcess('run-wrapper', [`--detached`, 'my-hello'])
     processCleanup.push(cmd)
     const match = await cmd.waitForOutput(/with pid (\d+)/)
-    await expect(match).toMatchObject({
+    expect(match).toMatchObject({
       0: expect.stringMatching(/with pid/),
       1: expect.stringMatching(/^\d+$/)
     })
@@ -179,7 +180,7 @@ describe('run-wrapper', () => {
     processCleanup.push(cmd)
 
     const match = await cmd.waitForOutput(/with pid (\d+)/)
-    await expect(match).toMatchObject({
+    expect(match).toMatchObject({
       0: expect.stringMatching(/with pid/),
       1: expect.stringMatching(/^\d+$/)
     })

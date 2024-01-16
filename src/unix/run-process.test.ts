@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { CommandEmulation } from './command-emulation'
 import { isPidRunning } from './process'
 import {

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 
 import { SpawnOptions } from 'child_process'
 import fs from 'fs'
@@ -15,7 +16,7 @@ const openAsync = util.promisify(fs.open)
  * @param argv [timeout, command, args...]
  */
 async function main(argv: string[]): Promise<number> {
-  const { _: args, ...flags } = yargs
+  const { _: args, ...flags } = await yargs
     .options({
       stopOnStdinClose: {
         type: 'boolean',

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { MySQLClient } from './mysql-client'
 import { MySQLServer } from './mysql-server'
 

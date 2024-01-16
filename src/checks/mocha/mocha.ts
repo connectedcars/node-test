@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { CheckAnnotation, CheckConversionError, CheckRunCompleted } from '../checks-common'
 import { MochaData } from './mocha-types'
 

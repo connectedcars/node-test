@@ -15,7 +15,7 @@ describe('local-mysql', () => {
     await expect(cmd.waitForOutput(/mysqld: ready for connections/, 8000)).resolves.toMatchObject({
       0: 'mysqld: ready for connections'
     })
-    await cmd.kill('SIGTERM')
+    cmd.kill('SIGTERM')
     await expect(cmd.waitForExit()).resolves.toEqual({ code: 0, signal: null })
   }, 30000)
 
@@ -26,7 +26,7 @@ describe('local-mysql', () => {
     await expect(cmd.waitForOutput(/mysqld: ready for connections/)).resolves.toMatchObject({
       0: 'mysqld: ready for connections'
     })
-    await cmd.kill('SIGTERM')
+    cmd.kill('SIGTERM')
     await expect(cmd.waitForExit()).resolves.toEqual({ code: 0, signal: null })
   }, 30000)
 
@@ -37,7 +37,7 @@ describe('local-mysql', () => {
     await expect(cmd.waitForOutput(/mysqld: ready for connections/)).resolves.toMatchObject({
       0: 'mysqld: ready for connections'
     })
-    await cmd.kill('SIGINT')
+    cmd.kill('SIGINT')
     await expect(cmd.waitForExit()).resolves.toEqual({ code: 0, signal: null })
   }, 30000)
 

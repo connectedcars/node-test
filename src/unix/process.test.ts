@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { CommandEmulation, RunProcess, stopPid } from '.'
 import { readPidFile } from './process'
 

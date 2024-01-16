@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 
 import fs from 'fs'
 import util from 'util'
@@ -41,14 +42,15 @@ export async function isFileReadable(filePath: string): Promise<boolean> {
   return res
 }
 
-async function main(argv: string[]) {
-  const { _: commandAndArgs, ...flags } = yargs
+async function main(argv: string[]): Promise<number> {
+  const { _: commandAndArgs, ...flags } = await yargs
     .options({
       ci: {
-        describe: 'Only output json',
-        boolean: true
+        boolean: true,
+        describe: 'Only output json'
       },
       hardFail: {
+        boolean: true,
         describe: 'Return non zero exit code when conclusion is not success, natural or skipped'
       }
     })

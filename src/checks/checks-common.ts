@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // https://docs.github.com/en/rest/reference/checks#runs
 
 import { Json, splitLines } from '../common'

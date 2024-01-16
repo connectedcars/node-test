@@ -67,7 +67,8 @@ describe('HttpServer', () => {
     expect(httpServer.getTextRequests()).toMatchSnapshot([
       {
         headers: {
-          'user-agent': expect.any(String)
+          'user-agent': expect.any(String),
+          connection: expect.any(String)
         }
       }
     ])
@@ -89,7 +90,8 @@ describe('HttpServer', () => {
     expect(requests).toMatchSnapshot([
       {
         headers: {
-          'user-agent': expect.any(String)
+          'user-agent': expect.any(String),
+          connection: expect.any(String)
         }
       }
     ])

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import mysql from 'mysql'
 
 import { createTempDirectory } from '../unix'
