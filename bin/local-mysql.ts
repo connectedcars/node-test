@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 
 import fs from 'fs'
 import util from 'util'
@@ -23,7 +24,7 @@ async function readAsync(fd: number): Promise<Buffer> {
 
 async function main(argv: string[]): Promise<number> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { _: args, ...flags } = yargs
+  const { _: args, ...flags } = await yargs
     .options({
       mysqld: {
         type: 'string',

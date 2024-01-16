@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 
 import { Migrate } from '../src/mysql/migrate'
 import { MySQLClient } from '../src/mysql/mysql-client'

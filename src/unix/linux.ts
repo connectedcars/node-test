@@ -12,7 +12,7 @@ export async function isDockerOverlay2(): Promise<boolean> {
   }
   const cGroups = fs.readFileSync(`/proc/1/cgroup`).toString()
   if (cGroups.match(/^\d+:[^:]+:\/docker/)) {
-    const mounts = splitLines(await execAsync(`mount`).toString())
+    const mounts = splitLines((await execAsync(`mount`)).toString())
     if (mounts.some(mount => mount.match(/overlay.*overlay2/) !== null)) {
       return true
     }

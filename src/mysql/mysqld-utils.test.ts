@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { CommandEmulation, createTempDirectory } from '../unix'
 import { generateMySQLServerConfig, getMySQLServerDefaults, getMySQLVersionString, startMySQLd } from './mysqld-utils'
 import { mysqlHelpVerboseText } from './resources/mysqld-help-verbose.text'
