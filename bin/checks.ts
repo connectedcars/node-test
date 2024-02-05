@@ -132,13 +132,14 @@ async function main(argv: string[]): Promise<number> {
       continue
     }
 
+    const name = (flags.name as string | undefined) || cmd
     try {
       const convertFunction = await lookupConvertFunction(
         cmd,
         args,
         COMMIT_SHA,
         command === 'auto',
-        { ci: flags.ci, name: flags.name as string | undefined },
+        { ci: flags.ci, name },
         command
       )
       if (convertFunction === null) {
@@ -146,7 +147,7 @@ async function main(argv: string[]): Promise<number> {
       }
       printSummary(
         {
-          name: cmd,
+          name,
           head_sha: COMMIT_SHA,
           status: 'in_progress',
           started_at: startedAt
@@ -169,7 +170,7 @@ async function main(argv: string[]): Promise<number> {
     } catch (e) {
       if (e instanceof CheckConversionError) {
         printSummary({
-          name: cmd,
+          name,
           head_sha: COMMIT_SHA,
           status: 'completed',
           conclusion: 'failure',
@@ -186,7 +187,7 @@ async function main(argv: string[]): Promise<number> {
         }
       }
       printSummary({
-        name: cmd,
+        name,
         head_sha: COMMIT_SHA,
         status: 'completed',
         conclusion: 'failure',
