@@ -54,7 +54,14 @@ async function main(argv: string[]): Promise<number> {
         describe: 'Return non zero exit code when conclusion is not success, natural or skipped'
       }
     })
-    .command('jest', 'Runs Jest with CI output')
+    .command('jest', 'Runs Jest with CI output', yargs => {
+      return yargs.options({
+        name: {
+          type: 'string',
+          describe: 'Custom check name to pass along to GitHub, falls back to "jest"'
+        }
+      })
+    })
     .command('vitest', 'Runs Vitest with CI output')
     .command('eslint', 'Runs Eslint with CI output')
     .command('jest-cra', 'Runs react-scripts test with CI output')
@@ -126,7 +133,14 @@ async function main(argv: string[]): Promise<number> {
     }
 
     try {
-      const convertFunction = await lookupConvertFunction(cmd, args, COMMIT_SHA, command === 'auto', flags.ci, command)
+      const convertFunction = await lookupConvertFunction(
+        cmd,
+        args,
+        COMMIT_SHA,
+        command === 'auto',
+        { ci: flags.ci, name: flags.name as string | undefined },
+        command
+      )
       if (convertFunction === null) {
         continue
       }
@@ -198,7 +212,7 @@ async function lookupConvertFunction(
   args: string[],
   commitSha: string,
   detect = false,
-  ci = true,
+  flags: { ci: boolean; name?: string } = { ci: true },
   cliCommand?: string
 ): Promise<(() => Promise<[boolean, CheckRunCompleted]>) | null> {
   switch (command) {
@@ -212,7 +226,8 @@ async function lookupConvertFunction(
           false,
           jestCheck({
             data: output,
-            sha: commitSha
+            sha: commitSha,
+            name: flags.name
           })
         ]
       }
@@ -323,13 +338,13 @@ async function lookupConvertFunction(
         // See more at https://github.com/connectedcars/node-test/pull/55
         const output = await tryCargoRun(async () => [
           // Debug build
-          await runCargoCheck(args, false, ci),
+          await runCargoCheck(args, false, flags.ci),
           // Debug build - all features
-          await runCargoCheck(args, true, ci),
+          await runCargoCheck(args, true, flags.ci),
           // Release build
-          await runCargoCheck(args, false, ci, true),
+          await runCargoCheck(args, false, flags.ci, true),
           // Release build - all features
-          await runCargoCheck(args, true, ci, true)
+          await runCargoCheck(args, true, flags.ci, true)
         ])
         const skipRest = !isCargoBuildSuccessful(output)
         return [
@@ -351,9 +366,9 @@ async function lookupConvertFunction(
       return async () => {
         const output = await tryCargoRun(async () => [
           // Debug build
-          await runCargoClippy(args, ci, false),
+          await runCargoClippy(args, flags.ci, false),
           // Release build
-          await runCargoClippy(args, ci, true)
+          await runCargoClippy(args, flags.ci, true)
         ])
         return [
           false,
@@ -374,9 +389,9 @@ async function lookupConvertFunction(
       return async () => {
         const output = await tryCargoRun(async () => [
           // Run unit tests and integration tests
-          await runCargoTest(args, ci),
+          await runCargoTest(args, flags.ci),
           // Run doc tests
-          await runCargoDocTest(args, ci)
+          await runCargoDocTest(args, flags.ci)
         ])
         return [
           false,
@@ -392,7 +407,7 @@ async function lookupConvertFunction(
         return null
       }
       return async () => {
-        const output = await tryCargoRun(async () => [await runCargoFmt(args, ci)])
+        const output = await tryCargoRun(async () => [await runCargoFmt(args, flags.ci)])
         return [
           false,
           cargoFmtCheck({
