@@ -13,7 +13,7 @@ import {
   readHttpMessageBody
 } from './http-common'
 
-const kConnections = Symbol('http.server.connections');
+const kConnections = Symbol('http.server.connections')
 
 export abstract class HttpServerBase<T extends http.Server | https.Server> {
   public listenPort: number
@@ -32,11 +32,13 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
     this.requests = requests
   }
 
-  private closeAllConnections(): void {
+  public closeAllConnections(): void {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (!(this as any)[kConnections]) {
       return
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const connections = (this as any)[kConnections].all()
 
     for (let i = 0, l = connections.length; i < l; i++) {
