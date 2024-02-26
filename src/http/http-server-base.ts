@@ -13,6 +13,8 @@ import {
   readHttpMessageBody
 } from './http-common'
 
+const kConnections = Symbol('http.server.connections');
+
 export abstract class HttpServerBase<T extends http.Server | https.Server> {
   public listenPort: number
   public listenUrl = ''
@@ -30,6 +32,18 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
     this.requests = requests
   }
 
+  private closeAllConnections(): void {
+    if (!(this as any)[kConnections]) {
+      return
+    }
+
+    const connections = (this as any)[kConnections].all()
+
+    for (let i = 0, l = connections.length; i < l; i++) {
+      connections[i].socket.destroy()
+    }
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public on(event: string, listener: (...args: any[]) => void): this {
     this.httpServer.on(event, listener)
@@ -42,15 +56,7 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
       this.listenPort = addressInfo.port
       this.listenUrl = `${this.baseUrl}:${this.listenPort}`
     })
-    this.httpServer.on('connection', socket => {
-      // https://stackoverflow.com/questions/14626636/how-do-i-shutdown-a-node-js-https-server-immediately/14636625#14636625
-      const socketId = this.socketId++
-      this.sockets[socketId] = socket
 
-      socket.on('close', () => {
-        delete this.sockets[socketId]
-      })
-    })
     return new Promise(resolve => {
       this.httpServer.listen(this.listenPort, () => {
         // TODO: Error handling, fx if the port is used
@@ -62,12 +68,10 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
   public async stop(): Promise<void> {
     return new Promise(resolve => {
       // TODO: Error handling
+      this.closeAllConnections()
       this.httpServer.close(() => {
         resolve()
       })
-      for (const socketId in this.sockets) {
-        this.sockets[socketId].destroy()
-      }
     })
   }
 
