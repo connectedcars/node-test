@@ -34,12 +34,12 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
 
   public closeAllConnections(): void {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (!(this as any)[kConnections]) {
+    if (!(this.httpServer as any)[kConnections]) {
       return
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const connections = (this as any)[kConnections].all()
+    const connections = (this.httpServer as any)[kConnections].all()
 
     for (let i = 0, l = connections.length; i < l; i++) {
       connections[i].socket.destroy()
