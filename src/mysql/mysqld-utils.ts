@@ -94,7 +94,7 @@ export async function getMySQLServerBaseConfig(mysqldPath: string): Promise<MySQ
     myCnf['mysqld']['lc-messages-dir'] = lcMessagesDir
   }
 
-  if (process.getuid() === 0) {
+  if (process.getuid?.() === 0) {
     // Drop privileges if running as root
     myCnf.mysqld.user = 'mysql'
   }

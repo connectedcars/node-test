@@ -21,6 +21,8 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
   private baseUrl: string
   private socketId = 0
   private sockets: Record<number, net.Socket> = {}
+  private hasCloseAllConnections: boolean
+  private isTerminating: boolean
 
   // TODO: Move to options instead of adding more params
   public constructor(baseUrl: string, httpServer: T, listenPort = 0, requests: HttpRequest[] = []) {
@@ -28,6 +30,9 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
     this.baseUrl = baseUrl
     this.listenPort = listenPort
     this.requests = requests
+    // Added in Node.js v18.2.0
+    this.hasCloseAllConnections = 'closeAllConnections' in this.httpServer
+    this.isTerminating = false
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -42,15 +47,21 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
       this.listenPort = addressInfo.port
       this.listenUrl = `${this.baseUrl}:${this.listenPort}`
     })
-    this.httpServer.on('connection', socket => {
-      // https://stackoverflow.com/questions/14626636/how-do-i-shutdown-a-node-js-https-server-immediately/14636625#14636625
-      const socketId = this.socketId++
-      this.sockets[socketId] = socket
-
-      socket.on('close', () => {
-        delete this.sockets[socketId]
+    if (!this.hasCloseAllConnections) {
+      this.httpServer.on('connection', socket => {
+        if (this.isTerminating) {
+          // Destroy the socket if the server is terminating
+          socket.destroy()
+        } else {
+          const id = this.socketId++
+          this.sockets[id] = socket
+          socket.on('close', () => {
+            delete this.sockets[id]
+          })
+        }
       })
-    })
+    }
+
     return new Promise(resolve => {
       this.httpServer.listen(this.listenPort, () => {
         // TODO: Error handling, fx if the port is used
@@ -60,14 +71,23 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
   }
 
   public async stop(): Promise<void> {
+    this.isTerminating = true
     return new Promise(resolve => {
-      // TODO: Error handling
+      // TODO: Error handling and send connection close if using keep-alive
+      if (this.hasCloseAllConnections) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, prettier/prettier
+        (this.httpServer as any).closeAllConnections()
+      } else {
+        for (const socketId in this.sockets) {
+          this.sockets[socketId].destroy()
+        }
+      }
+      this.httpServer.removeAllListeners('listening')
+      this.httpServer.removeAllListeners('connection')
       this.httpServer.close(() => {
+        this.isTerminating = false
         resolve()
       })
-      for (const socketId in this.sockets) {
-        this.sockets[socketId].destroy()
-      }
     })
   }
 
