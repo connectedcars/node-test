@@ -13,7 +13,7 @@ import {
   readHttpMessageBody
 } from './http-common'
 
-const kConnections = Symbol('http.server.connections')
+// const kConnections = Symbol('http.server.connections')
 
 export abstract class HttpServerBase<T extends http.Server | https.Server> {
   public listenPort: number
@@ -23,6 +23,8 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
   private baseUrl: string
   private socketId = 0
   private sockets: Record<number, net.Socket> = {}
+  private hasCloseAllConnections: boolean
+  private isTerminating: boolean
 
   // TODO: Move to options instead of adding more params
   public constructor(baseUrl: string, httpServer: T, listenPort = 0, requests: HttpRequest[] = []) {
@@ -30,20 +32,9 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
     this.baseUrl = baseUrl
     this.listenPort = listenPort
     this.requests = requests
-  }
-
-  public closeAllConnections(): void {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (!(this.httpServer as any)[kConnections]) {
-      return
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const connections = (this.httpServer as any)[kConnections].all()
-
-    for (let i = 0, l = connections.length; i < l; i++) {
-      connections[i].socket.destroy()
-    }
+    // Added in Node.js v18.2.0
+    this.hasCloseAllConnections = 'closeAllConnections' in this.httpServer
+    this.isTerminating = false
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -58,6 +49,19 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
       this.listenPort = addressInfo.port
       this.listenUrl = `${this.baseUrl}:${this.listenPort}`
     })
+    if (!this.hasCloseAllConnections) {
+      this.httpServer.on('connection', socket => {
+        if (this.isTerminating) {
+          socket.destroy()
+        } else {
+          const id = this.socketId++
+          this.sockets[id] = socket
+          socket.on('close', () => {
+            delete this.sockets[id]
+          })
+        }
+      })
+    }
 
     return new Promise(resolve => {
       this.httpServer.listen(this.listenPort, () => {
@@ -68,10 +72,18 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
   }
 
   public async stop(): Promise<void> {
+    this.isTerminating = true
     return new Promise(resolve => {
       // TODO: Error handling
-      this.closeAllConnections()
+      if (this.hasCloseAllConnections) {
+        this.httpServer.closeAllConnections()
+      } else {
+        for (const socketId in this.sockets) {
+          this.sockets[socketId].destroy()
+        }
+      }
       this.httpServer.close(() => {
+        this.isTerminating = false
         resolve()
       })
     })
