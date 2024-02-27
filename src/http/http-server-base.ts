@@ -81,11 +81,11 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
         for (const socketId in this.sockets) {
           this.sockets[socketId].destroy()
         }
+        this.httpServer.removeAllListeners('connection')
       }
-      this.httpServer.removeAllListeners('listening')
-      this.httpServer.removeAllListeners('connection')
       this.httpServer.close(() => {
         this.isTerminating = false
+        this.httpServer.removeAllListeners('listening')
         resolve()
       })
     })
