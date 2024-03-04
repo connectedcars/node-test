@@ -55,12 +55,12 @@ export const tflintCheck = ({ data, sha, name = 'tflint' }: TflintInput): CheckR
       result.output.annotations = data.issues
         .map<CheckAnnotation>(result => {
           const annotation: CheckAnnotation = {
-            start_line: result.range.start.line,
-            end_line: result.range.end.line,
+            start_line: result.range.start.line || 1,
+            end_line: result.range.end.line || 1,
             annotation_level: 'failure',
             title: result.message,
             message: `${result.message}\n\n[${result.rule.severity}] ${result.rule.name}\n${result.rule.link}`,
-            path: result.range.filename,
+            path: result.range.filename || 'terraform',
             raw_details: JSON.stringify(result, null, 2)
           }
           return annotation

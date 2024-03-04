@@ -10,12 +10,12 @@ Object {
     "annotations": Array [
       Object {
         "annotation_level": "failure",
-        "end_line": 0,
+        "end_line": 1,
         "message": "terraform \\"required_version\\" attribute is required
 
 [warning] terraform_required_version
 https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
-        "path": "",
+        "path": "terraform",
         "raw_details": "{
   \\"rule\\": {
     \\"name\\": \\"terraform_required_version\\",
@@ -36,17 +36,17 @@ https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/r
   },
   \\"callers\\": []
 }",
-        "start_line": 0,
+        "start_line": 1,
         "title": "terraform \\"required_version\\" attribute is required",
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 0,
+        "end_line": 1,
         "message": "terraform \\"required_version\\" attribute is required
 
 [warning] terraform_required_version
 https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
-        "path": "",
+        "path": "terraform",
         "raw_details": "{
   \\"rule\\": {
     \\"name\\": \\"terraform_required_version\\",
@@ -67,17 +67,17 @@ https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/r
   },
   \\"callers\\": []
 }",
-        "start_line": 0,
+        "start_line": 1,
         "title": "terraform \\"required_version\\" attribute is required",
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 0,
+        "end_line": 1,
         "message": "terraform \\"required_version\\" attribute is required
 
 [warning] terraform_required_version
 https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
-        "path": "",
+        "path": "terraform",
         "raw_details": "{
   \\"rule\\": {
     \\"name\\": \\"terraform_required_version\\",
@@ -98,17 +98,17 @@ https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/r
   },
   \\"callers\\": []
 }",
-        "start_line": 0,
+        "start_line": 1,
         "title": "terraform \\"required_version\\" attribute is required",
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 0,
+        "end_line": 1,
         "message": "terraform \\"required_version\\" attribute is required
 
 [warning] terraform_required_version
 https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
-        "path": "",
+        "path": "terraform",
         "raw_details": "{
   \\"rule\\": {
     \\"name\\": \\"terraform_required_version\\",
@@ -129,17 +129,17 @@ https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/r
   },
   \\"callers\\": []
 }",
-        "start_line": 0,
+        "start_line": 1,
         "title": "terraform \\"required_version\\" attribute is required",
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 0,
+        "end_line": 1,
         "message": "terraform \\"required_version\\" attribute is required
 
 [warning] terraform_required_version
 https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
-        "path": "",
+        "path": "terraform",
         "raw_details": "{
   \\"rule\\": {
     \\"name\\": \\"terraform_required_version\\",
@@ -160,17 +160,17 @@ https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/r
   },
   \\"callers\\": []
 }",
-        "start_line": 0,
+        "start_line": 1,
         "title": "terraform \\"required_version\\" attribute is required",
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 0,
+        "end_line": 1,
         "message": "terraform \\"required_version\\" attribute is required
 
 [warning] terraform_required_version
 https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
-        "path": "",
+        "path": "terraform",
         "raw_details": "{
   \\"rule\\": {
     \\"name\\": \\"terraform_required_version\\",
@@ -191,17 +191,17 @@ https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/r
   },
   \\"callers\\": []
 }",
-        "start_line": 0,
+        "start_line": 1,
         "title": "terraform \\"required_version\\" attribute is required",
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 0,
+        "end_line": 1,
         "message": "terraform \\"required_version\\" attribute is required
 
 [warning] terraform_required_version
 https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
-        "path": "",
+        "path": "terraform",
         "raw_details": "{
   \\"rule\\": {
     \\"name\\": \\"terraform_required_version\\",
@@ -222,17 +222,17 @@ https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/r
   },
   \\"callers\\": []
 }",
-        "start_line": 0,
+        "start_line": 1,
         "title": "terraform \\"required_version\\" attribute is required",
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 0,
+        "end_line": 1,
         "message": "terraform \\"required_version\\" attribute is required
 
 [warning] terraform_required_version
 https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
-        "path": "",
+        "path": "terraform",
         "raw_details": "{
   \\"rule\\": {
     \\"name\\": \\"terraform_required_version\\",
@@ -253,17 +253,17 @@ https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/r
   },
   \\"callers\\": []
 }",
-        "start_line": 0,
+        "start_line": 1,
         "title": "terraform \\"required_version\\" attribute is required",
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 0,
+        "end_line": 1,
         "message": "terraform \\"required_version\\" attribute is required
 
 [warning] terraform_required_version
 https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
-        "path": "",
+        "path": "terraform",
         "raw_details": "{
   \\"rule\\": {
     \\"name\\": \\"terraform_required_version\\",
@@ -284,17 +284,17 @@ https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/r
   },
   \\"callers\\": []
 }",
-        "start_line": 0,
+        "start_line": 1,
         "title": "terraform \\"required_version\\" attribute is required",
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 0,
+        "end_line": 1,
         "message": "terraform \\"required_version\\" attribute is required
 
 [warning] terraform_required_version
 https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
-        "path": "",
+        "path": "terraform",
         "raw_details": "{
   \\"rule\\": {
     \\"name\\": \\"terraform_required_version\\",
@@ -315,17 +315,17 @@ https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/r
   },
   \\"callers\\": []
 }",
-        "start_line": 0,
+        "start_line": 1,
         "title": "terraform \\"required_version\\" attribute is required",
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 0,
+        "end_line": 1,
         "message": "terraform \\"required_version\\" attribute is required
 
 [warning] terraform_required_version
 https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
-        "path": "",
+        "path": "terraform",
         "raw_details": "{
   \\"rule\\": {
     \\"name\\": \\"terraform_required_version\\",
@@ -346,17 +346,17 @@ https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/r
   },
   \\"callers\\": []
 }",
-        "start_line": 0,
+        "start_line": 1,
         "title": "terraform \\"required_version\\" attribute is required",
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 0,
+        "end_line": 1,
         "message": "terraform \\"required_version\\" attribute is required
 
 [warning] terraform_required_version
 https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
-        "path": "",
+        "path": "terraform",
         "raw_details": "{
   \\"rule\\": {
     \\"name\\": \\"terraform_required_version\\",
@@ -377,17 +377,17 @@ https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/r
   },
   \\"callers\\": []
 }",
-        "start_line": 0,
+        "start_line": 1,
         "title": "terraform \\"required_version\\" attribute is required",
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 0,
+        "end_line": 1,
         "message": "terraform \\"required_version\\" attribute is required
 
 [warning] terraform_required_version
 https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
-        "path": "",
+        "path": "terraform",
         "raw_details": "{
   \\"rule\\": {
     \\"name\\": \\"terraform_required_version\\",
@@ -408,17 +408,17 @@ https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/r
   },
   \\"callers\\": []
 }",
-        "start_line": 0,
+        "start_line": 1,
         "title": "terraform \\"required_version\\" attribute is required",
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 0,
+        "end_line": 1,
         "message": "terraform \\"required_version\\" attribute is required
 
 [warning] terraform_required_version
 https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
-        "path": "",
+        "path": "terraform",
         "raw_details": "{
   \\"rule\\": {
     \\"name\\": \\"terraform_required_version\\",
@@ -439,17 +439,17 @@ https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/r
   },
   \\"callers\\": []
 }",
-        "start_line": 0,
+        "start_line": 1,
         "title": "terraform \\"required_version\\" attribute is required",
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 0,
+        "end_line": 1,
         "message": "terraform \\"required_version\\" attribute is required
 
 [warning] terraform_required_version
 https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
-        "path": "",
+        "path": "terraform",
         "raw_details": "{
   \\"rule\\": {
     \\"name\\": \\"terraform_required_version\\",
@@ -470,17 +470,17 @@ https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/r
   },
   \\"callers\\": []
 }",
-        "start_line": 0,
+        "start_line": 1,
         "title": "terraform \\"required_version\\" attribute is required",
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 0,
+        "end_line": 1,
         "message": "terraform \\"required_version\\" attribute is required
 
 [warning] terraform_required_version
 https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
-        "path": "",
+        "path": "terraform",
         "raw_details": "{
   \\"rule\\": {
     \\"name\\": \\"terraform_required_version\\",
@@ -501,17 +501,17 @@ https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/r
   },
   \\"callers\\": []
 }",
-        "start_line": 0,
+        "start_line": 1,
         "title": "terraform \\"required_version\\" attribute is required",
       },
       Object {
         "annotation_level": "failure",
-        "end_line": 0,
+        "end_line": 1,
         "message": "terraform \\"required_version\\" attribute is required
 
 [warning] terraform_required_version
 https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
-        "path": "",
+        "path": "terraform",
         "raw_details": "{
   \\"rule\\": {
     \\"name\\": \\"terraform_required_version\\",
@@ -532,7 +532,7 @@ https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/r
   },
   \\"callers\\": []
 }",
-        "start_line": 0,
+        "start_line": 1,
         "title": "terraform \\"required_version\\" attribute is required",
       },
       Object {
