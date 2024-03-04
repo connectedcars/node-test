@@ -26,6 +26,8 @@ import { mochaCheck } from '../src/checks/mocha/mocha'
 import { runMocha } from '../src/checks/mocha/run-mocha'
 import { auditCheck } from '../src/checks/npm-audit/audit'
 import { runNpmAudit } from '../src/checks/npm-audit/run-audit'
+import { runTflint } from '../src/checks/tflint/run-tflint'
+import { tflintCheck } from '../src/checks/tflint/tflint'
 import { runTsc } from '../src/checks/tsc/run-tsc'
 import { tscCheck } from '../src/checks/tsc/tsc'
 import { runVitest } from '../src/checks/vitest/run-vitest'
@@ -74,6 +76,14 @@ async function main(argv: string[]): Promise<number> {
     .command('cargo-fmt', 'Runs cargo fmt with CI output')
     .command('cargo-all', 'Runs all default installed cargo checks with CI output')
     .command('cargo-sort', 'Runs cargo sort with CI output')
+    .command('tflint', 'Runs TFLint with CI output', yargs => {
+      return yargs.options({
+        name: {
+          type: 'string',
+          describe: 'Custom check name to pass along to GitHub, falls back to "tflint"'
+        }
+      })
+    })
     .command('auto', 'Runs all relevant checks')
     .strict()
     .help()
@@ -98,7 +108,17 @@ async function main(argv: string[]): Promise<number> {
 
   // `cargo-sort` is excluded as it requires being manually installed first
   const ALL_CARGO_COMMANDS = ['cargo-fmt', 'cargo-check', 'cargo-clippy', 'cargo-test']
-  const ALL_COMMANDS = ['jest', 'vitest', 'eslint', 'jest-cra', 'mocha', 'audit', 'tsc', ...ALL_CARGO_COMMANDS]
+  const ALL_COMMANDS = [
+    'jest',
+    'vitest',
+    'eslint',
+    'jest-cra',
+    'mocha',
+    'audit',
+    'tsc',
+    'tflint',
+    ...ALL_CARGO_COMMANDS
+  ]
 
   let commands
   if (command == 'auto') {
@@ -324,6 +344,22 @@ async function lookupConvertFunction(
           tscCheck({
             data: output,
             sha: commitSha
+          })
+        ]
+      }
+    }
+    case 'tflint': {
+      if (detect) {
+        return null
+      }
+      return async () => {
+        const output = await runTflint('tflint', args)
+        return [
+          false,
+          tflintCheck({
+            data: output,
+            sha: commitSha,
+            name: flags.name
           })
         ]
       }

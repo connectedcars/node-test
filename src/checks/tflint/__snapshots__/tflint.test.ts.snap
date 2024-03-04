@@ -1,0 +1,1288 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`checks/tflint processes failing tflint output to checks structure 1`] = `
+Object {
+  "completed_at": StringMatching /\\^\\\\d\\{4\\}/,
+  "conclusion": "failure",
+  "head_sha": "1234567890",
+  "name": "tflint",
+  "output": Object {
+    "annotations": Array [
+      Object {
+        "annotation_level": "failure",
+        "end_line": 0,
+        "message": "terraform \\"required_version\\" attribute is required
+
+[warning] terraform_required_version
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
+        "path": "",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_version\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md\\"
+  },
+  \\"message\\": \\"terraform \\\\\\"required_version\\\\\\" attribute is required\\",
+  \\"range\\": {
+    \\"filename\\": \\"\\",
+    \\"start\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    },
+    \\"end\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 0,
+        "title": "terraform \\"required_version\\" attribute is required",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 0,
+        "message": "terraform \\"required_version\\" attribute is required
+
+[warning] terraform_required_version
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
+        "path": "",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_version\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md\\"
+  },
+  \\"message\\": \\"terraform \\\\\\"required_version\\\\\\" attribute is required\\",
+  \\"range\\": {
+    \\"filename\\": \\"\\",
+    \\"start\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    },
+    \\"end\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 0,
+        "title": "terraform \\"required_version\\" attribute is required",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 0,
+        "message": "terraform \\"required_version\\" attribute is required
+
+[warning] terraform_required_version
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
+        "path": "",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_version\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md\\"
+  },
+  \\"message\\": \\"terraform \\\\\\"required_version\\\\\\" attribute is required\\",
+  \\"range\\": {
+    \\"filename\\": \\"\\",
+    \\"start\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    },
+    \\"end\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 0,
+        "title": "terraform \\"required_version\\" attribute is required",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 0,
+        "message": "terraform \\"required_version\\" attribute is required
+
+[warning] terraform_required_version
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
+        "path": "",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_version\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md\\"
+  },
+  \\"message\\": \\"terraform \\\\\\"required_version\\\\\\" attribute is required\\",
+  \\"range\\": {
+    \\"filename\\": \\"\\",
+    \\"start\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    },
+    \\"end\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 0,
+        "title": "terraform \\"required_version\\" attribute is required",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 0,
+        "message": "terraform \\"required_version\\" attribute is required
+
+[warning] terraform_required_version
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
+        "path": "",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_version\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md\\"
+  },
+  \\"message\\": \\"terraform \\\\\\"required_version\\\\\\" attribute is required\\",
+  \\"range\\": {
+    \\"filename\\": \\"\\",
+    \\"start\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    },
+    \\"end\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 0,
+        "title": "terraform \\"required_version\\" attribute is required",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 0,
+        "message": "terraform \\"required_version\\" attribute is required
+
+[warning] terraform_required_version
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
+        "path": "",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_version\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md\\"
+  },
+  \\"message\\": \\"terraform \\\\\\"required_version\\\\\\" attribute is required\\",
+  \\"range\\": {
+    \\"filename\\": \\"\\",
+    \\"start\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    },
+    \\"end\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 0,
+        "title": "terraform \\"required_version\\" attribute is required",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 0,
+        "message": "terraform \\"required_version\\" attribute is required
+
+[warning] terraform_required_version
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
+        "path": "",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_version\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md\\"
+  },
+  \\"message\\": \\"terraform \\\\\\"required_version\\\\\\" attribute is required\\",
+  \\"range\\": {
+    \\"filename\\": \\"\\",
+    \\"start\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    },
+    \\"end\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 0,
+        "title": "terraform \\"required_version\\" attribute is required",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 0,
+        "message": "terraform \\"required_version\\" attribute is required
+
+[warning] terraform_required_version
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
+        "path": "",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_version\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md\\"
+  },
+  \\"message\\": \\"terraform \\\\\\"required_version\\\\\\" attribute is required\\",
+  \\"range\\": {
+    \\"filename\\": \\"\\",
+    \\"start\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    },
+    \\"end\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 0,
+        "title": "terraform \\"required_version\\" attribute is required",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 0,
+        "message": "terraform \\"required_version\\" attribute is required
+
+[warning] terraform_required_version
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
+        "path": "",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_version\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md\\"
+  },
+  \\"message\\": \\"terraform \\\\\\"required_version\\\\\\" attribute is required\\",
+  \\"range\\": {
+    \\"filename\\": \\"\\",
+    \\"start\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    },
+    \\"end\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 0,
+        "title": "terraform \\"required_version\\" attribute is required",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 0,
+        "message": "terraform \\"required_version\\" attribute is required
+
+[warning] terraform_required_version
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
+        "path": "",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_version\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md\\"
+  },
+  \\"message\\": \\"terraform \\\\\\"required_version\\\\\\" attribute is required\\",
+  \\"range\\": {
+    \\"filename\\": \\"\\",
+    \\"start\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    },
+    \\"end\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 0,
+        "title": "terraform \\"required_version\\" attribute is required",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 0,
+        "message": "terraform \\"required_version\\" attribute is required
+
+[warning] terraform_required_version
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
+        "path": "",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_version\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md\\"
+  },
+  \\"message\\": \\"terraform \\\\\\"required_version\\\\\\" attribute is required\\",
+  \\"range\\": {
+    \\"filename\\": \\"\\",
+    \\"start\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    },
+    \\"end\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 0,
+        "title": "terraform \\"required_version\\" attribute is required",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 0,
+        "message": "terraform \\"required_version\\" attribute is required
+
+[warning] terraform_required_version
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
+        "path": "",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_version\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md\\"
+  },
+  \\"message\\": \\"terraform \\\\\\"required_version\\\\\\" attribute is required\\",
+  \\"range\\": {
+    \\"filename\\": \\"\\",
+    \\"start\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    },
+    \\"end\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 0,
+        "title": "terraform \\"required_version\\" attribute is required",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 0,
+        "message": "terraform \\"required_version\\" attribute is required
+
+[warning] terraform_required_version
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
+        "path": "",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_version\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md\\"
+  },
+  \\"message\\": \\"terraform \\\\\\"required_version\\\\\\" attribute is required\\",
+  \\"range\\": {
+    \\"filename\\": \\"\\",
+    \\"start\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    },
+    \\"end\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 0,
+        "title": "terraform \\"required_version\\" attribute is required",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 0,
+        "message": "terraform \\"required_version\\" attribute is required
+
+[warning] terraform_required_version
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
+        "path": "",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_version\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md\\"
+  },
+  \\"message\\": \\"terraform \\\\\\"required_version\\\\\\" attribute is required\\",
+  \\"range\\": {
+    \\"filename\\": \\"\\",
+    \\"start\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    },
+    \\"end\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 0,
+        "title": "terraform \\"required_version\\" attribute is required",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 0,
+        "message": "terraform \\"required_version\\" attribute is required
+
+[warning] terraform_required_version
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
+        "path": "",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_version\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md\\"
+  },
+  \\"message\\": \\"terraform \\\\\\"required_version\\\\\\" attribute is required\\",
+  \\"range\\": {
+    \\"filename\\": \\"\\",
+    \\"start\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    },
+    \\"end\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 0,
+        "title": "terraform \\"required_version\\" attribute is required",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 0,
+        "message": "terraform \\"required_version\\" attribute is required
+
+[warning] terraform_required_version
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
+        "path": "",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_version\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md\\"
+  },
+  \\"message\\": \\"terraform \\\\\\"required_version\\\\\\" attribute is required\\",
+  \\"range\\": {
+    \\"filename\\": \\"\\",
+    \\"start\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    },
+    \\"end\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 0,
+        "title": "terraform \\"required_version\\" attribute is required",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 0,
+        "message": "terraform \\"required_version\\" attribute is required
+
+[warning] terraform_required_version
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md",
+        "path": "",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_version\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_version.md\\"
+  },
+  \\"message\\": \\"terraform \\\\\\"required_version\\\\\\" attribute is required\\",
+  \\"range\\": {
+    \\"filename\\": \\"\\",
+    \\"start\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    },
+    \\"end\\": {
+      \\"line\\": 0,
+      \\"column\\": 0
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 0,
+        "title": "terraform \\"required_version\\" attribute is required",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 40,
+        "message": "Missing version constraint for provider \\"google\\" in \`required_providers\`
+
+[warning] terraform_required_providers
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md",
+        "path": "terraform/dashboards/user-iam/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_providers\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md\\"
+  },
+  \\"message\\": \\"Missing version constraint for provider \\\\\\"google\\\\\\" in \`required_providers\`\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/dashboards/user-iam/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 40,
+      \\"column\\": 1
+    },
+    \\"end\\": {
+      \\"line\\": 40,
+      \\"column\\": 61
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 40,
+        "title": "Missing version constraint for provider \\"google\\" in \`required_providers\`",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 21,
+        "message": "Missing version constraint for provider \\"google\\" in \`required_providers\`
+
+[warning] terraform_required_providers
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md",
+        "path": "terraform/firebase/iam/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_providers\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md\\"
+  },
+  \\"message\\": \\"Missing version constraint for provider \\\\\\"google\\\\\\" in \`required_providers\`\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/firebase/iam/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 21,
+      \\"column\\": 1
+    },
+    \\"end\\": {
+      \\"line\\": 21,
+      \\"column\\": 73
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 21,
+        "title": "Missing version constraint for provider \\"google\\" in \`required_providers\`",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 27,
+        "message": "Missing version constraint for provider \\"google\\" in \`required_providers\`
+
+[warning] terraform_required_providers
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md",
+        "path": "terraform/firebase/user-iam/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_providers\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md\\"
+  },
+  \\"message\\": \\"Missing version constraint for provider \\\\\\"google\\\\\\" in \`required_providers\`\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/firebase/user-iam/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 27,
+      \\"column\\": 1
+    },
+    \\"end\\": {
+      \\"line\\": 27,
+      \\"column\\": 61
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 27,
+        "title": "Missing version constraint for provider \\"google\\" in \`required_providers\`",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 45,
+        "message": "Missing version constraint for provider \\"google\\" in \`required_providers\`
+
+[warning] terraform_required_providers
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md",
+        "path": "terraform/global/iam/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_providers\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md\\"
+  },
+  \\"message\\": \\"Missing version constraint for provider \\\\\\"google\\\\\\" in \`required_providers\`\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/global/iam/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 45,
+      \\"column\\": 1
+    },
+    \\"end\\": {
+      \\"line\\": 45,
+      \\"column\\": 76
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 45,
+        "title": "Missing version constraint for provider \\"google\\" in \`required_providers\`",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 56,
+        "message": "Missing version constraint for provider \\"google\\" in \`required_providers\`
+
+[warning] terraform_required_providers
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md",
+        "path": "terraform/global/user-iam/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_providers\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md\\"
+  },
+  \\"message\\": \\"Missing version constraint for provider \\\\\\"google\\\\\\" in \`required_providers\`\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/global/user-iam/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 56,
+      \\"column\\": 1
+    },
+    \\"end\\": {
+      \\"line\\": 56,
+      \\"column\\": 61
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 56,
+        "title": "Missing version constraint for provider \\"google\\" in \`required_providers\`",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 22,
+        "message": "Missing version constraint for provider \\"azurerm\\" in \`required_providers\`
+
+[warning] terraform_required_providers
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md",
+        "path": "terraform/main/azure-storage-account/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_providers\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md\\"
+  },
+  \\"message\\": \\"Missing version constraint for provider \\\\\\"azurerm\\\\\\" in \`required_providers\`\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/main/azure-storage-account/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 22,
+      \\"column\\": 1
+    },
+    \\"end\\": {
+      \\"line\\": 22,
+      \\"column\\": 53
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 22,
+        "title": "Missing version constraint for provider \\"azurerm\\" in \`required_providers\`",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 9,
+        "message": "variable \\"region_name\\" is declared but not used
+
+[warning] terraform_unused_declarations
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_unused_declarations.md",
+        "path": "terraform/main/buckets/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_unused_declarations\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_unused_declarations.md\\"
+  },
+  \\"message\\": \\"variable \\\\\\"region_name\\\\\\" is declared but not used\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/main/buckets/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 9,
+      \\"column\\": 1
+    },
+    \\"end\\": {
+      \\"line\\": 9,
+      \\"column\\": 23
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 9,
+        "title": "variable \\"region_name\\" is declared but not used",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 62,
+        "message": "Missing version constraint for provider \\"google\\" in \`required_providers\`
+
+[warning] terraform_required_providers
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md",
+        "path": "terraform/main/buckets/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_providers\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md\\"
+  },
+  \\"message\\": \\"Missing version constraint for provider \\\\\\"google\\\\\\" in \`required_providers\`\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/main/buckets/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 62,
+      \\"column\\": 1
+    },
+    \\"end\\": {
+      \\"line\\": 62,
+      \\"column\\": 55
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 62,
+        "title": "Missing version constraint for provider \\"google\\" in \`required_providers\`",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 38,
+        "message": "Interpolation-only expressions are deprecated in Terraform v0.12.14
+
+[warning] terraform_deprecated_interpolation
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_deprecated_interpolation.md",
+        "path": "terraform/main/dns/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_deprecated_interpolation\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_deprecated_interpolation.md\\"
+  },
+  \\"message\\": \\"Interpolation-only expressions are deprecated in Terraform v0.12.14\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/main/dns/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 38,
+      \\"column\\": 14
+    },
+    \\"end\\": {
+      \\"line\\": 38,
+      \\"column\\": 39
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 38,
+        "title": "Interpolation-only expressions are deprecated in Terraform v0.12.14",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 46,
+        "message": "Missing version constraint for provider \\"google\\" in \`required_providers\`
+
+[warning] terraform_required_providers
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md",
+        "path": "terraform/main/dns/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_providers\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md\\"
+  },
+  \\"message\\": \\"Missing version constraint for provider \\\\\\"google\\\\\\" in \`required_providers\`\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/main/dns/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 46,
+      \\"column\\": 1
+    },
+    \\"end\\": {
+      \\"line\\": 46,
+      \\"column\\": 61
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 46,
+        "title": "Missing version constraint for provider \\"google\\" in \`required_providers\`",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 33,
+        "message": "Missing version constraint for provider \\"google\\" in \`required_providers\`
+
+[warning] terraform_required_providers
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md",
+        "path": "terraform/main/firewall/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_providers\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md\\"
+  },
+  \\"message\\": \\"Missing version constraint for provider \\\\\\"google\\\\\\" in \`required_providers\`\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/main/firewall/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 33,
+      \\"column\\": 1
+    },
+    \\"end\\": {
+      \\"line\\": 33,
+      \\"column\\": 48
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 33,
+        "title": "Missing version constraint for provider \\"google\\" in \`required_providers\`",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 54,
+        "message": "Missing version constraint for provider \\"google\\" in \`required_providers\`
+
+[warning] terraform_required_providers
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md",
+        "path": "terraform/main/gke/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_providers\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md\\"
+  },
+  \\"message\\": \\"Missing version constraint for provider \\\\\\"google\\\\\\" in \`required_providers\`\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/main/gke/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 54,
+      \\"column\\": 1
+    },
+    \\"end\\": {
+      \\"line\\": 54,
+      \\"column\\": 61
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 54,
+        "title": "Missing version constraint for provider \\"google\\" in \`required_providers\`",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 42,
+        "message": "variable \\"enable_config_signing\\" is declared but not used
+
+[warning] terraform_unused_declarations
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_unused_declarations.md",
+        "path": "terraform/main/iam/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_unused_declarations\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_unused_declarations.md\\"
+  },
+  \\"message\\": \\"variable \\\\\\"enable_config_signing\\\\\\" is declared but not used\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/main/iam/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 42,
+      \\"column\\": 1
+    },
+    \\"end\\": {
+      \\"line\\": 42,
+      \\"column\\": 33
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 42,
+        "title": "variable \\"enable_config_signing\\" is declared but not used",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 740,
+        "message": "Missing version constraint for provider \\"google\\" in \`required_providers\`
+
+[warning] terraform_required_providers
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md",
+        "path": "terraform/main/iam/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_providers\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md\\"
+  },
+  \\"message\\": \\"Missing version constraint for provider \\\\\\"google\\\\\\" in \`required_providers\`\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/main/iam/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 740,
+      \\"column\\": 1
+    },
+    \\"end\\": {
+      \\"line\\": 740,
+      \\"column\\": 112
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 740,
+        "title": "Missing version constraint for provider \\"google\\" in \`required_providers\`",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 17,
+        "message": "Missing version constraint for provider \\"google\\" in \`required_providers\`
+
+[warning] terraform_required_providers
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md",
+        "path": "terraform/main/kms/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_providers\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md\\"
+  },
+  \\"message\\": \\"Missing version constraint for provider \\\\\\"google\\\\\\" in \`required_providers\`\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/main/kms/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 17,
+      \\"column\\": 1
+    },
+    \\"end\\": {
+      \\"line\\": 17,
+      \\"column\\": 45
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 17,
+        "title": "Missing version constraint for provider \\"google\\" in \`required_providers\`",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 35,
+        "message": "variable \\"enable_feeder\\" is declared but not used
+
+[warning] terraform_unused_declarations
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_unused_declarations.md",
+        "path": "terraform/main/logging/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_unused_declarations\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_unused_declarations.md\\"
+  },
+  \\"message\\": \\"variable \\\\\\"enable_feeder\\\\\\" is declared but not used\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/main/logging/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 35,
+      \\"column\\": 1
+    },
+    \\"end\\": {
+      \\"line\\": 35,
+      \\"column\\": 25
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 35,
+        "title": "variable \\"enable_feeder\\" is declared but not used",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 2360,
+        "message": "Missing version constraint for provider \\"google\\" in \`required_providers\`
+
+[warning] terraform_required_providers
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md",
+        "path": "terraform/main/logging/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_providers\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md\\"
+  },
+  \\"message\\": \\"Missing version constraint for provider \\\\\\"google\\\\\\" in \`required_providers\`\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/main/logging/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 2360,
+      \\"column\\": 1
+    },
+    \\"end\\": {
+      \\"line\\": 2360,
+      \\"column\\": 54
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 2360,
+        "title": "Missing version constraint for provider \\"google\\" in \`required_providers\`",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 65,
+        "message": "Missing version constraint for provider \\"google\\" in \`required_providers\`
+
+[warning] terraform_required_providers
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md",
+        "path": "terraform/main/service-accounts/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_providers\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md\\"
+  },
+  \\"message\\": \\"Missing version constraint for provider \\\\\\"google\\\\\\" in \`required_providers\`\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/main/service-accounts/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 65,
+      \\"column\\": 1
+    },
+    \\"end\\": {
+      \\"line\\": 65,
+      \\"column\\": 70
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 65,
+        "title": "Missing version constraint for provider \\"google\\" in \`required_providers\`",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 27,
+        "message": "Interpolation-only expressions are deprecated in Terraform v0.12.14
+
+[warning] terraform_deprecated_interpolation
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_deprecated_interpolation.md",
+        "path": "terraform/main/udp-dns/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_deprecated_interpolation\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_deprecated_interpolation.md\\"
+  },
+  \\"message\\": \\"Interpolation-only expressions are deprecated in Terraform v0.12.14\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/main/udp-dns/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 27,
+      \\"column\\": 14
+    },
+    \\"end\\": {
+      \\"line\\": 27,
+      \\"column\\": 63
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 27,
+        "title": "Interpolation-only expressions are deprecated in Terraform v0.12.14",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 37,
+        "message": "Interpolation-only expressions are deprecated in Terraform v0.12.14
+
+[warning] terraform_deprecated_interpolation
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_deprecated_interpolation.md",
+        "path": "terraform/main/udp-dns/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_deprecated_interpolation\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_deprecated_interpolation.md\\"
+  },
+  \\"message\\": \\"Interpolation-only expressions are deprecated in Terraform v0.12.14\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/main/udp-dns/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 37,
+      \\"column\\": 14
+    },
+    \\"end\\": {
+      \\"line\\": 37,
+      \\"column\\": 63
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 37,
+        "title": "Interpolation-only expressions are deprecated in Terraform v0.12.14",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 51,
+        "message": "Missing version constraint for provider \\"google\\" in \`required_providers\`
+
+[warning] terraform_required_providers
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md",
+        "path": "terraform/main/udp-dns/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_providers\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md\\"
+  },
+  \\"message\\": \\"Missing version constraint for provider \\\\\\"google\\\\\\" in \`required_providers\`\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/main/udp-dns/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 51,
+      \\"column\\": 1
+    },
+    \\"end\\": {
+      \\"line\\": 51,
+      \\"column\\": 59
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 51,
+        "title": "Missing version constraint for provider \\"google\\" in \`required_providers\`",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 57,
+        "message": "Interpolation-only expressions are deprecated in Terraform v0.12.14
+
+[warning] terraform_deprecated_interpolation
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_deprecated_interpolation.md",
+        "path": "terraform/main/udp-dns/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_deprecated_interpolation\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_deprecated_interpolation.md\\"
+  },
+  \\"message\\": \\"Interpolation-only expressions are deprecated in Terraform v0.12.14\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/main/udp-dns/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 57,
+      \\"column\\": 14
+    },
+    \\"end\\": {
+      \\"line\\": 57,
+      \\"column\\": 58
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 57,
+        "title": "Interpolation-only expressions are deprecated in Terraform v0.12.14",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 121,
+        "message": "Missing version constraint for provider \\"google\\" in \`required_providers\`
+
+[warning] terraform_required_providers
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md",
+        "path": "terraform/main/uptime-checks/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_providers\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md\\"
+  },
+  \\"message\\": \\"Missing version constraint for provider \\\\\\"google\\\\\\" in \`required_providers\`\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/main/uptime-checks/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 121,
+      \\"column\\": 1
+    },
+    \\"end\\": {
+      \\"line\\": 121,
+      \\"column\\": 68
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 121,
+        "title": "Missing version constraint for provider \\"google\\" in \`required_providers\`",
+      },
+      Object {
+        "annotation_level": "failure",
+        "end_line": 181,
+        "message": "Missing version constraint for provider \\"google\\" in \`required_providers\`
+
+[warning] terraform_required_providers
+https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md",
+        "path": "terraform/main/user-iam/main.tf",
+        "raw_details": "{
+  \\"rule\\": {
+    \\"name\\": \\"terraform_required_providers\\",
+    \\"severity\\": \\"warning\\",
+    \\"link\\": \\"https://github.com/terraform-linters/tflint-ruleset-terraform/blob/v0.5.0/docs/rules/terraform_required_providers.md\\"
+  },
+  \\"message\\": \\"Missing version constraint for provider \\\\\\"google\\\\\\" in \`required_providers\`\\",
+  \\"range\\": {
+    \\"filename\\": \\"terraform/main/user-iam/main.tf\\",
+    \\"start\\": {
+      \\"line\\": 181,
+      \\"column\\": 1
+    },
+    \\"end\\": {
+      \\"line\\": 181,
+      \\"column\\": 61
+    }
+  },
+  \\"callers\\": []
+}",
+        "start_line": 181,
+        "title": "Missing version constraint for provider \\"google\\" in \`required_providers\`",
+      },
+    ],
+    "summary": "41 issue(s) found",
+    "title": "41 issue(s) found",
+  },
+  "status": "completed",
+}
+`;
