@@ -31,6 +31,7 @@ export class MySQLClient {
   private databasePools: { [key: string]: mysql.Pool } = {}
   private lockConnections: mysql.Connection[] = []
   private timings: Timing[] = []
+  private databaseCopies = new Set<string>()
 
   public constructor(options: MySQLClientOptions = {}) {
     this.options = {
@@ -191,12 +192,21 @@ export class MySQLClient {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public async checkoutDatabase(database: string, tables: string[] = []): Promise<string> {
+  public async checkoutDatabase(databaseName: string, tables: string[] = [], postfix?: string): Promise<string> {
     // TODO: Look into reusing the copied database with "SELECT TABLE_NAME, UPDATE_TIME FROM information_schema.tables; as this could be quicker"
     // TODO: Look into using innodb-table for copying the tables: https://dev.mysql.com/doc/refman/8.0/en/innodb-table-import.html
 
+    let database = databaseName
     let pool: mysql.Pool | null = null
     try {
+      if (postfix) {
+        database = `${databaseName}-${postfix}`
+        if (!this.databaseCopies.has(database)) {
+          database = await this.createDatabaseCopy(database, tables, postfix)
+          this.databaseCopies.add(database)
+        }
+      }
+
       // Disable foreign keys for these connections
       pool = await this.getConnectionPool(database, false, { connectionLimit: 10 })
       pool.on('connection', connection => {
@@ -265,7 +275,7 @@ export class MySQLClient {
   }
 
   // https://gist.github.com/christopher-hopper/8431737
-  public async createDatabaseCopy(database: string, tables: string[] = []): Promise<string> {
+  public async createDatabaseCopy(database: string, tables: string[] = [], postfix?: string): Promise<string> {
     let pool: mysql.Pool | null = null
     try {
       // Disable foreign keys for these connections
@@ -278,7 +288,7 @@ export class MySQLClient {
       })
 
       // Create target database
-      const databasePostfix = crypto.randomBytes(2).toString('hex')
+      const databasePostfix = postfix ?? crypto.randomBytes(2).toString('hex')
       const destinationDatabase = `${database}-${databasePostfix}`
       await this.cloneDatabase(pool, destinationDatabase, tables)
 
