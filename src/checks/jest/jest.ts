@@ -162,13 +162,15 @@ export const jestCheck = ({ data, sha, name = 'jest' }: JestInput): CheckRunComp
             raw_details: JSON.stringify(result, null, 2)
           }
           // Try to keep the output small so we avoid truncation
-          if (JSON.stringify(annotation, null, 2).length > MAX_LINE_LENGTH) {
+          let len = JSON.stringify(annotation, null, 2).length
+          if (len > MAX_LINE_LENGTH) {
             // Try to only remove raw details
-            annotation.raw_details = 'Too large to display'
+            annotation.raw_details = `Line too large (${len} B)`
             // Check whether the output is still too large
-            if (JSON.stringify(annotation, null, 2).length > MAX_LINE_LENGTH) {
+            len = JSON.stringify(annotation, null, 2).length
+            if (len > MAX_LINE_LENGTH) {
               // Remove the message as well
-              annotation.message = 'Too large to display'
+              annotation.message = `Line too large (${len} B)`
             }
           }
           return annotation
@@ -199,16 +201,18 @@ export const jestCheck = ({ data, sha, name = 'jest' }: JestInput): CheckRunComp
       // note: check numTotalTestSuites for count?
       result.output.title = result.output.summary
       // Try to keep the output small so we avoid truncation
-      if (JSON.stringify(result).length > MAX_OUTPUT_LENGTH) {
+      let len = JSON.stringify(result, null, 2).length
+      if (len > MAX_OUTPUT_LENGTH) {
         for (const annotation of result.output.annotations || []) {
           // Try to only remove raw details
-          annotation.raw_details = 'Too large to display'
+          annotation.raw_details = `Output too large (${len} B)`
         }
         // Check whether the output is still too large
-        if (JSON.stringify(result).length > MAX_OUTPUT_LENGTH) {
+        len = JSON.stringify(result, null, 2).length
+        if (len > MAX_OUTPUT_LENGTH) {
           for (const annotation of result.output.annotations || []) {
             // Remove the message as well
-            annotation.message = 'Too large to display'
+            annotation.message = `Output too large (${len} B)`
           }
         }
       }
