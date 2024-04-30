@@ -1,4 +1,11 @@
-import { CheckAnnotation, CheckAnnotationLevel, CheckConversionError, CheckRunCompleted } from '../checks-common'
+import {
+  CheckAnnotation,
+  CheckAnnotationLevel,
+  CheckConversionError,
+  CheckRunCompleted,
+  MAX_LINE_LENGTH,
+  MAX_OUTPUT_LENGTH
+} from '../checks-common'
 
 export interface FormattedTestResults {
   numFailedTests: number
@@ -154,6 +161,18 @@ export const jestCheck = ({ data, sha, name = 'jest' }: JestInput): CheckRunComp
             path: relPath,
             raw_details: JSON.stringify(result, null, 2)
           }
+          // Try to keep the output small so we avoid truncation
+          let len = JSON.stringify(annotation, null, 2).length
+          if (len > MAX_LINE_LENGTH) {
+            // Try to only remove raw details
+            annotation.raw_details = `Line too large (${len} B)`
+            // Check whether the output is still too large
+            len = JSON.stringify(annotation, null, 2).length
+            if (len > MAX_LINE_LENGTH) {
+              // Remove the message as well
+              annotation.message = `Line too large (${len} B)`
+            }
+          }
           return annotation
         })
         // Limit to 50 annotations as this is the max per post for github
@@ -181,6 +200,22 @@ export const jestCheck = ({ data, sha, name = 'jest' }: JestInput): CheckRunComp
       }
       // note: check numTotalTestSuites for count?
       result.output.title = result.output.summary
+      // Try to keep the output small so we avoid truncation
+      let len = JSON.stringify(result, null, 2).length
+      if (len > MAX_OUTPUT_LENGTH) {
+        for (const annotation of result.output.annotations || []) {
+          // Try to only remove raw details
+          annotation.raw_details = `Output too large (${len} B)`
+        }
+        // Check whether the output is still too large
+        len = JSON.stringify(result, null, 2).length
+        if (len > MAX_OUTPUT_LENGTH) {
+          for (const annotation of result.output.annotations || []) {
+            // Remove the message as well
+            annotation.message = `Output too large (${len} B)`
+          }
+        }
+      }
     }
 
     return result

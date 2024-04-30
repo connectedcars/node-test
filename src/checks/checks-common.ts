@@ -178,3 +178,7 @@ export class CommandJSONConversionError extends Error {
     this.e = e
   }
 }
+
+// From https://github.com/connectedcars/cloudbuilder-wrapper/blob/master/docker/build/buildkit/main.go
+export const MAX_LINE_LENGTH = 20 * 1024
+export const MAX_OUTPUT_LENGTH = 60 * 1024
