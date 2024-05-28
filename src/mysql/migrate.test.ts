@@ -95,8 +95,8 @@ describe('Migrate', () => {
       migrationsPaths: testBadMigrationPaths
     })
 
-    await expect(initialMigrate.migrate()).rejects.toThrowError(/ER_PARSE_ERROR:.*BAD SQL/)
-    await expect(initialMigrate.migrate()).rejects.toThrowError(/ER_PARSE_ERROR:.*BAD SQL/)
+    await expect(initialMigrate.migrate()).rejects.toThrow(/ER_PARSE_ERROR:.*BAD SQL/)
+    await expect(initialMigrate.migrate()).rejects.toThrow(/ER_PARSE_ERROR:.*BAD SQL/)
   })
 
   const characterSetsCollationTestCases = [
@@ -129,7 +129,7 @@ describe('Migrate', () => {
         migrationsPaths: [`src/mysql/resources/${migrationsPaths}`]
       })
 
-      await expect(initialMigrate.migrate()).rejects.toThrowError(errorMessage)
+      await expect(initialMigrate.migrate()).rejects.toThrow(errorMessage)
     }
   )
 
@@ -139,6 +139,26 @@ describe('Migrate', () => {
     })
 
     await expect(initialMigrate.migrate()).resolves.not.toThrow()
+  })
+
+  it('should throw an error for missing character set on new tables', async () => {
+    const initialMigrate = await doInitialMigrate({
+      migrationsPaths: ['src/mysql/resources/missing-character-set-on-new-tables']
+    })
+
+    await expect(initialMigrate.migrate()).rejects.toThrow(
+      'Found 4 create table statement(s) with missing character sets (test/2024-05-24T150800_MissingCharacterSetOnNewTables.sql)'
+    )
+  })
+
+  it('should throw an error for missing collation on new tables', async () => {
+    const initialMigrate = await doInitialMigrate({
+      migrationsPaths: ['src/mysql/resources/missing-collation-on-new-tables']
+    })
+
+    await expect(initialMigrate.migrate()).rejects.toThrow(
+      'Found 2 create table statement(s) with missing collations (test/2024-05-24T150800_MissingCollationOnNewTables.sql)'
+    )
   })
 
   it('should do no migrations under dryRun', async () => {
