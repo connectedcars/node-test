@@ -14,15 +14,11 @@ export function parseCreateTableStatements(sql: string): [number, number, number
 
   while (idx < sql.length) {
     const match = sql.slice(idx).match(/create\s+table/i)
-    let foundCreateTableStatement = false
 
     if (match && match.index != null) {
       idx = idx + match.index + match[0].length
-      foundCreateTableStatement = true
       ++createTableStatementCount
-    }
-
-    if (!foundCreateTableStatement) {
+    } else {
       break
     }
 
