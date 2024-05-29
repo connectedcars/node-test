@@ -12,9 +12,9 @@ const readFile = util.promisify(fs.readFile)
 const mkdirAsync = util.promisify(fs.mkdir)
 const existsAsync = util.promisify(fs.exists)
 
-// Set of migrations where we skip character set and collation checks. Most of
-// these are production tables where the migration would take too long and
-// stall access to the tables or old migrations any charsets/collations set.
+// Set of migrations where we skip character set and collation checks. Most of these are
+// production tables where the migration would take too long and stall access to the
+// tables or old migrations without any character sets or collations.
 const skipCharacterSetCollationChecks = new Set([
   'connectedcars/2018-05-07T133403_AddPushTokens.sql',
   'connectedcars/2018-02-23T154315_WorkshopChanges.sql',
@@ -387,69 +387,37 @@ export class Migrate {
 
       // Check singular statements that set a disallowed character set or collation
       this.checkMigrationCharacterSetsOrCollations(migration, 'character set', [
-        [/charset\s*=\s*(\w+)/gi, 1],
-        [/charset\s+(\w+)/gi, 1],
-        [/character\s+set\s+(\w+)/gi, 1],
-        [/character\s+set\s*=\s*(\w+)/gi, 1]
+        /charset\s*=\s*(\w+)/gi,
+        /charset\s+(\w+)/gi,
+        /character\s+set\s+(\w+)/gi,
+        /character\s+set\s*=\s*(\w+)/gi
       ])
 
       this.checkMigrationCharacterSetsOrCollations(migration, 'collation', [
-        [/collate\s*=\s*(\w+)/gi, 1],
-        [/collate\s+(\w+)/gi, 1]
+        /collate\s*=\s*(\w+)/gi,
+        /collate\s+(\w+)/gi
       ])
     }
 
     return migration
   }
 
-  private checkMatchAgainstAllowedCharacterSetOrCollation(
-    migration: Migration,
-    match: string,
-    what: 'collation' | 'character set'
-  ): void {
-    const allowed = what === 'character set' ? this.CHARACTER_SET : this.COLLATION
-
-    if (match !== allowed) {
-      throw new Error(`Migration sets disallowed ${what} '${match}', use '${allowed}' instead (${migration.path})`)
-    }
-  }
-
-  private checkMigrationCreateTableCharacterSetsOrCollations(
-    migration: Migration,
-    what: 'collation' | 'character set',
-    regexes: [RegExp, number][],
-    createTableStatementCount: number
-  ): void {
-    let matchCount = 0
-
-    for (const [regex, idx] of regexes) {
-      const matches = [...migration.sql.matchAll(regex)]
-      matchCount += matches.length
-
-      // Check if a disallowed character set or collation is used
-      for (const match of matches) {
-        this.checkMatchAgainstAllowedCharacterSetOrCollation(migration, match[idx], what)
-      }
-    }
-
-    if (matchCount !== createTableStatementCount) {
-      const difference = createTableStatementCount - matchCount
-
-      throw new Error(`Found ${difference} create table statement(s) with missing ${what}s (${migration.path})`)
-    }
-  }
-
   private checkMigrationCharacterSetsOrCollations(
     migration: Migration,
     what: 'collation' | 'character set',
-    regexes: [RegExp, number][]
+    regexes: RegExp[]
   ): void {
-    for (const [regex, idx] of regexes) {
+    for (const regex of regexes) {
       const matches = [...migration.sql.matchAll(regex)]
 
       // Check if a disallowed character set or collation is used
       for (const match of matches) {
-        this.checkMatchAgainstAllowedCharacterSetOrCollation(migration, match[idx], what)
+        const value = match[1]
+        const allowed = what === 'character set' ? this.CHARACTER_SET : this.COLLATION
+
+        if (value !== allowed) {
+          throw new Error(`Migration sets disallowed ${what} '${value}', use '${allowed}' instead (${migration.path})`)
+        }
       }
     }
   }
