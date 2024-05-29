@@ -98,7 +98,7 @@ describe('MySQLClient', () => {
     const pool = await mySqlClient.getConnectionPool(tmpDatabase)
     const tables = await mySqlClient.listTables(pool, ['VehicleInfo'])
     expect(tables).toMatchSnapshot()
-    expect(tables.length).toEqual(1)
+    expect(tables).toHaveLength(1)
   })
 
   it('should compare two equal tables and return true', async () => {
