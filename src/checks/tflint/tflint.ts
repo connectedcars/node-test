@@ -30,7 +30,7 @@ export interface TflintInput {
   name?: string
 }
 
-export const tflintCheck = ({ data, sha, name = 'tflint' }: TflintInput): CheckRunCompleted => {
+export function tflintCheck({ data, sha, name = 'tflint' }: TflintInput): CheckRunCompleted {
   try {
     const result: CheckRunCompleted = {
       name,

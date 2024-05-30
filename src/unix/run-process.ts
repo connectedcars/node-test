@@ -163,6 +163,7 @@ export class RunProcess {
         // Setup match listener for both stdout and stderr
         let data = ''
         for (const output of outputs) {
+          // eslint-disable-next-line func-style
           const matchListener = (chunk: Buffer): void => {
             data += chunk.toString('utf8')
             const match = data.match(regex)

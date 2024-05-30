@@ -5,15 +5,16 @@ import util from 'util'
 
 import { MySQLClient } from './mysql-client'
 import { dumpDatabase } from './mysqld-utils'
+import { parseCreateTableStatements } from './parse'
 
 const readdir = util.promisify(fs.readdir)
 const readFile = util.promisify(fs.readFile)
 const mkdirAsync = util.promisify(fs.mkdir)
 const existsAsync = util.promisify(fs.exists)
 
-// Set of migrations where we skip checking for correct character sets and
-// collations. Most of these are production tables where the migration would
-// take too long and stall access to the tables
+// Set of migrations where we skip character set and collation checks. Most of these are
+// production tables where the migration would take too long and stall access to the
+// tables or old migrations without any character sets or collations.
 const skipCharacterSetCollationChecks = new Set([
   'connectedcars/2018-05-07T133403_AddPushTokens.sql',
   'connectedcars/2018-02-23T154315_WorkshopChanges.sql',
@@ -43,7 +44,13 @@ const skipCharacterSetCollationChecks = new Set([
   'performance/2017-12-08T132503_addPotentialCars.sql',
   'reverse-engineering-provider/2019-05-27T205520_initial.sql',
   'car_info/2018-08-30T090800_addProcessIndex.sql',
-  'car_info/2019-01-08T083126_AddMappedEventDescriptions.sql'
+  'car_info/2019-01-08T083126_AddMappedEventDescriptions.sql',
+  'notifications/2018-02-28T133316_activationWarnings.sql',
+  'provisioning_api/2021-04-21T160859_AddMissingTablePartialTlRequests.sql',
+  'pubsub_feeder/2019-09-10T133031_AddBatches.sql',
+  'unit/2019-05-08T000000_AddTraffilogCanPartialReadings.sql',
+  'unit/2019-11-12T083046_positionOutdoorTemp.sql',
+  'unit/2023-06-27T075045_UnitConfigStatusReason.sql'
 ])
 
 export interface MigrationRow {
@@ -90,6 +97,10 @@ export class Migrate {
   private subdirectories?: string[]
   private printStatements: boolean
   private dryRun: boolean
+
+  private readonly CHARACTER_SET = 'utf8mb4'
+  private readonly COLLATION = 'utf8mb4_general_ci'
+
   public constructor(options: MigrateOptions) {
     this.mysqlClient = options.mysqlClient
     this.migrationsPaths = options.migrationsPaths || ['./migrations']
@@ -357,13 +368,32 @@ export class Migrate {
     }
 
     if (!skipCharacterSetCollationChecks.has(migration.path)) {
-      this.checkMigrationCharacterSetsOrCollations(migration, 'character set', 'utf8mb4', [
+      // Check create table statements that have missing character set or collation
+      const [createTableStatementCount, hasCharacterSetCount, hasCollationCount] = parseCreateTableStatements(
+        migration.sql
+      )
+
+      if (createTableStatementCount !== hasCharacterSetCount) {
+        throw new Error(
+          `Found ${createTableStatementCount - hasCharacterSetCount} create table statement(s) with missing character sets (${migration.path})`
+        )
+      }
+
+      if (createTableStatementCount !== hasCollationCount) {
+        throw new Error(
+          `Found ${createTableStatementCount - hasCollationCount} create table statement(s) with missing collations (${migration.path})`
+        )
+      }
+
+      // Check singular statements that set a disallowed character set or collation
+      this.checkMigrationCharacterSetsOrCollations(migration, 'character set', [
         /charset\s*=\s*(\w+)/gi,
         /charset\s+(\w+)/gi,
         /character\s+set\s+(\w+)/gi,
         /character\s+set\s*=\s*(\w+)/gi
       ])
-      this.checkMigrationCharacterSetsOrCollations(migration, 'collation', 'utf8mb4_general_ci', [
+
+      this.checkMigrationCharacterSetsOrCollations(migration, 'collation', [
         /collate\s*=\s*(\w+)/gi,
         /collate\s+(\w+)/gi
       ])
@@ -375,16 +405,19 @@ export class Migrate {
   private checkMigrationCharacterSetsOrCollations(
     migration: Migration,
     what: 'collation' | 'character set',
-    allowed: string,
     regexes: RegExp[]
-  ): void | never {
-    const sql = migration.sql
-    const matches = regexes.flatMap(regex => [...sql.matchAll(regex)])
+  ): void {
+    for (const regex of regexes) {
+      const matches = [...migration.sql.matchAll(regex)]
 
-    // Check if a disallowed character set or collation is used
-    for (const match of matches) {
-      if (match[1] !== allowed) {
-        throw new Error(`Migration sets disallowed ${what} '${match[1]}', use '${allowed}' instead (${migration.path})`)
+      // Check if a disallowed character set or collation is used
+      for (const match of matches) {
+        const value = match[1]
+        const allowed = what === 'character set' ? this.CHARACTER_SET : this.COLLATION
+
+        if (value !== allowed) {
+          throw new Error(`Migration sets disallowed ${what} '${value}', use '${allowed}' instead (${migration.path})`)
+        }
       }
     }
   }

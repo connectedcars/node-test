@@ -56,7 +56,7 @@ export interface VitestInput {
   name?: string
 }
 
-export const vitestCheck = ({ data, sha, name = 'vitest' }: VitestInput): CheckRunCompleted => {
+export function vitestCheck({ data, sha, name = 'vitest' }: VitestInput): CheckRunCompleted {
   const result: CheckRunCompleted = {
     name,
     head_sha: sha,

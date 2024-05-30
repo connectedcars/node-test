@@ -3,7 +3,7 @@ import tls from 'tls'
 
 import { WebServer, WebServerOptions } from './web-server'
 
-export type TestWebServerOptions = WebServerOptions
+type TestWebServerOptions = WebServerOptions
 
 class TestWebServer extends WebServer {
   public constructor(options: TestWebServerOptions = {}) {
@@ -46,17 +46,17 @@ describe('HttpServer', () => {
     webServer.reset()
   })
 
-  it('Simple GET / with http', async () => {
+  it('simple GET / with http', async () => {
     const response = await axios.get<string>(`${webServer.httpListenUrl}`)
     expect(response.data).toEqual('Hello world')
   })
 
-  it('Simple GET / with https', async () => {
+  it('simple GET / with https', async () => {
     const response = await axios.get<string>(`${webServer.httpsListenUrl}`, { httpsAgent: webServer.getCaAgent() })
     expect(response.data).toEqual('Hello world')
   })
 
-  it('Simple GET / with https and client cert', async () => {
+  it('simple GET / with https and client cert', async () => {
     const response = await axios.get<string>(`${webServer.httpsListenUrl}/cert`, {
       httpsAgent: WebServer.getDefaultCertAgent()
     })
@@ -64,7 +64,7 @@ describe('HttpServer', () => {
     expect(response.data).toEqual('Success for client cert: client')
   })
 
-  it('Should have requests in correct order ', async () => {
+  it('should have requests in correct order', async () => {
     await axios.get<string>(`${webServer.httpsListenUrl}?1`, { httpsAgent: webServer.getCaAgent() })
     await axios.get<string>(`${webServer.httpListenUrl}?2`)
     await axios.get<string>(`${webServer.httpsListenUrl}?3`, { httpsAgent: webServer.getCaAgent() })

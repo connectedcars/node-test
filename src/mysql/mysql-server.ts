@@ -46,7 +46,9 @@ export interface MySQLServerOptions {
 
 type InitStatus = 'unknown' | 'started' | 'initialized' | 'resumed' | 'stopped'
 
-const formatHrDiff = (what: string, diff: [number, number]): string => `${what} ${diff[0]}s ${diff[1] / 1000000}ms`
+function formatHrDiff(what: string, diff: [number, number]): string {
+  return `${what} ${diff[0]}s ${diff[1] / 1000000}ms`
+}
 
 export class MySQLServer {
   private initStatus: InitStatus = 'unknown'

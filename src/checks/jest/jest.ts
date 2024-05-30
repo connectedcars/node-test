@@ -88,7 +88,7 @@ function getRelativePath(path: string): string {
   return match && match.length === 2 ? match[1] : 'jest.config.js'
 }
 
-export const jestCheck = ({ data, sha, name = 'jest' }: JestInput): CheckRunCompleted => {
+export function jestCheck({ data, sha, name = 'jest' }: JestInput): CheckRunCompleted {
   try {
     const result: CheckRunCompleted = {
       name,
