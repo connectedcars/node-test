@@ -59,7 +59,7 @@ describe('mysql common', () => {
   })
 
   describe('startMySQLd', () => {
-    it('it should start a detached mysqld server and get the pid', async () => {
+    it('should start a detached mysqld server and get the pid', async () => {
       await commandEmulation.registerCommand(
         'mysqld',
         data => {

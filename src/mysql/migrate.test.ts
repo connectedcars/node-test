@@ -122,7 +122,7 @@ describe('Migrate', () => {
     ]
   ]
 
-  test.each(characterSetsCollationTestCases)(
+  it.each(characterSetsCollationTestCases)(
     'should throw an error for disallowed %s',
     async (_, migrationsPaths, errorMessage) => {
       const initialMigrate = await doInitialMigrate({
@@ -183,6 +183,7 @@ describe('Migrate', () => {
     expect(tables).toEqual([])
   })
 
+  // eslint-disable-next-line jest/no-commented-out-tests
   /* it.skip('should migrate data repo to newest version', async () => {
     const migrate = new Migrate({
       mysqlClient: mySqlClient,

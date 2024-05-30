@@ -6,7 +6,7 @@ export interface EslintInput {
   data: EslintData[]
 }
 
-const generateSummary = (errors: number, warnings: number): string => {
+function generateSummary(errors: number, warnings: number): string {
   const problems = errors + warnings
   if (!problems) {
     return 'No problems found'
@@ -26,7 +26,7 @@ const generateSummary = (errors: number, warnings: number): string => {
   return `${summary} (${details.join(', ')})`
 }
 
-export const eslintCheck = ({ data, sha }: EslintInput): CheckRunCompleted => {
+export function eslintCheck({ data, sha }: EslintInput): CheckRunCompleted {
   try {
     let errors = 0
     let warnings = 0

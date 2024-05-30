@@ -3,7 +3,7 @@ import axios from 'axios'
 import { readHttpMessageBody } from './http-common'
 import { HttpServer, HttpServerOptions } from './http-server'
 
-export type TestHttpServerOptions = HttpServerOptions
+type TestHttpServerOptions = HttpServerOptions
 
 class TestHttpServer extends HttpServer {
   public constructor(options: TestHttpServerOptions = {}) {

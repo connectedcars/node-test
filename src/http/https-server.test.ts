@@ -3,7 +3,7 @@ import tls from 'tls'
 
 import { HttpsServer, HttpsServerOptions } from './https-server'
 
-export type TestHttpsServerOptions = HttpsServerOptions
+type TestHttpsServerOptions = HttpsServerOptions
 
 class TestHttpsServer extends HttpsServer {
   public constructor(options: TestHttpsServerOptions = {}) {

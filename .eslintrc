@@ -1,13 +1,5 @@
 {
     "extends": "./node_modules/@connectedcars/setup/.eslintrc",
     // Force eslint to use local installed parser not the one from ./node_modules/@connectedcars/setup
-    "parser": "@typescript-eslint/parser",
-    "plugins": ["jest"],
-    "rules": {
-      "jest/no-disabled-tests": "warn",
-      "jest/no-focused-tests": "error",
-      "jest/no-identical-title": "error",
-      "jest/prefer-to-have-length": "warn",
-      "jest/valid-expect": "error"
-    }
+    "parser": "@typescript-eslint/parser"
 }
