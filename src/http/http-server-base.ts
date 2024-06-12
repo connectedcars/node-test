@@ -115,17 +115,17 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
     this.clearRequests()
   }
 
-  protected handleRequest(
+  protected async handleRequest(
     req: HttpIncomingMessage,
     res: http.ServerResponse,
     requestListener: HttpRequestListener
-  ): void {
+  ): Promise<void> {
     try {
-      Promise.all([this.saveRequest(req), Promise.resolve(requestListener(req, res))]).catch(e => {
-        this.handleError(res, e)
+      await Promise.all([this.saveRequest(req), Promise.resolve(requestListener(req, res))]).catch(err => {
+        this.handleError(res, err)
       })
-    } catch (e) {
-      this.handleError(res, e)
+    } catch (err) {
+      this.handleError(res, err)
     }
   }
 

@@ -12,8 +12,8 @@ export class HttpServer extends HttpServerBase<http.Server> {
   public constructor(options: HttpServerOptions, requestListener: HttpRequestListener) {
     super(
       'http://localhost',
-      http.createServer(options, (req, res) => {
-        this.handleRequest(req as HttpIncomingMessage, res, requestListener)
+      http.createServer(options, async (req, res) => {
+        await this.handleRequest(req as HttpIncomingMessage, res, requestListener)
       }),
       options.listenPort,
       options.requests
