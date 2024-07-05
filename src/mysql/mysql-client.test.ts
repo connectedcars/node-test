@@ -9,7 +9,7 @@ describe('MySQLClient', () => {
   let tmpDatabase: string
   beforeAll(async () => {
     const mySqlServer = new MySQLServer({ mysqlBaseDir: 'mysql-context', mysqldPath })
-    console.log(await mySqlServer.getTimings())
+    // console.log(await mySqlServer.getTimings())
     mySqlClient = new MySQLClient({ port: await mySqlServer.getListenPort() })
     tmpDatabase = await mySqlClient.createTmpDatabase(
       `
@@ -178,7 +178,7 @@ describe('MySQLClient', () => {
   it('should fixup the old checkout because we added a row (empty_changed)', async () => {
     const database1 = await mySqlClient.checkoutDatabase(tmpDatabase)
     const myPool = await mySqlClient.getConnectionPool(database1)
-    console.log(mySqlClient.getTimings())
+    // console.log(mySqlClient.getTimings())
     await mySqlClient.query(
       myPool,
       `
@@ -207,7 +207,7 @@ describe('MySQLClient', () => {
   it('should fixup the old checkout because we added a row (added)', async () => {
     const database1 = await mySqlClient.checkoutDatabase(tmpDatabase)
     const myPool = await mySqlClient.getConnectionPool(database1)
-    console.log(mySqlClient.getTimings())
+    // console.log(mySqlClient.getTimings())
     await mySqlClient.query(
       myPool,
       `
@@ -222,7 +222,7 @@ describe('MySQLClient', () => {
     await mySqlClient.cleanup()
     const database2 = await mySqlClient.checkoutDatabase(tmpDatabase)
     expect(database1).toEqual(database2)
-    console.log(mySqlClient.getTimings())
+    // console.log(mySqlClient.getTimings())
   })
 
   it('should only checkout a subset of tables and reuse that checkout', async () => {

@@ -13,7 +13,6 @@ async function time<T>(promise: Promise<T>): Promise<[T, number]> {
 describe('Migrate', () => {
   const mysqldPath = process.env['MYSQLD']
   const defaultTestMigrationPaths = ['src/mysql/resources/migrations']
-  const testBadMigrationPaths = ['src/mysql/resources/bad-migrations']
 
   let mySqlClient: MySQLClient
 
@@ -34,7 +33,7 @@ describe('Migrate', () => {
 
   beforeAll(async () => {
     const mySqlServer = new MySQLServer({ mysqlBaseDir: 'mysql-context', mysqldPath })
-    console.log(await mySqlServer.getTimings())
+    // console.log(await mySqlServer.getTimings())
     mySqlClient = new MySQLClient({ port: await mySqlServer.getListenPort() })
   }, 30000)
 
@@ -44,8 +43,9 @@ describe('Migrate', () => {
 
   it('should migrate schema over two migration runs', async () => {
     const initialMigrate = await doInitialMigrate()
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [migrationResultBefore, timingBefore] = await time(initialMigrate.migrate('2020-04-02T165700'))
-    console.log(timingBefore / 1000)
+    // console.log(timingBefore / 1000)
     const pool = await mySqlClient.getConnectionPool('my_test01')
     const columnsBefore = await mySqlClient.queryArray<string>(
       pool,
@@ -59,8 +59,9 @@ describe('Migrate', () => {
     expect(columnsBefore.sort()).toMatchSnapshot()
     expect(migrationResultBefore).toMatchSnapshot()
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [migrationResultAfter, timingAfter] = await time(initialMigrate.migrate('2020-04-02T165700'))
-    console.log(timingAfter / 1000)
+    // console.log(timingAfter / 1000)
     const columnsAfter = await mySqlClient.queryArray<string>(
       pool,
       `
@@ -92,7 +93,7 @@ describe('Migrate', () => {
 
   it('should migrate until bad sql and not redo the succeeded statements', async () => {
     const initialMigrate = await doInitialMigrate({
-      migrationsPaths: testBadMigrationPaths
+      migrationsPaths: ['src/mysql/resources/bad-migrations']
     })
 
     await expect(initialMigrate.migrate()).rejects.toThrow(/ER_PARSE_ERROR:.*BAD SQL/)
@@ -168,8 +169,9 @@ describe('Migrate', () => {
     const initialMigrate = await doInitialMigrate({
       dryRun: true
     })
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [, timingBefore] = await time(initialMigrate.migrate('2020-04-02T165700'))
-    console.log(timingBefore / 1000)
+    // console.log(timingBefore / 1000)
 
     const tables = await mySqlClient.queryArray<string>(
       pool,
@@ -181,6 +183,43 @@ describe('Migrate', () => {
       `
     )
     expect(tables).toEqual([])
+  })
+
+  const timestampTestCases = [
+    [
+      'timestamps on tables',
+      'timestamp-on-table',
+      'Migration uses disallowed TIMESTAMP type, use DATETIME type instead (test/2023-01-25T133454_DisallowedTimestampsOnTable.sql)'
+    ],
+    [
+      'timestamps in alter table statements',
+      'timestamp-alter-table',
+      'Migration uses disallowed TIMESTAMP type, use DATETIME type instead (test/2023-01-25T133454_DisallowedTimestampsInAlterTable.sql)'
+    ]
+  ]
+
+  it.each(timestampTestCases)('should throw an error for disallowed %s', async (_, migrationsPaths, errorMessage) => {
+    const initialMigrate = await doInitialMigrate({
+      migrationsPaths: [`src/mysql/resources/${migrationsPaths}`]
+    })
+
+    await expect(initialMigrate.migrate()).rejects.toThrow(errorMessage)
+  })
+
+  it('skips timestamp checks in rollback sections', async () => {
+    const initialMigrate = await doInitialMigrate({
+      migrationsPaths: ['src/mysql/resources/timestamp-rollback']
+    })
+
+    await expect(initialMigrate.migrate()).resolves.not.toThrow()
+  })
+
+  it('skips timestamp checks for some migrations', async () => {
+    const initialMigrate = await doInitialMigrate({
+      migrationsPaths: ['src/mysql/resources/skip-migration-timestamps-checks']
+    })
+
+    await expect(initialMigrate.migrate()).resolves.not.toThrow()
   })
 
   // eslint-disable-next-line jest/no-commented-out-tests
