@@ -52,6 +52,19 @@ const skipCharacterSetCollationChecks = new Set([
   'unit/2019-11-12T083046_positionOutdoorTemp.sql',
   'unit/2023-06-27T075045_UnitConfigStatusReason.sql'
 ])
+// Set of migrations where we skip TIMESTAMP checks. Most of these are old
+// tables that already have been or will be updated to use DATETIME instead of
+// TIMESTAMP.
+const skipTimestampChecks = new Set([
+  'car_info/2018-06-19T144354_addCarInsuranceTables.sql',
+  'car_info/2018-06-25T123605_addCarVinLicenseplate.sql',
+  'data_quality/2023-12-14T124252_addStauRecurringJobsChangeRequests.sql',
+  'data_quality/2024-04-22T122900_AddCarConfigServiceRules.sql',
+  'data_quality/2024-06-12T095700_addAppStoreReviewsGlobal.sql',
+  'feeder/2018-02-26T152801_Initial.sql',
+  'mailman/2018-09-13T100001_initial.sql',
+  'provisioning_api/2018-09-23T143308_Initial.sql'
+])
 
 export interface MigrationRow {
   timestamp: string
@@ -397,6 +410,14 @@ export class Migrate {
         /collate\s*=\s*(\w+)/gi,
         /collate\s+(\w+)/gi
       ])
+    }
+
+    if (!skipTimestampChecks.has(migration.path)) {
+      // Check singular statements that uses disallowed TIMESTAMP type
+      const match = migration.sql.match(/\s+timestamp(?:(?:\s+)|,|\n|\))/gi)
+      if (match) {
+        throw new Error(`Migration uses disallowed TIMESTAMP type, use DATETIME type instead (${migration.path})`)
+      }
     }
 
     return migration

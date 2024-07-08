@@ -33,7 +33,7 @@ describe('MySQLServer', () => {
     try {
       mySqlServer = new MySQLServer({ mysqlBaseDir: tmpDir, mysqldPath })
       const connectionUrl = await mySqlServer.getConnectionUrl('mysql')
-      console.log(await mySqlServer.getTimings())
+      // console.log(await mySqlServer.getTimings())
       connection = mysql.createConnection(connectionUrl)
       const result = await query<SimpleResult>(connection, 'SELECT 1 + 1 AS solution')
       expect(result).toMatchObject([{ solution: 2 }])
@@ -51,7 +51,7 @@ describe('MySQLServer', () => {
       mySqlServer = new MySQLServer({ mysqlBaseDir: tmpDir, mysqldPath })
       await mySqlServer.getListenPort()
       await expect(mySqlServer.getInitStatus()).resolves.toEqual('started')
-      console.log(await mySqlServer.getTimings())
+      // console.log(await mySqlServer.getTimings())
 
       // Start mysql again letting it pickup the pid
       mySqlServer = new MySQLServer({ mysqlBaseDir: tmpDir, mysqldPath })
@@ -94,10 +94,10 @@ describe('MySQLServer', () => {
           mySqlServer4.waitForStarted()
         ])
       ).resolves.not.toThrow()
-      console.log(await mySqlServer.getTimings())
-      console.log(await mySqlServer2.getTimings())
-      console.log(await mySqlServer3.getTimings())
-      console.log(await mySqlServer4.getTimings())
+      // console.log(await mySqlServer.getTimings())
+      // console.log(await mySqlServer2.getTimings())
+      // console.log(await mySqlServer3.getTimings())
+      // console.log(await mySqlServer4.getTimings())
     } finally {
       await mySqlServer?.kill()
       process.env.PATH = oldPath
