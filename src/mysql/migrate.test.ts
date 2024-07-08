@@ -136,7 +136,8 @@ describe('Migrate', () => {
 
   it('skips character set and collation checks for some migrations', async () => {
     const initialMigrate = await doInitialMigrate({
-      migrationsPaths: ['src/mysql/resources/skip-migration-charactersets-collation-checks']
+      migrationsPaths: ['src/mysql/resources/skip-migration-charactersets-collation-checks'],
+      skipCharacterSetCollationChecks: ['test/2018-05-07T133403_AddSomeTable.sql']
     })
 
     await expect(initialMigrate.migrate()).resolves.not.toThrow()
@@ -216,7 +217,8 @@ describe('Migrate', () => {
 
   it('skips timestamp checks in rollback sections', async () => {
     const initialMigrate = await doInitialMigrate({
-      migrationsPaths: ['src/mysql/resources/timestamp-rollback']
+      migrationsPaths: ['src/mysql/resources/timestamp-rollback'],
+      skipTimestampChecks: ['test/2018-06-25T123605_addSomeTable.sql']
     })
 
     await expect(initialMigrate.migrate()).resolves.not.toThrow()
@@ -224,7 +226,8 @@ describe('Migrate', () => {
 
   it('skips timestamp checks for some migrations', async () => {
     const initialMigrate = await doInitialMigrate({
-      migrationsPaths: ['src/mysql/resources/skip-migration-timestamps-checks']
+      migrationsPaths: ['src/mysql/resources/skip-migration-timestamps-checks'],
+      skipTimestampChecks: ['test/2024-06-12T095700_addSomeTable.sql']
     })
 
     await expect(initialMigrate.migrate()).resolves.not.toThrow()

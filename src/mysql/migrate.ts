@@ -12,60 +12,6 @@ const readFile = util.promisify(fs.readFile)
 const mkdirAsync = util.promisify(fs.mkdir)
 const existsAsync = util.promisify(fs.exists)
 
-// Set of migrations where we skip character set and collation checks. Most of these are
-// production tables where the migration would take too long and stall access to the
-// tables or old migrations without any character sets or collations.
-const skipCharacterSetCollationChecks = new Set([
-  'connectedcars/2018-05-07T133403_AddPushTokens.sql',
-  'connectedcars/2018-02-23T154315_WorkshopChanges.sql',
-  'connectedcars/2018-07-25T082200_AddCarProviderRequests.sql',
-  'connectedcars/2019-05-15T111450_AuditAccesslogReferrerLength.sql',
-  'connectedcars/2018-04-16T130923_3rd-party-services.sql',
-  'connectedcars/2018-02-26T112537_CarActivationChanges.sql',
-  'connectedcars/2018-12-18T151349_AuditChangelogReferrerLength.sql',
-  'connectedcars/2018-09-19T120740_CarOwnershipConfirmations.sql',
-  'connectedcars/2018-02-26T112628_UserTermsAccepts.sql',
-  'connectedcars/2023-01-18T091332_UserTermsRejectionsTable.sql',
-  'connectedcars/2018-03-05T121421_createPwResetTable.sql',
-  'connectedcars/2018-02-26T112514_CarInvites.sql',
-  'connectedcars/2019-02-05T102920_Files.sql',
-  'connectedcars/2018-03-23T124509_addAccessLog.sql',
-  'connectedcars/2018-02-26T112444_GroupInvites.sql',
-  'connectedcars/2018-02-28T130719_create-auth-devices.sql',
-  'connectedcars/2018-02-26T112436_AddAuditChangelog.sql',
-  'connectedcars/2018-03-02T150621_CarSnoozes.sql',
-  'provisioning_api/2018-10-11T143308_AddUnits.sql',
-  'notifications/2019-10-09T141059_ProcessIndexVal.sql',
-  'notifications/2018-02-26T154416_initial.sql',
-  'connectedcars/2018-02-23T153615_NewPermissionModel.sql',
-  'performance/2017-12-08T132502_addExaminations.sql',
-  'provisioning_api/2018-09-23T143308_Initial.sql',
-  'provisioning_api/2020-01-16T093152_AddLatestUnitState.sql',
-  'performance/2017-12-08T132503_addPotentialCars.sql',
-  'reverse-engineering-provider/2019-05-27T205520_initial.sql',
-  'car_info/2018-08-30T090800_addProcessIndex.sql',
-  'car_info/2019-01-08T083126_AddMappedEventDescriptions.sql',
-  'notifications/2018-02-28T133316_activationWarnings.sql',
-  'provisioning_api/2021-04-21T160859_AddMissingTablePartialTlRequests.sql',
-  'pubsub_feeder/2019-09-10T133031_AddBatches.sql',
-  'unit/2019-05-08T000000_AddTraffilogCanPartialReadings.sql',
-  'unit/2019-11-12T083046_positionOutdoorTemp.sql',
-  'unit/2023-06-27T075045_UnitConfigStatusReason.sql'
-])
-// Set of migrations where we skip TIMESTAMP checks. Most of these are old
-// tables that already have been or will be updated to use DATETIME instead of
-// TIMESTAMP.
-const skipTimestampChecks = new Set([
-  'car_info/2018-06-19T144354_addCarInsuranceTables.sql',
-  'car_info/2018-06-25T123605_addCarVinLicenseplate.sql',
-  'data_quality/2023-12-14T124252_addStauRecurringJobsChangeRequests.sql',
-  'data_quality/2024-04-22T122900_AddCarConfigServiceRules.sql',
-  'data_quality/2024-06-12T095700_addAppStoreReviewsGlobal.sql',
-  'feeder/2018-02-26T152801_Initial.sql',
-  'mailman/2018-09-13T100001_initial.sql',
-  'provisioning_api/2018-09-23T143308_Initial.sql'
-])
-
 export interface MigrationRow {
   timestamp: string
   name: string
@@ -94,6 +40,8 @@ export interface MigrateOptions {
   subdirectories?: string[]
   printStatements?: boolean
   dryRun?: boolean
+  skipCharacterSetCollationChecks?: string[]
+  skipTimestampChecks?: string[]
 }
 
 export class Migrate {
@@ -110,6 +58,8 @@ export class Migrate {
   private subdirectories?: string[]
   private printStatements: boolean
   private dryRun: boolean
+  private skipCharacterSetCollationChecks: Set<string>
+  private skipTimestampChecks: Set<string>
 
   private readonly CHARACTER_SET = 'utf8mb4'
   private readonly COLLATION = 'utf8mb4_general_ci'
@@ -127,6 +77,9 @@ export class Migrate {
 
     this.printStatements = options.printStatements ?? false
     this.dryRun = options.dryRun ?? false
+
+    this.skipCharacterSetCollationChecks = new Set(options.skipCharacterSetCollationChecks || [])
+    this.skipTimestampChecks = new Set(options.skipTimestampChecks || [])
   }
 
   public async init(): Promise<void> {
@@ -380,7 +333,7 @@ export class Migrate {
       sql
     }
 
-    if (!skipCharacterSetCollationChecks.has(migration.path)) {
+    if (!this.skipCharacterSetCollationChecks.has(migration.path)) {
       // Check create table statements that have missing character set or collation
       const [createTableStatementCount, hasCharacterSetCount, hasCollationCount] = parseCreateTableStatements(
         migration.sql
@@ -412,7 +365,7 @@ export class Migrate {
       ])
     }
 
-    if (!skipTimestampChecks.has(migration.path)) {
+    if (!this.skipTimestampChecks.has(migration.path)) {
       // Check singular statements that uses disallowed TIMESTAMP type
       const cleanSql = migration.sql.replace(/\scomment\s*=?\s*'.*?'\s*(?:;|after|\n|\)|,)/gim, ' ')
       const match = cleanSql.match(/\s+timestamp(?:(?:\s+)|,|\n|\))/gi)
