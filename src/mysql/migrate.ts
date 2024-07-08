@@ -367,7 +367,7 @@ export class Migrate {
 
     if (!this.skipTimestampChecks.has(migration.path)) {
       // Check singular statements that uses disallowed TIMESTAMP type
-      const cleanSql = migration.sql.replace(/\scomment\s*=?\s*'.*?'\s*(?:;|after|\n|\)|,)/gim, ' ')
+      const cleanSql = migration.sql.replace(/\n/g, ' ').replace(/\scomment\s*=?\s*'.*?'\s*(?:;|after|\n|\)|,)/gim, ' ')
       const match = cleanSql.match(/\s+timestamp(?:(?:\s+)|,|\n|\))/gi)
       if (match) {
         throw new Error(`Migration uses disallowed TIMESTAMP type, use DATETIME type instead (${migration.path})`)
