@@ -206,6 +206,14 @@ describe('Migrate', () => {
     await expect(initialMigrate.migrate()).rejects.toThrow(errorMessage)
   })
 
+  it('skips timestamp checks in comments', async () => {
+    const initialMigrate = await doInitialMigrate({
+      migrationsPaths: ['src/mysql/resources/ignore-timestamp-in-comment']
+    })
+
+    await expect(initialMigrate.migrate()).resolves.not.toThrow()
+  })
+
   it('skips timestamp checks in rollback sections', async () => {
     const initialMigrate = await doInitialMigrate({
       migrationsPaths: ['src/mysql/resources/timestamp-rollback']
