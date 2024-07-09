@@ -40,6 +40,7 @@ export interface MigrateOptions {
   subdirectories?: string[]
   printStatements?: boolean
   dryRun?: boolean
+  skipAllChecks?: boolean
   skipCharacterSetCollationChecks?: string[]
   skipTimestampChecks?: string[]
 }
@@ -58,6 +59,7 @@ export class Migrate {
   private subdirectories?: string[]
   private printStatements: boolean
   private dryRun: boolean
+  private skipAllChecks: boolean = false
   private skipCharacterSetCollationChecks: Set<string>
   private skipTimestampChecks: Set<string>
 
@@ -78,6 +80,7 @@ export class Migrate {
     this.printStatements = options.printStatements ?? false
     this.dryRun = options.dryRun ?? false
 
+    this.skipAllChecks = options.skipAllChecks || false
     this.skipCharacterSetCollationChecks = new Set(options.skipCharacterSetCollationChecks || [])
     this.skipTimestampChecks = new Set(options.skipTimestampChecks || [])
   }
@@ -333,44 +336,48 @@ export class Migrate {
       sql
     }
 
-    if (!this.skipCharacterSetCollationChecks.has(migration.path)) {
-      // Check create table statements that have missing character set or collation
-      const [createTableStatementCount, hasCharacterSetCount, hasCollationCount] = parseCreateTableStatements(
-        migration.sql
-      )
-
-      if (createTableStatementCount !== hasCharacterSetCount) {
-        throw new Error(
-          `Found ${createTableStatementCount - hasCharacterSetCount} create table statement(s) with missing character sets (${migration.path})`
+    if (!this.skipAllChecks) {
+      if (!this.skipCharacterSetCollationChecks.has(migration.path)) {
+        // Check create table statements that have missing character set or collation
+        const [createTableStatementCount, hasCharacterSetCount, hasCollationCount] = parseCreateTableStatements(
+          migration.sql
         )
+
+        if (createTableStatementCount !== hasCharacterSetCount) {
+          throw new Error(
+            `Found ${createTableStatementCount - hasCharacterSetCount} create table statement(s) with missing character sets (${migration.path})`
+          )
+        }
+
+        if (createTableStatementCount !== hasCollationCount) {
+          throw new Error(
+            `Found ${createTableStatementCount - hasCollationCount} create table statement(s) with missing collations (${migration.path})`
+          )
+        }
+
+        // Check singular statements that set a disallowed character set or collation
+        this.checkMigrationCharacterSetsOrCollations(migration, 'character set', [
+          /charset\s*=\s*(\w+)/gi,
+          /charset\s+(\w+)/gi,
+          /character\s+set\s+(\w+)/gi,
+          /character\s+set\s*=\s*(\w+)/gi
+        ])
+
+        this.checkMigrationCharacterSetsOrCollations(migration, 'collation', [
+          /collate\s*=\s*(\w+)/gi,
+          /collate\s+(\w+)/gi
+        ])
       }
 
-      if (createTableStatementCount !== hasCollationCount) {
-        throw new Error(
-          `Found ${createTableStatementCount - hasCollationCount} create table statement(s) with missing collations (${migration.path})`
-        )
-      }
-
-      // Check singular statements that set a disallowed character set or collation
-      this.checkMigrationCharacterSetsOrCollations(migration, 'character set', [
-        /charset\s*=\s*(\w+)/gi,
-        /charset\s+(\w+)/gi,
-        /character\s+set\s+(\w+)/gi,
-        /character\s+set\s*=\s*(\w+)/gi
-      ])
-
-      this.checkMigrationCharacterSetsOrCollations(migration, 'collation', [
-        /collate\s*=\s*(\w+)/gi,
-        /collate\s+(\w+)/gi
-      ])
-    }
-
-    if (!this.skipTimestampChecks.has(migration.path)) {
-      // Check singular statements that uses disallowed TIMESTAMP type
-      const cleanSql = migration.sql.replace(/\n/g, ' ').replace(/\scomment\s*=?\s*'.*?'\s*(?:;|after|\n|\)|,)/gim, ' ')
-      const match = cleanSql.match(/\s+timestamp(?:(?:\s+)|,|\n|\))/gi)
-      if (match) {
-        throw new Error(`Migration uses disallowed TIMESTAMP type, use DATETIME type instead (${migration.path})`)
+      if (!this.skipTimestampChecks.has(migration.path)) {
+        // Check singular statements that uses disallowed TIMESTAMP type
+        const cleanSql = migration.sql
+          .replace(/\n/g, ' ')
+          .replace(/\scomment\s*=?\s*'.*?'\s*(?:;|after|\n|\)|,)/gim, ' ')
+        const match = cleanSql.match(/\s+timestamp(?:(?:\s+)|,|\n|\))/gi)
+        if (match) {
+          throw new Error(`Migration uses disallowed TIMESTAMP type, use DATETIME type instead (${migration.path})`)
+        }
       }
     }
 

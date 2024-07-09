@@ -62,7 +62,8 @@ async function main(argv: string[]): Promise<number> {
     const mySqlClient = new MySQLClient({ port: await mySqlServer.getListenPort() })
     const initialMigrate = new Migrate({
       mysqlClient: mySqlClient,
-      migrationsPaths: [flags.migrationsDir]
+      migrationsPaths: [flags.migrationsDir],
+      skipAllChecks: true
     })
     console.log(`Running migrations`)
     const migrationResultBefore = await initialMigrate.migrate()
