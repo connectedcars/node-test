@@ -233,6 +233,15 @@ describe('Migrate', () => {
     await expect(initialMigrate.migrate()).resolves.not.toThrow()
   })
 
+  it('skips all checks for migrations', async () => {
+    const initialMigrate = await doInitialMigrate({
+      migrationsPaths: ['src/mysql/resources/skip-migration-timestamps-checks'],
+      skipAllChecks: true
+    })
+
+    await expect(initialMigrate.migrate()).resolves.not.toThrow()
+  })
+
   // eslint-disable-next-line jest/no-commented-out-tests
   /* it.skip('should migrate data repo to newest version', async () => {
     const migrate = new Migrate({
