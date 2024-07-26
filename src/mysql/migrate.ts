@@ -384,6 +384,10 @@ export class Migrate {
     return migration
   }
 
+  public getDatabaseMap(): { [key: string]: string[] } {
+    return this.databaseMap
+  }
+
   private checkMigrationCharacterSetsOrCollations(
     migration: Migration,
     what: 'collation' | 'character set',
