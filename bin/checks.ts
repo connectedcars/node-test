@@ -338,7 +338,7 @@ async function lookupConvertFunction(
         return null
       }
       return async () => {
-        const output = await runTsc()
+        const output = await runTsc(args)
         return [
           false,
           tscCheck({
