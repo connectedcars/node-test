@@ -31,7 +31,7 @@ export class HttpsServer extends HttpServerBase<https.Server> {
     const httpsServer = https.createServer(options, (req, res) => {
       this.handleRequest(req as HttpIncomingMessage, res, requestListener)
     })
-    super('https://localhost', httpsServer, options.listenPort, options.requests)
+    super('https://127.0.0.1', httpsServer, options.listenPort, options.requests)
     this.cert = options.cert
     this.key = options.key
   }
