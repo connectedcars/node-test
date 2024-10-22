@@ -103,11 +103,6 @@ export async function getMySQLServerBaseConfig(mysqldPath: string): Promise<MySQ
     myCnf.mysqld.table_open_cache = '250'
     myCnf.mysqld.open_files_limit = '800'
     myCnf.mysqld.max_connections = '500'
-
-    // Set limits higher for 8.x
-    myCnf['mysqld-8.0'].max_connections = '2000'
-    myCnf['mysqld-8.0'].open_files_limit = '5000'
-    myCnf['mysqld-8.0'].table_open_cache = '2000'
   }
 
   return myCnf
@@ -137,7 +132,12 @@ export function generateMySQLServerConfig(
       'collation-server': 'utf8mb4_general_ci'
     },
     'mysqld-8.0': {
-      mysqlx: '0'
+      mysqlx: '0',
+      open_files_limit: '5000',
+      // The maximum effective value is the lesser of the effective value of open_files_limit - 810, and the value actually set for max_connections.
+      // https://dev.mysql.com/doc/refman/8.4/en/server-system-variables.html#sysvar_max_connections
+      max_connections: String(5000 - 810),
+      table_open_cache: '2000'
     }
   }
 
