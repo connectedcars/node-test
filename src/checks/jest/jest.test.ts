@@ -132,4 +132,68 @@ describe('checks/jest', () => {
       }
     })
   })
+  it('handles truncated messages', () => {
+    const numberAssertions = 5
+    // Make sure each message * numberAssertions is less than MAX_OUTPUT_LENGTH
+    const largeFailureMessage = 'a'.repeat(MAX_OUTPUT_LENGTH / numberAssertions)
+    const data: FormattedTestResults = {
+      numFailedTests: 1,
+      numFailedTestSuites: 1,
+      numPassedTests: 0,
+      numPassedTestSuites: 0,
+      numPendingTests: 0,
+      numPendingTestSuites: 0,
+      numRuntimeErrorTestSuites: 0,
+      numTodoTests: 0,
+      numTotalTests: 1,
+      numTotalTestSuites: 1,
+      openHandles: [],
+      snapshot: {
+        added: 0,
+        didUpdate: false,
+        failure: false,
+        filesAdded: 0,
+        filesRemoved: 0,
+        filesRemovedList: [],
+        filesUnmatched: 0,
+        filesUpdated: 0,
+        matched: 0,
+        total: 0,
+        unchecked: 0,
+        uncheckedKeysByFile: [],
+        unmatched: 0,
+        updated: 0
+      },
+      startTime: Date.now(),
+      success: false,
+      testResults: [
+        {
+          message: 'test suite failed',
+          name: 'test',
+          summary: 'test',
+          status: 'failed',
+          startTime: Date.now(),
+          endTime: Date.now(),
+          assertionResults: Array.from({ length: 5 }, () => ({
+            ancestorTitles: [],
+            failureMessages: [largeFailureMessage],
+            fullName: 'test',
+            status: 'failed',
+            title: 'test'
+          }))
+        }
+      ],
+      wasInterrupted: false
+    }
+
+    const output = jestCheck({ data, sha: '1234567890' })
+    const outputString = JSON.stringify(output, null, 2)
+    expect(outputString.length).toBeLessThan(MAX_OUTPUT_LENGTH)
+    for (const line of outputString.split('\n')) {
+      expect(line.length).toBeLessThan(MAX_LINE_LENGTH)
+    }
+    expect(output.output?.annotations?.[0].raw_details).toContain('Output too large')
+    // We expect each message to be truncated to half the length
+    expect(output.output?.annotations?.[0].message).toHaveLength(MAX_OUTPUT_LENGTH / (numberAssertions * 2))
+  })
 })
