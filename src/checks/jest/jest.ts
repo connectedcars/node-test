@@ -210,8 +210,22 @@ export function jestCheck({ data, sha, name = 'jest' }: JestInput): CheckRunComp
         // Check whether the output is still too large
         len = JSON.stringify(result, null, 2).length
         if (len > MAX_OUTPUT_LENGTH) {
-          for (const annotation of result.output.annotations || []) {
-            // Remove the message as well
+          if (result.output.annotations.length > 0) {
+            // Distribute the truncation evenly by half
+            for (const annotation of result.output.annotations) {
+              const amountToTruncate = Math.floor(annotation.message.length / 2)
+              annotation.message = annotation.message.slice(0, amountToTruncate)
+              if (annotation.message.length === 0) {
+                annotation.message = 'Output too large (unable to truncate)'
+              }
+            }
+          }
+        }
+
+        // Check whether the output is still too large. Remove the message that was truncated
+        len = JSON.stringify(result, null, 2).length
+        if (len > MAX_OUTPUT_LENGTH) {
+          for (const annotation of result.output.annotations) {
             annotation.message = `Output too large (${len} B)`
           }
         }
