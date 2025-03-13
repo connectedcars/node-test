@@ -1,6 +1,5 @@
 import axios from 'axios'
 
-import { readHttpMessageBody } from './http-common'
 import { HttpServer, HttpServerOptions } from './http-server'
 
 type TestHttpServerOptions = HttpServerOptions
@@ -14,7 +13,7 @@ class TestHttpServer extends HttpServer {
           return res.end('Hello world')
         }
         case '/json': {
-          const body = await readHttpMessageBody(req)
+          const body = this.getLastRequest()?.body
           return res.end(body)
         }
         default: {
@@ -63,6 +62,12 @@ describe('HttpServer', () => {
         url: '/'
       }
     ])
+    expect(httpServer.getLastTextRequest()).toMatchObject({
+      body: 'Hello',
+      method: 'POST',
+      url: '/'
+    })
+
     // We have this to test that http requests are stable
     expect(httpServer.getTextRequests()).toMatchSnapshot([
       {
@@ -72,6 +77,12 @@ describe('HttpServer', () => {
         }
       }
     ])
+    expect(httpServer.getLastTextRequest()).toMatchSnapshot({
+      headers: {
+        'user-agent': expect.any(String),
+        connection: expect.any(String)
+      }
+    })
   })
 
   it('should GET /json and return json requests', async () => {
@@ -86,6 +97,12 @@ describe('HttpServer', () => {
         url: '/json'
       }
     ])
+    expect(httpServer.getLastJsonRequest()).toMatchObject({
+      body: { test: 'data' },
+      method: 'POST',
+      url: '/json'
+    })
+
     // We have this to test that http requests are stable
     expect(requests).toMatchSnapshot([
       {
@@ -95,6 +112,12 @@ describe('HttpServer', () => {
         }
       }
     ])
+    expect(httpServer.getLastJsonRequest()).toMatchSnapshot({
+      headers: {
+        'user-agent': expect.any(String),
+        connection: expect.any(String)
+      }
+    })
 
     // Validate types
     expect(httpServer.getJsonRequests()[0].body).toMatchObject({ test: 'data' })

@@ -19,6 +19,23 @@ Array [
 ]
 `;
 
+exports[`HttpServer Simple POST / 2`] = `
+Object {
+  "body": "Hello",
+  "headers": Object {
+    "accept": "application/json, text/plain, */*",
+    "accept-encoding": "gzip, compress, deflate, br",
+    "connection": Any<String>,
+    "content-length": "5",
+    "content-type": "application/x-www-form-urlencoded",
+    "host": "localhost",
+    "user-agent": Any<String>,
+  },
+  "method": "POST",
+  "url": "/",
+}
+`;
+
 exports[`HttpServer should GET /json and return json requests 1`] = `
 Array [
   Object {
@@ -38,4 +55,23 @@ Array [
     "url": "/json",
   },
 ]
+`;
+
+exports[`HttpServer should GET /json and return json requests 2`] = `
+Object {
+  "body": Object {
+    "test": "data",
+  },
+  "headers": Object {
+    "accept": "application/json, text/plain, */*",
+    "accept-encoding": "gzip, compress, deflate, br",
+    "connection": Any<String>,
+    "content-length": "15",
+    "content-type": "application/json",
+    "host": "localhost",
+    "user-agent": Any<String>,
+  },
+  "method": "POST",
+  "url": "/json",
+}
 `;
