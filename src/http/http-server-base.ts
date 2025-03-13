@@ -91,16 +91,36 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
     })
   }
 
+  public getLastRequest(): HttpRequest | null {
+    return this.requests.at(-1) ?? null
+  }
+
+  public getLastJsonRequest<T = JSON>(): HttpJsonRequest<T> | null {
+    const lastRequest = this.getLastRequest()
+
+    if (!lastRequest) {
+      return null
+    }
+
+    return this.createJsonRequest(lastRequest)
+  }
+
   public getJsonRequests<T = Json>(): HttpJsonRequest<T>[] {
-    return this.requests.map<HttpJsonRequest<T>>(req => {
-      return { ...req, body: req.body.length > 0 ? JSON.parse(req.body.toString('utf8')) : null }
-    })
+    return this.requests.map<HttpJsonRequest<T>>(req => this.createJsonRequest(req))
+  }
+
+  public getLastTextRequest(): HttpTextRequest | null {
+    const lastRequest = this.getLastRequest()
+
+    if (!lastRequest) {
+      return null
+    }
+
+    return this.createTextRequest(lastRequest)
   }
 
   public getTextRequests(): HttpTextRequest[] {
-    return this.requests.map(req => {
-      return { ...req, body: req.body.toString('utf8') }
-    })
+    return this.requests.map(req => this.createTextRequest(req))
   }
 
   public getRequests(): HttpRequest[] {
@@ -121,11 +141,15 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
     requestListener: HttpRequestListener
   ): void {
     try {
-      Promise.all([this.saveRequest(req), Promise.resolve(requestListener(req, res))]).catch(e => {
-        this.handleError(res, e)
-      })
-    } catch (e) {
-      this.handleError(res, e)
+      this.saveRequest(req)
+        .then(() => {
+          requestListener(req, res)
+        })
+        .catch(error => {
+          this.handleError(res, error)
+        })
+    } catch (error) {
+      this.handleError(res, error)
     }
   }
 
@@ -148,6 +172,20 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
       res.statusCode = 500
       res.end('Unknown error')
       this.httpServer.emit('error', e)
+    }
+  }
+
+  private createTextRequest(req: HttpRequest): HttpTextRequest {
+    return {
+      ...req,
+      body: req.body.toString('utf8')
+    }
+  }
+
+  private createJsonRequest<T = Json>(req: HttpRequest): HttpJsonRequest<T> {
+    return {
+      ...req,
+      body: req.body.length > 0 ? JSON.parse(req.body.toString('utf8')) : null
     }
   }
 }
