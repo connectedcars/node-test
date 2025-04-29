@@ -67,7 +67,7 @@
   },
   "dependencies": {
     "@types/mysql": "*",
-    "@types/node": "*",
+    "@types/node": "^22.15.3",
     "@types/sinon": "*",
     "deep-equal": "2.2.3",
     "mysql": "^2.18.1",
