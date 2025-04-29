@@ -1,5 +1,6 @@
 import axios from 'axios'
 
+import { readHttpMessageBody } from './http-common'
 import { HttpServer, HttpServerOptions } from './http-server'
 
 type TestHttpServerOptions = HttpServerOptions
@@ -10,6 +11,10 @@ class TestHttpServer extends HttpServer {
       // Map the responses
       switch (req.url) {
         case '/': {
+          if (req.method === 'POST') {
+            const body = await readHttpMessageBody(req)
+            return res.end(`Hello world: ${body.toString()}`)
+          }
           return res.end('Hello world')
         }
         case '/json': {
@@ -54,7 +59,7 @@ describe('HttpServer', () => {
 
   it('Simple POST /', async () => {
     const response = await axios.post<string>(`${httpServer.listenUrl}`, 'Hello')
-    expect(response.data).toEqual('Hello world')
+    expect(response.data).toEqual('Hello world: Hello')
     expect(httpServer.getTextRequests()).toMatchObject([
       {
         body: 'Hello',

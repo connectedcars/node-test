@@ -2,7 +2,8 @@ import http from 'http'
 
 import { Json } from '../common'
 
-export type HttpIncomingMessage = http.IncomingMessage & Required<Pick<http.IncomingMessage, 'method' | 'url'>>
+export type HttpIncomingMessage = http.IncomingMessage &
+  Required<Pick<http.IncomingMessage, 'method' | 'url'>> & { body?: Buffer }
 
 export type HttpRequestListener = (req: HttpIncomingMessage, res: http.ServerResponse) => void
 
@@ -26,13 +27,19 @@ export type HttpTextRequest = Omit<HttpRequest, 'body'> & {
 }
 
 export async function readHttpMessageBody(req: HttpIncomingMessage): Promise<Buffer> {
+  if (req.body) {
+    // If it's already been read, return it
+    return req.body
+  }
   return new Promise(resolve => {
     const body: Buffer[] = []
     req.on('data', chunk => {
       body.push(chunk)
     })
     req.on('end', () => {
-      resolve(Buffer.concat(body))
+      // Store the parsed body in the request as it can only be read once
+      req.body = Buffer.concat(body)
+      resolve(req.body)
     })
   })
 }
