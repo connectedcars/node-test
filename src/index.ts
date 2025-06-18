@@ -1,3 +1,4 @@
+export { type CheckAnnotation, type CheckRunCompleted, type CheckRunConclusion } from './checks/checks-common'
 export { Json, TypedSinonSpy, TypedSinonStub } from './common'
 export { EnvStub } from './env/env-stub'
 export {
