@@ -37,6 +37,11 @@ export interface FormattedTestResult {
   assertionResults: Array<FormattedAssertionResult>
 }
 
+interface Location {
+  column: number
+  line: number
+}
+
 export interface FormattedAssertionResult {
   ancestorTitles: Array<string>
   duration?: number
@@ -44,10 +49,7 @@ export interface FormattedAssertionResult {
   failureMessages: Array<string>
   fullName: string
   invocations?: number
-  location?: {
-    column: number
-    line: number
-  } | null
+  location?: Location | null
   numPassingAsserts?: number
   retryReasons?: unknown[]
   status: 'passed' | 'failed' | 'skipped' | 'pending' | 'todo' | 'disabled'
@@ -82,10 +84,93 @@ export interface JestInput {
   name?: string
 }
 
+interface CreateCheckAnnotationOptions {
+  file: string
+  message: string
+  title: string
+  status: string
+  rawDetails: string
+  location?: Location | null
+}
+
 function getRelativePath(path: string): string {
   const match = path.match(/^.*\/((?:src|bin)\/.+)$/)
   // Path needs to be set so default to a file we know exists
   return match && match.length === 2 ? match[1] : 'jest.config.js'
+}
+
+function getLocation(message: string, location?: Location | null): number {
+  if (location) {
+    return location.line
+  }
+
+  let start_line = 1
+  const lineColumnMatch = message.match(/sx?:(\d+):(\d+)\)/)
+
+  if (lineColumnMatch) {
+    start_line = parseInt(lineColumnMatch[1])
+  }
+
+  return start_line
+}
+
+function createCheckAnnotation({
+  file,
+  message,
+  title,
+  status,
+  rawDetails,
+  location
+}: CreateCheckAnnotationOptions): CheckAnnotation {
+  const relPath = getRelativePath(file)
+  const start_line = getLocation(message, location)
+  let annotation_level: CheckAnnotationLevel
+
+  switch (status) {
+    case 'disabled':
+      annotation_level = 'notice'
+      break
+    case 'failed':
+      annotation_level = 'failure'
+      break
+    case 'pending':
+      annotation_level = 'notice'
+      break
+    case 'skipped':
+      annotation_level = 'notice'
+      break
+    case 'todo':
+      annotation_level = 'notice'
+      break
+    default:
+      annotation_level = 'notice'
+  }
+
+  const annotation: CheckAnnotation = {
+    start_line,
+    end_line: start_line,
+    annotation_level,
+    title,
+    message: message || 'unknown issue',
+    path: relPath,
+    raw_details: rawDetails
+  }
+
+  // Try to keep the output small so we avoid truncation
+  let len = JSON.stringify(annotation, null, 2).length
+
+  if (len > MAX_LINE_LENGTH) {
+    // Try to only remove raw details
+    annotation.raw_details = `Line too large (${len} B)`
+    // Check whether the output is still too large
+    len = JSON.stringify(annotation, null, 2).length
+    if (len > MAX_LINE_LENGTH) {
+      // Remove the message as well
+      annotation.message = `Line too large (${len} B)`
+    }
+  }
+
+  return annotation
 }
 
 export function jestCheck({ data, sha, name = 'jest' }: JestInput): CheckRunCompleted {
@@ -110,73 +195,49 @@ export function jestCheck({ data, sha, name = 'jest' }: JestInput): CheckRunComp
     result.conclusion = data.success && !data.snapshot.failure ? 'success' : 'failure'
 
     if (result.output) {
+      // There are no assertion results when the error did not originate
+      // from a test assertion, for example from an import cycle
       result.output.annotations = data.testResults
-        .flatMap(results => {
-          return results.assertionResults.map(assertionResult => {
-            return {
-              ...assertionResult,
-              file: results.name
-            }
+        .filter(testResult => testResult.assertionResults.length === 0)
+        .map(testResult =>
+          createCheckAnnotation({
+            file: testResult.name,
+            title: getRelativePath(testResult.name),
+            message: testResult.message,
+            status: testResult.status,
+            rawDetails: JSON.stringify(testResult, null, 2)
           })
-        })
-        .filter(r => !['passed'].includes(r.status))
-        .map<CheckAnnotation>(result => {
-          const relPath = getRelativePath(result.file)
+        )
 
-          let annotation_level: CheckAnnotationLevel
-          switch (result.status) {
-            case 'disabled':
-              annotation_level = 'notice'
-              break
-            case 'failed':
-              annotation_level = 'failure'
-              break
-            case 'pending':
-              annotation_level = 'notice'
-              break
-            case 'skipped':
-              annotation_level = 'notice'
-              break
-            case 'todo':
-              annotation_level = 'notice'
-              break
-            default:
-              annotation_level = 'notice'
-          }
-          const failureMessage = result.failureMessages?.join('\n')
-          const message = result.status === 'pending' ? `skipped test '${result.title}'` : failureMessage
+      result.output.annotations.push(
+        ...data.testResults
+          .flatMap(results => {
+            return results.assertionResults.map(assertionResult => {
+              return {
+                ...assertionResult,
+                file: results.name
+              }
+            })
+          })
+          .filter(assertionResult => !['passed'].includes(assertionResult.status))
+          .map<CheckAnnotation>(assertionResult => {
+            const failureMessage = assertionResult.failureMessages?.join('\n')
+            const message =
+              assertionResult.status === 'pending' ? `skipped test '${assertionResult.title}'` : failureMessage
+            const title = [...assertionResult.ancestorTitles, assertionResult.title].join(' - ')
 
-          let start_line = 1
-          const lineColumnMatch = failureMessage.match(/sx?:(\d+):(\d+)\)/)
-          if (lineColumnMatch) {
-            start_line = parseInt(lineColumnMatch[1])
-          }
-
-          const annotation: CheckAnnotation = {
-            start_line,
-            end_line: start_line,
-            annotation_level,
-            title: [...result.ancestorTitles, result.title].join(' - '),
-            message: message || 'unknown issue',
-            path: relPath,
-            raw_details: JSON.stringify(result, null, 2)
-          }
-          // Try to keep the output small so we avoid truncation
-          let len = JSON.stringify(annotation, null, 2).length
-          if (len > MAX_LINE_LENGTH) {
-            // Try to only remove raw details
-            annotation.raw_details = `Line too large (${len} B)`
-            // Check whether the output is still too large
-            len = JSON.stringify(annotation, null, 2).length
-            if (len > MAX_LINE_LENGTH) {
-              // Remove the message as well
-              annotation.message = `Line too large (${len} B)`
-            }
-          }
-          return annotation
-        })
-        // Limit to 50 annotations as this is the max per post for github
-        .slice(0, 50)
+            return createCheckAnnotation({
+              file: assertionResult.file,
+              status: assertionResult.status,
+              title,
+              message,
+              rawDetails: JSON.stringify(assertionResult, null, 2),
+              location: assertionResult.location
+            })
+          })
+          // Limit to 50 annotations as this is the max per post for github
+          .slice(0, 50)
+      )
 
       result.output.summary = `${data.numPassedTests} of ${data.numTotalTests} tests passed`
       if (data.snapshot.failure) {
