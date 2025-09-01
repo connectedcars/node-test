@@ -108,6 +108,16 @@ describe('checks/jest', () => {
         summary: '178 of 180 tests passed',
         annotations: [
           {
+            start_line: 14,
+            end_line: 14,
+            annotation_level: 'failure',
+            title: 'src/data/db/vehicle-data-cleanup.it.test.ts',
+            message:
+              '  ● Test suite failed to run\n\n    expect(received).toEqual(expected) // deep equality\n\n    - Expected  - 0\n    + Received  + 1\n\n    @@ -1,10 +1,11 @@\n      Object {\n        "CalcFuelUsed": 60,\n        "CalcVehicleIdleStates": 60,\n        "CanAdblueLevelMm": 60,\n        "CanAdblueRemainingDistanceKm": 60,\n    +   "CanChargingStates": 60,\n        "CanExceededOilChangeDays": 60,\n        "CanExceededOilChangeKm": 60,\n        "CanFuelConsumptionLph": 60,\n        "CanHighVoltageBatteryHealthPercent": 60,\n        "CanHighVoltageBatteryTemperatures": 60,\n\n      90 |     test(\'gets first record time for charge levels percent\', async () => {\n      91 |       await db.query(\n    > 92 |         "insert into `CarChargeLevelsPercent` (`carId`, `percent`, `recordedAt`) values (1, 42, \'2019-08-06 13:37:00\'), (2, 85, CURRENT_TIMESTAMP)",\n         |                                                ^\n      93 |         \'connectedcars_Data01\'\n      94 |       )\n      95 |\n\n      at src/data/db/vehicle-data-cleanup.it.test.ts:92:48\n      at src/data/db/vehicle-data-cleanup.it.test.ts:31:3\n      at Object.<anonymous> (src/data/db/vehicle-data-cleanup.it.test.ts:14:1)\n',
+            path: 'src/data/db/vehicle-data-cleanup.it.test.ts',
+            raw_details: expect.stringContaining('CarChargeLevelsPercent')
+          },
+          {
             start_line: 58,
             end_line: 58,
             annotation_level: 'failure',
@@ -132,6 +142,7 @@ describe('checks/jest', () => {
       }
     })
   })
+
   it('handles truncated messages', () => {
     const numberAssertions = 5
     // Make sure each message * numberAssertions is less than MAX_OUTPUT_LENGTH

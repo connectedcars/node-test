@@ -862,7 +862,10 @@ export const jestFailedOutput: FormattedTestResults = {
           ],
           fullName: 'jobs/process-vag-can-dtcs does not processes TL codes',
           invocations: 1,
-          location: null,
+          location: {
+            line: 278,
+            column: 30
+          },
           numPassingAsserts: 1,
           retryReasons: [],
           status: 'failed',
