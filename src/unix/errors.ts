@@ -4,20 +4,23 @@ export interface SysCallError extends Error {
   syscall: string
 }
 
-export function isSysCallError(value: Error): value is SysCallError {
+export function isSysCallError(value: unknown): value is SysCallError {
   return (
     typeof value === 'object' &&
     value !== null &&
-    typeof (value as SysCallError).code === 'string' &&
-    (typeof (value as SysCallError).errno === 'number' || typeof (value as SysCallError).errno === 'string') &&
-    typeof (value as SysCallError).syscall === 'string'
+    'code' in value &&
+    typeof value.code === 'string' &&
+    'errno' in value &&
+    (typeof value.errno === 'number' || typeof value.errno === 'string') &&
+    'syscall' in value &&
+    typeof value.syscall === 'string'
   )
 }
 
-export function isFileNotFoundError(e: Error): boolean {
-  return isSysCallError(e) && !!e.syscall && e.code == 'ENOENT'
+export function isFileNotFoundError(error: unknown): boolean {
+  return isSysCallError(error) && !!error.syscall && error.code == 'ENOENT'
 }
 
-export function isNoProcessForPidError(e: Error): boolean {
-  return isSysCallError(e) && e.syscall === 'kill' && e.code == 'ESRCH'
+export function isNoProcessForPidError(error: Error): boolean {
+  return isSysCallError(error) && error.syscall === 'kill' && error.code == 'ESRCH'
 }
