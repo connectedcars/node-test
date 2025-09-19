@@ -4,9 +4,6 @@
   "description": "Test utilities for Node projects",
   "main": "build/dist/src/index.js",
   "bin": {
-    "run-wrapper": "build/dist/bin/run-wrapper.js",
-    "local-mysql": "build/dist/bin/local-mysql.js",
-    "cache-migrations": "build/dist/bin/cache-migrations.js",
     "checks": "build/dist/bin/checks.js"
   },
   "types": "build/dist/src/index.d.ts",
