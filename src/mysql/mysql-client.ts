@@ -184,7 +184,7 @@ export class MySQLClient {
     await this.query(
       pool,
       `
-        TRUNCATE TABLE \`${database}\`.\`${table}\`; 
+        TRUNCATE TABLE \`${database}\`.\`${table}\`;
         ${resetAutoIncrement ? `ALTER TABLE \`${database}\`.\`${table}\` AUTO_INCREMENT = ${resetAutoIncrement};` : ''}
       `
     )
@@ -550,7 +550,7 @@ export class MySQLClient {
 
     await this.query(
       pool,
-      ` 
+      `
         ALTER TABLE \`${destinationDatabase}\`.\`${destinationTable}\` DISABLE KEYS;
         INSERT INTO \`${destinationDatabase}\`.\`${destinationTable}\` ${insertColumns} SELECT ${selectColumns} FROM \`${sourceTable}\`;
         ALTER TABLE \`${destinationDatabase}\`.\`${destinationTable}\` ENABLE KEYS;
