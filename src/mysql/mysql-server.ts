@@ -215,7 +215,7 @@ export class MySQLServer {
         initialized = true
       } else if (await isDockerOverlay2()) {
         // Working around issue with docker overlay2
-        await touchFiles(this.mysqlBaseDir as string)
+        await touchFiles(this.mysqlBaseDir)
       }
 
       // Find free port and start mysqld

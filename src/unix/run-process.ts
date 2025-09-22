@@ -210,7 +210,7 @@ export class RunProcess {
     return this
   }
 
-  public removeAllListeners(event?: string | symbol | undefined): this {
+  public removeAllListeners(event?: string | symbol): this {
     switch (event) {
       case 'exit': {
         this.exitListeners = []
@@ -228,7 +228,7 @@ export class RunProcess {
     return this
   }
 
-  // eslint-disable-next-line @typescript-eslint/ban-types
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   public listeners(event: string | symbol): Function[] {
     return this.cmd.listeners(event)
   }

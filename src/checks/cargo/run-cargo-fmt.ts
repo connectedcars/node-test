@@ -4,7 +4,7 @@ import { runCargo } from './run-cargo'
 
 export async function runCargoFmt(args: string[] = [], ci = true): Promise<CargoFmtFile[]> {
   // While cargo and clippy emits individual json objects, rustfmt does not
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   return runCargo<CargoFmtFile>(
     ['+nightly', 'fmt', '--', '--emit=json', '--color', 'never', ...args],
     ci,

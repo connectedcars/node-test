@@ -4,8 +4,8 @@ import { exec, ExecOptions } from 'child_process'
 import { CommandEmulation } from './command-emulation'
 
 interface CommandResult {
-  stdout: string
-  stderr: string
+  stdout: string | Buffer
+  stderr: string | Buffer
   code: number
   signal?: NodeJS.Signals
 }
@@ -56,7 +56,7 @@ describe('ChildProcess', () => {
 
   it('should run faked node command', async () => {
     await commandEmulation.registerCommand('fake-node-command', () => {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const os = require('os')
       console.log(`Hello  ${os.arch()}`)
     })
@@ -71,10 +71,9 @@ describe('ChildProcess', () => {
 
   it('should run faked node command with inject data', async () => {
     const outsideData = 'stuff'
-    await commandEmulation.registerCommand(
+    await commandEmulation.registerCommand<string>(
       'fake-node-command',
       data => {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
         console.log(`Hello ${data}`)
       },
       null,

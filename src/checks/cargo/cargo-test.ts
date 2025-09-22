@@ -20,7 +20,7 @@ export function cargoTestCheck({ data, sha }: CargoTestInput): CheckRunCompleted
     return cargoUnexpectedOutput('cargo-test', sha)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, prefer-const
+  // eslint-disable-next-line prefer-const
   let [annotations, stats] = collectAnnotations(data, (item, annotations, stats) => {
     collectCargoManifestParseErrors(item, annotations, stats)
     collectCargoTestIssues(item, annotations, stats)

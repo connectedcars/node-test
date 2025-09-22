@@ -27,7 +27,7 @@ async function main(argv: string[]): Promise<number> {
     const [mysqlServerTiming] = await time(mySqlServer.waitForStarted())
     console.log(`mysqld no cache start: ${mysqlServerTiming / 1000}ms`)
 
-    const testResumeMySqlServer = new MySQLServer({ mysqlBaseDir: tmpDir, ignoreCache: true, mysqldPath: mysqldPath })
+    const testResumeMySqlServer = new MySQLServer({ mysqlBaseDir: tmpDir, ignoreCache: true, mysqldPath })
     const [testResumeMysqlServerTiming] = await time(testResumeMySqlServer.waitForStarted())
     console.log(`mysqld resume start: ${testResumeMysqlServerTiming / 1000}ms`)
 

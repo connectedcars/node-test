@@ -295,6 +295,6 @@ export function jestCheck({ data, sha, name = 'jest' }: JestInput): CheckRunComp
 
     return result
   } catch (e) {
-    throw new CheckConversionError('jest', { data, sha }, e)
+    throw new CheckConversionError('jest', { data, sha }, e as Error)
   }
 }

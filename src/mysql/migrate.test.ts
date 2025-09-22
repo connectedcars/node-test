@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { Migrate, MigrateOptions } from './migrate'
 import { MySQLClient } from './mysql-client'
 import { MySQLServer } from './mysql-server'
@@ -56,7 +55,7 @@ describe('Migrate', () => {
         ORDER BY 'column';
       `
     )
-    expect(columnsBefore.sort()).toMatchSnapshot()
+    expect(columnsBefore.toSorted()).toMatchSnapshot()
     expect(migrationResultBefore).toMatchSnapshot()
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -71,7 +70,7 @@ describe('Migrate', () => {
         ORDER BY 'column';
       `
     )
-    expect(columnsAfter.sort()).toMatchSnapshot()
+    expect(columnsAfter.toSorted()).toMatchSnapshot()
     expect(migrationResultAfter).toMatchSnapshot()
   })
 
@@ -96,8 +95,12 @@ describe('Migrate', () => {
       migrationsPaths: ['src/mysql/resources/bad-migrations']
     })
 
-    await expect(initialMigrate.migrate()).rejects.toThrow(/ER_PARSE_ERROR:.*BAD SQL/)
-    await expect(initialMigrate.migrate()).rejects.toThrow(/ER_PARSE_ERROR:.*BAD SQL/)
+    await expect(initialMigrate.migrate()).rejects.toThrow(
+      /Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'BAD SQL' at line/
+    )
+    await expect(initialMigrate.migrate()).rejects.toThrow(
+      /Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'BAD SQL' at line/
+    )
   })
 
   const characterSetsCollationTestCases = [

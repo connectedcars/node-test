@@ -7,7 +7,6 @@ export async function runCargoCheck(
   ci = true,
   releaseBuild = false
 ): Promise<CargoMessage[]> {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return runCargo(
     [
       'check',

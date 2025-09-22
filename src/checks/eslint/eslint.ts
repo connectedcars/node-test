@@ -95,6 +95,6 @@ export function eslintCheck({ data, sha }: EslintInput): CheckRunCompleted {
 
     return result
   } catch (e) {
-    throw new CheckConversionError('eslint', { data, sha }, e)
+    throw new CheckConversionError('eslint', { data, sha }, e as Error)
   }
 }

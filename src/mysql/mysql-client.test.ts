@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { MySQLClient } from './mysql-client'
 import { MySQLServer } from './mysql-server'
 
@@ -20,6 +19,8 @@ describe('MySQLClient', () => {
           make VARCHAR(255) NOT NULL, -- Audi
           name VARCHAR(255) NOT NULL, -- Audi Q2 Sport
           year YEAR(4) NOT NULL, -- 2018
+          engineSize DECIMAL(3,1) NULL, -- 1.4
+          context JSON NULL, -- {"trim":"sport","color":"blue"}
           createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
           updatedAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
           vinHashValue1 varchar(255) GENERATED ALWAYS AS (md5(concat(vin))) STORED,
@@ -32,7 +33,7 @@ describe('MySQLClient', () => {
         ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4
         COMMENT 'Basic vehicle information';
 
-        INSERT INTO VehicleInfo (vin, vendor, make, name, year) VALUES ('ABCDEFGHIJ1234567', 'VAG', 'Audi', 'Audi Q2 Sport', 2018);
+        INSERT INTO VehicleInfo (vin, vendor, make, name, year, engineSize, context) VALUES ('ABCDEFGHIJ1234567', 'VAG', 'Audi', 'Audi Q2 Sport', 2018, 1.4, '{"trim":"sport","color":"blue"}');
 
         CREATE TABLE VehicleInfo2 (
           id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -80,6 +81,16 @@ describe('MySQLClient', () => {
     const pool = await mySqlClient.getConnectionPool(database)
     const vehicle = await mySqlClient.query<{ user: string }>(pool, `SELECT * from VehicleInfo;`)
     expect(vehicle.length).toBeGreaterThan(0)
+    // Also validate that DECIMAL and JSON are parsed correctly
+    expect(vehicle[0]).toMatchObject({
+      vin: 'ABCDEFGHIJ1234567',
+      vendor: 'VAG',
+      make: 'Audi',
+      name: 'Audi Q2 Sport',
+      year: 2018,
+      engineSize: 1.4,
+      context: '{"trim": "sport", "color": "blue"}'
+    })
   })
 
   it('should list all tables and columns in tmp database', async () => {

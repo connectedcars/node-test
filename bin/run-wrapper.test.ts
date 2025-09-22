@@ -28,6 +28,7 @@ describe('run-wrapper', () => {
     for (const pid of pidCleanup) {
       try {
         process.kill(pid, 'SIGKILL')
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
         // Ignore
       }
@@ -155,10 +156,10 @@ describe('run-wrapper', () => {
 
   it(`should detach and log to file`, async () => {
     const tmpdir = await createTempDirectory()
-    await commandEmulation.registerCommand(
+    await commandEmulation.registerCommand<string>(
       'my-hello',
       data => {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         const fs = require('fs')
         setTimeout(() => {
           // Make sure the process keeps running

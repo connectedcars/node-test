@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import fs from 'fs'
-import mysql from 'mysql'
+import mysql from 'mysql2'
 import util from 'util'
 
 import { MySQLClient } from './mysql-client'
@@ -101,7 +101,7 @@ export class Migrate {
         readFile(`${this.migrationsDir}/databases.json`, 'utf8'),
         readdir(this.migrationsDir)
       ])
-      this.databaseMap = JSON.parse(databasesJSON)
+      this.databaseMap = JSON.parse(databasesJSON) as { [key: string]: string[] }
       this.schemaFolders = schemaFolders.filter(s => s in this.databaseMap)
 
       // If subdirectories was specified, only run migrations in those subdirectories
@@ -135,7 +135,7 @@ export class Migrate {
       await dumpDatabase(
         this.mysqlClient.options.port || 0, // TODO: Make this a lot prettier
         this.databaseMap[schemaFolder],
-        `${this.cachePaths}/${schemaFolder}.sql`
+        `${this.cachePaths[0]}/${schemaFolder}.sql`
       )
     }
   }
@@ -311,7 +311,7 @@ export class Migrate {
   }
 
   public async readMigrations(schemaPath: string): Promise<Migration[]> {
-    const migrationsFiles = (await readdir(`${this.migrationsDir}/${schemaPath}`)).sort()
+    const migrationsFiles = (await readdir(`${this.migrationsDir}/${schemaPath}`)).toSorted()
     const promises: Promise<Migration>[] = []
     for (const migrationFile of migrationsFiles) {
       promises.push(this.readMigration(`${schemaPath}/${migrationFile}`))

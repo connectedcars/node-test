@@ -1,5 +1,4 @@
 import http from 'http'
-import https from 'http'
 import net from 'net'
 
 import { Json } from '../common'
@@ -13,7 +12,7 @@ import {
   readHttpMessageBody
 } from './http-common'
 
-export abstract class HttpServerBase<T extends http.Server | https.Server> {
+export abstract class HttpServerBase<T extends http.Server> {
   public listenPort: number
   public listenUrl = ''
   protected httpServer: T
@@ -75,8 +74,7 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
     return new Promise(resolve => {
       // TODO: Error handling and send connection close if using keep-alive
       if (this.hasCloseAllConnections) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, prettier/prettier
-        (this.httpServer as any).closeAllConnections()
+        this.httpServer.closeAllConnections()
       } else {
         for (const socketId in this.sockets) {
           this.sockets[socketId].destroy()
@@ -146,10 +144,10 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
           requestListener(req, res)
         })
         .catch(error => {
-          this.handleError(res, error)
+          this.handleError(res, error as Error)
         })
     } catch (error) {
-      this.handleError(res, error)
+      this.handleError(res, error as Error)
     }
   }
 
@@ -159,7 +157,7 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
     this.requests.push({
       method: req.method,
       url: req.url,
-      headers: headers,
+      headers,
       body: await readHttpMessageBody(req)
     })
   }
@@ -185,7 +183,7 @@ export abstract class HttpServerBase<T extends http.Server | https.Server> {
   private createJsonRequest<T = Json>(req: HttpRequest): HttpJsonRequest<T> {
     return {
       ...req,
-      body: req.body.length > 0 ? JSON.parse(req.body.toString('utf8')) : null
+      body: req.body.length > 0 ? (JSON.parse(req.body.toString('utf8')) as T) : null
     }
   }
 }

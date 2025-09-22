@@ -32,4 +32,7 @@ ENV MYSQLD_57=/app/mysql-5.7/usr/sbin/mysqld
 ENV MYSQLD_80=/app/mysql-8.0/usr/sbin/mysqld
 
 # Run ci checks
-RUN npm run ci-auto
+RUN npm run ci-tsc
+RUN npm run ci-jest
+RUN npm run ci-audit
+RUN npm run ci-eslint
