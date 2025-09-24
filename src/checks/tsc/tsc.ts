@@ -35,12 +35,12 @@ export function tscCheck({ data, sha }: TscInput): CheckRunCompleted {
     return {
       name: 'tsc',
       head_sha: sha,
-      conclusion: conclusion,
+      conclusion,
       status: 'completed',
       completed_at: new Date().toISOString(),
       output
     }
   } catch (e) {
-    throw new CheckConversionError('tsc', { data }, e)
+    throw new CheckConversionError('tsc', { data }, e as Error)
   }
 }

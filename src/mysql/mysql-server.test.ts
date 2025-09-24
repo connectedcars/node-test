@@ -1,5 +1,4 @@
-/* eslint-disable no-console */
-import mysql from 'mysql'
+import mysql from 'mysql2'
 
 import { createTempDirectory } from '../unix'
 import { MySQLServer } from './mysql-server'
@@ -14,6 +13,8 @@ async function query<T>(connection: mysql.Connection, sql: string): Promise<T[]>
       if (error) {
         return reject(error)
       }
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-expect-error
       resolve(results)
     })
   })

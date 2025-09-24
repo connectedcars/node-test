@@ -37,7 +37,7 @@ export async function runCargoSort(args: string[] = []): Promise<CargoSortMessag
     output.push({
       error: err.error,
       crate: err.crate,
-      manifest: err.crate ? crates[err.crate] ?? null : null
+      manifest: err.crate ? (crates[err.crate] ?? null) : null
     })
   }
 

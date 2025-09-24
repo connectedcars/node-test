@@ -2,7 +2,6 @@
 
 import { CheckAnnotation, CheckRunCompleted } from '../checks-common'
 import {
-  CargoBuildFinishedMessage,
   CargoCompilerMessage,
   CargoFmtMessage,
   CargoManifestParseError,
@@ -11,9 +10,7 @@ import {
 } from './cargo-types'
 
 export function isCargoBuildSuccessful(output: CargoMessage[]): boolean {
-  const manifestParseFailed = output.find(msg => msg.reason === 'manifest-parse-error') as
-    | CargoManifestParseError
-    | undefined
+  const manifestParseFailed = output.find(msg => msg.reason === 'manifest-parse-error')
   if (manifestParseFailed !== undefined) {
     return false
   }
@@ -22,7 +19,7 @@ export function isCargoBuildSuccessful(output: CargoMessage[]): boolean {
   // there is syntax errors in the code. In that case running clippy,
   // tests, rustfmt is needless, as they'll fail with the same syntax
   // errors.
-  const buildFinished = output.find(msg => msg.reason === 'build-finished') as CargoBuildFinishedMessage | undefined
+  const buildFinished = output.find(msg => msg.reason === 'build-finished')
 
   // If the `build-finished` message is not found in `output`, then
   // assume it passed, and run the other checks regardless. Worst case

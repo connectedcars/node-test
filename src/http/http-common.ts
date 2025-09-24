@@ -33,7 +33,7 @@ export async function readHttpMessageBody(req: HttpIncomingMessage): Promise<Buf
   }
   return new Promise(resolve => {
     const body: Buffer[] = []
-    req.on('data', chunk => {
+    req.on('data', (chunk: Buffer) => {
       body.push(chunk)
     })
     req.on('end', () => {

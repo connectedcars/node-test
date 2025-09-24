@@ -86,6 +86,6 @@ export function tflintCheck({ data, sha, name = 'tflint' }: TflintInput): CheckR
 
     return result
   } catch (e) {
-    throw new CheckConversionError('tflint', { data, sha }, e)
+    throw new CheckConversionError('tflint', { data, sha }, e as Error)
   }
 }

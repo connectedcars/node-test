@@ -1,7 +1,7 @@
 import crypto from 'crypto'
-import mysql from 'mysql'
+import mysql from 'mysql2'
 
-export type MySQLClientOptions = mysql.PoolConfig
+export type MySQLClientOptions = mysql.PoolOptions
 
 export enum TableCompare {
   CountChanged = 'count_changed',
@@ -41,6 +41,9 @@ export class MySQLClient {
       insecureAuth: true,
       multipleStatements: true,
       charset: 'utf8mb4',
+      // Handle incompatibilities between mysql2 and the old mysql driver: https://sidorares.github.io/node-mysql2/docs/documentation#known-incompatibilities-with-node-mysql
+      decimalNumbers: true, // Force DECIMAL and NEWDECIMAL to be always returned as numbers
+      jsonStrings: true, // Force JSON to be always returned as strings
       ...options
     }
   }
@@ -53,7 +56,7 @@ export class MySQLClient {
     return mysql.createConnection({
       ...this.options,
       ...options,
-      database: database
+      database
     })
   }
 
@@ -67,7 +70,7 @@ export class MySQLClient {
       pool = mysql.createPool({
         ...this.options,
         ...options,
-        database: database
+        database
       })
       if (cache) {
         this.databasePools[database] = pool
@@ -190,7 +193,6 @@ export class MySQLClient {
     )
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async checkoutDatabase(database: string, tables: string[] = []): Promise<string> {
     // TODO: Look into reusing the copied database with "SELECT TABLE_NAME, UPDATE_TIME FROM information_schema.tables; as this could be quicker"
     // TODO: Look into using innodb-table for copying the tables: https://dev.mysql.com/doc/refman/8.0/en/innodb-table-import.html
@@ -222,26 +224,26 @@ export class MySQLClient {
       for (const checkout of checkouts) {
         if (await this.takeLock(lockConnection, checkout)) {
           const diff = await this.compareDatabasesDiff(pool, database, checkout, tables)
-          if (diff.every(t => t.type === 'same')) {
+          if (diff.every(t => t.type === TableCompare.Same)) {
             return checkout
           } else {
             this.startTiming(`checkoutDatabase:${checkout}:fixup`)
             // TODO: Maybe use dropTable + cloneTable or event dropDatabase and create new checkout if the diff is very large might be quicker
             for (const change of diff) {
-              if (change.type === 'removed') {
+              if (change.type === TableCompare.Removed) {
                 await this.cloneTable(pool, change.table, checkout, change.table)
-              } else if (change.type === 'added') {
+              } else if (change.type === TableCompare.Added) {
                 await this.dropTable(checkout, change.table)
-              } else if (change.type === 'ddl_changed') {
+              } else if (change.type === TableCompare.DdlChanged) {
                 await this.dropTable(checkout, change.table)
                 await this.cloneTable(pool, change.table, checkout, change.table)
-              } else if (change.type === 'auto_increment_changed') {
+              } else if (change.type === TableCompare.AutoIncrementChanged) {
                 const autoIncrement = await this.getTableAutoIncrement(pool, database, change.table)
                 await this.truncateTable(checkout, change.table, autoIncrement)
                 await this.copyTableData(pool, change.table, checkout, change.table)
-              } else if (change.type === 'empty_changed') {
+              } else if (change.type === TableCompare.EmptyChanged) {
                 await this.truncateTable(checkout, change.table)
-              } else if (change.type === 'data_changed') {
+              } else if (change.type === TableCompare.DataChanged) {
                 await this.truncateTable(checkout, change.table)
                 await this.copyTableData(pool, change.table, checkout, change.table)
               }
@@ -295,7 +297,7 @@ export class MySQLClient {
     tables: string[] = []
   ): Promise<boolean> {
     const result = await this.compareDatabasesDiff(pool, database1, database2, tables)
-    return result.every(r => r.type === 'same')
+    return result.every(r => r.type === TableCompare.Same)
   }
 
   public async compareDatabasesDiff(
@@ -451,7 +453,7 @@ export class MySQLClient {
     database2: string,
     table2: string
   ): Promise<boolean> {
-    return (await this.compareTableDiff(pool, database1, table1, database2, table2)) === 'same'
+    return (await this.compareTableDiff(pool, database1, table1, database2, table2)) === TableCompare.Same
   }
 
   public async getTableRowCount(pool: mysql.Pool, database1: string, table1: string): Promise<number> {
@@ -604,7 +606,7 @@ export class MySQLClient {
       this.timings.push({ name, start, diff })
       return result
     }
-    for (const timing of this.timings.reverse()) {
+    for (const timing of this.timings.toReversed()) {
       if (timing.name === name) {
         timing.diff = process.hrtime(timing.start)
         return

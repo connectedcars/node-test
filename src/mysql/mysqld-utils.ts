@@ -19,10 +19,10 @@ export interface MySQLServerConfig {
 export async function getMySQLVersionString(mysqltool: string): Promise<string> {
   const cmd = new RunProcess(mysqltool, ['--version'])
   const outputData: Buffer[] = []
-  cmd.stdout?.on('data', chunk => {
+  cmd.stdout?.on('data', (chunk: Buffer) => {
     outputData.push(chunk)
   })
-  cmd.stderr?.on('data', chunk => {
+  cmd.stderr?.on('data', (chunk: Buffer) => {
     outputData.push(chunk)
   })
   const { code } = await cmd.waitForExit()
@@ -40,10 +40,10 @@ export async function getMySQLServerDefaults(mysqldPath: string, mysqlBaseDir?: 
     '--verbose'
   ])
   const outputData: Buffer[] = []
-  cmd.stdout?.on('data', chunk => {
+  cmd.stdout?.on('data', (chunk: Buffer) => {
     outputData.push(chunk)
   })
-  cmd.stderr?.on('data', chunk => {
+  cmd.stderr?.on('data', (chunk: Buffer) => {
     outputData.push(chunk)
   })
   const { code } = await cmd.waitForExit()
@@ -174,10 +174,10 @@ export async function initializeMySQLData(mysqldPath: string, mysqlBaseDir: stri
       EVENT_NOKQUEUE: '1'
     }
   })
-  cmd.stdout?.on('data', chunk => {
+  cmd.stdout?.on('data', (chunk: Buffer) => {
     initializeLog += chunk.toString('utf8')
   })
-  cmd.stderr?.on('data', chunk => {
+  cmd.stderr?.on('data', (chunk: Buffer) => {
     initializeLog += chunk.toString('utf8')
   })
   const { code } = await cmd.waitForExit()
@@ -192,8 +192,8 @@ export async function extractMySQLDataCache(mysqlBaseDir: string, initializeData
   })
   cmd.stdin?.end()
   const data: Buffer[] = []
-  cmd.stdout?.on('data', chunk => data.push(chunk))
-  cmd.stderr?.on('data', chunk => data.push(chunk))
+  cmd.stdout?.on('data', (chunk: Buffer) => data.push(chunk))
+  cmd.stderr?.on('data', (chunk: Buffer) => data.push(chunk))
   await cmd.waitForStarted()
   const exitInfo = await cmd.waitForExit()
   if (exitInfo.code !== 0) {
@@ -210,8 +210,8 @@ export async function createMySQLDataCache(mysqlBaseDir: string, initializeDataT
   })
   cmd.stdin?.end()
   const data: Buffer[] = []
-  cmd.stdout?.on('data', chunk => data.push(chunk))
-  cmd.stderr?.on('data', chunk => data.push(chunk))
+  cmd.stdout?.on('data', (chunk: Buffer) => data.push(chunk))
+  cmd.stderr?.on('data', (chunk: Buffer) => data.push(chunk))
   await cmd.waitForStarted()
   const { code } = await cmd.waitForExit()
   if (code !== 0) {
@@ -237,7 +237,7 @@ export async function dumpDatabase(port: number, databases: string[], dumpFile: 
   ])
   cmd.stdin?.end()
   const data: Buffer[] = []
-  cmd.stderr?.on('data', chunk => data.push(chunk))
+  cmd.stderr?.on('data', (chunk: Buffer) => data.push(chunk))
   const dumpFileStream = fs.createWriteStream(dumpFileTmp)
   cmd.stdout?.pipe(dumpFileStream)
   await cmd.waitForStarted()

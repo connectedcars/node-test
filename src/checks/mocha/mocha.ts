@@ -82,6 +82,6 @@ export function mochaCheck({ data, sha }: MochaInput): CheckRunCompleted {
       }
     }
   } catch (e) {
-    throw new CheckConversionError('mocha', { data, sha }, e)
+    throw new CheckConversionError('mocha', { data, sha }, e as Error)
   }
 }
