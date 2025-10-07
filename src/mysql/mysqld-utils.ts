@@ -78,7 +78,6 @@ export async function getMySQLServerBaseConfig(mysqldPath: string): Promise<MySQ
     `${mysqlInstallPath}/share/mysql/charsets`,
     mysqdDefaultConfig['mysqld']['character-sets-dir']
   )
-  const languageDir = await pathExists(`${mysqlInstallPath}/share/mysql`, mysqdDefaultConfig['mysqld']['language'])
   const lcMessagesDir = await pathExists(
     `${mysqlInstallPath}/share/mysql`,
     mysqdDefaultConfig['mysqld']['lc-messages-dir']
@@ -151,10 +150,7 @@ export function generateMySQLServerConfig(
 
 export async function initializeMySQLData(mysqldPath: string, mysqlBaseDir: string): Promise<void> {
   // Initialize mysql data
-  const mysqlInitArgs = [
-    `--defaults-file=${mysqlBaseDir}/my.cnf`,
-    '--initialize-insecure'
-  ]
+  const mysqlInitArgs = [`--defaults-file=${mysqlBaseDir}/my.cnf`, '--initialize-insecure']
   let initializeLog = `${mysqldPath} ${mysqlInitArgs.join(' ')}\n`
   const cmd = new RunProcess(mysqldPath, mysqlInitArgs, {
     env: {
