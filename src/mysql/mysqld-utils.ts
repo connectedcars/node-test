@@ -78,7 +78,6 @@ export async function getMySQLServerBaseConfig(mysqldPath: string): Promise<MySQ
     `${mysqlInstallPath}/share/mysql/charsets`,
     mysqdDefaultConfig['mysqld']['character-sets-dir']
   )
-  const languageDir = await pathExists(`${mysqlInstallPath}/share/mysql`, mysqdDefaultConfig['mysqld']['language'])
   const lcMessagesDir = await pathExists(
     `${mysqlInstallPath}/share/mysql`,
     mysqdDefaultConfig['mysqld']['lc-messages-dir']
@@ -87,9 +86,6 @@ export async function getMySQLServerBaseConfig(mysqldPath: string): Promise<MySQ
   if (characterSetsDir) {
     myCnf['mysqld']['character-sets-dir'] = characterSetsDir
   }
-  if (languageDir) {
-    myCnf['mysqld']['language'] = languageDir
-  }
   if (lcMessagesDir) {
     myCnf['mysqld']['lc-messages-dir'] = lcMessagesDir
   }
@@ -97,12 +93,6 @@ export async function getMySQLServerBaseConfig(mysqldPath: string): Promise<MySQ
   if (process.getuid?.() === 0) {
     // Drop privileges if running as root
     myCnf.mysqld.user = 'mysql'
-  }
-  if (process.platform === 'darwin') {
-    // Work around issue with mysql 5.7 running out of FD on macOSX: https://bugs.mysql.com/bug.php?id=79125
-    myCnf.mysqld.table_open_cache = '250'
-    myCnf.mysqld.open_files_limit = '800'
-    myCnf.mysqld.max_connections = '500'
   }
 
   return myCnf
@@ -129,9 +119,7 @@ export function generateMySQLServerConfig(
       innodb_io_capacity: '1000',
       // Set a default charset that is supported by both
       'character-set-server': 'utf8mb4',
-      'collation-server': 'utf8mb4_general_ci'
-    },
-    'mysqld-8.0': {
+      'collation-server': 'utf8mb4_general_ci',
       mysqlx: '0',
       open_files_limit: '5000',
       // The maximum effective value is the lesser of the effective value of open_files_limit - 810, and the value actually set for max_connections.
@@ -162,11 +150,7 @@ export function generateMySQLServerConfig(
 
 export async function initializeMySQLData(mysqldPath: string, mysqlBaseDir: string): Promise<void> {
   // Initialize mysql data
-  const mysqlInitArgs = [
-    `--defaults-file=${mysqlBaseDir}/my.cnf`,
-    '--default-authentication-plugin=mysql_native_password',
-    '--initialize-insecure'
-  ]
+  const mysqlInitArgs = [`--defaults-file=${mysqlBaseDir}/my.cnf`, '--initialize-insecure']
   let initializeLog = `${mysqldPath} ${mysqlInitArgs.join(' ')}\n`
   const cmd = new RunProcess(mysqldPath, mysqlInitArgs, {
     env: {
@@ -274,7 +258,6 @@ export async function startMySQLd(
       '--',
       mysqldPath,
       `--defaults-file=${mysqlBaseDir}/my.cnf`,
-      '--default-authentication-plugin=mysql_native_password',
       ...mysqldServerArgs
     ],
     {

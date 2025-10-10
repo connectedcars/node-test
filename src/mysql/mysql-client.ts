@@ -38,7 +38,6 @@ export class MySQLClient {
       user: 'root',
       password: '',
       connectionLimit: 10,
-      insecureAuth: true,
       multipleStatements: true,
       charset: 'utf8mb4',
       // Handle incompatibilities between mysql2 and the old mysql driver: https://sidorares.github.io/node-mysql2/docs/documentation#known-incompatibilities-with-node-mysql
