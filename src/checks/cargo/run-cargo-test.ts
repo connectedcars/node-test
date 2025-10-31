@@ -3,7 +3,6 @@ import { CargoMessage } from './cargo-types'
 import { runCargo } from './run-cargo'
 
 export async function runCargoTest(args: string[] = [], ci = true): Promise<CargoMessage[]> {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return runCargo(
     [
       'test',
@@ -23,7 +22,6 @@ export async function runCargoTest(args: string[] = [], ci = true): Promise<Carg
 // Issue: https://github.com/rust-lang/cargo/issues/6669
 export async function runCargoDocTest(args: string[] = [], ci = true): Promise<CargoMessage[]> {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     return await runCargo(
       [
         'test',

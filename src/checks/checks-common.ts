@@ -89,11 +89,11 @@ export async function runCommand(
 ): Promise<CommandOutput> {
   const cmd = new RunProcess(command, args, options)
   const stdoutChunks: Buffer[] = []
-  cmd.stdout?.on('data', chunk => {
+  cmd.stdout?.on('data', (chunk: Buffer) => {
     stdoutChunks.push(chunk)
   })
   const stderrChunks: Buffer[] = []
-  cmd.stderr?.on('data', chunk => {
+  cmd.stderr?.on('data', (chunk: Buffer) => {
     stderrChunks.push(chunk)
   })
   await cmd.waitForStarted()
@@ -112,7 +112,7 @@ export async function runJsonCommand<T = Json>(
   try {
     return [exitInfo, JSON.parse(stdout)]
   } catch (e) {
-    throw new CommandJSONConversionError(command, args, stdout, stderr, e)
+    throw new CommandJSONConversionError(command, args, stdout, stderr, e as Error)
   }
 }
 
@@ -125,10 +125,10 @@ export async function runJsonLinesCommand<T = Json>(
   try {
     // Trimming whitespace from the ends, as otherwise an empty line
     // would result in `Unexpected end of JSON input`
-    const blobs = splitLines(stdout.trim()).map(line => JSON.parse(line))
+    const blobs = splitLines(stdout.trim()).map(line => JSON.parse(line) as T)
     return [exitInfo, blobs]
   } catch (e) {
-    throw new CommandJSONConversionError(command, args, stdout, stderr, e)
+    throw new CommandJSONConversionError(command, args, stdout, stderr, e as Error)
   }
 }
 

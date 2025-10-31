@@ -6,7 +6,6 @@ export async function runCargoClippy(args: string[] = [], ci = true, releaseBuil
     args = ['-W', 'clippy::all']
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return runCargo(
     [
       'clippy',

@@ -35,7 +35,7 @@ export function parseTsc(output: string): TscData[] {
 export async function runTsc(extraArgs: string[] = []): Promise<TscData[]> {
   const cmd = new RunProcess('tsc', [...extraArgs, '--pretty', 'false', '--noErrorTruncation', '--noEmit'])
   const data: Buffer[] = []
-  cmd.stdout?.on('data', chunk => {
+  cmd.stdout?.on('data', (chunk: Buffer) => {
     data.push(chunk)
   })
   await cmd.waitForStarted()

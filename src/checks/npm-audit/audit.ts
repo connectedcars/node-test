@@ -35,6 +35,7 @@ const severities: SeverityMap = {
 
 function getTextV1(data: AuditDataV1): string {
   const advisories = Object.values(data.advisories)
+  // eslint-disable-next-line no-restricted-syntax
   advisories.sort((a: Advisory, b: Advisory) => severities[b.severity] - severities[a.severity])
   const entries: string[] = []
   for (const advisory of advisories) {
@@ -61,6 +62,7 @@ function getTextV1(data: AuditDataV1): string {
 
 function getTextV2(data: AuditDataV2): string {
   const vulnerabilities = Object.values(data.vulnerabilities)
+  // eslint-disable-next-line no-restricted-syntax
   vulnerabilities.sort((a, b) => severities[b.severity] - severities[a.severity])
   const entries: string[] = []
   for (const advisory of vulnerabilities) {
@@ -123,6 +125,6 @@ export function auditCheck({ data, sha }: AuditInput): CheckRunCompleted {
       }
     }
   } catch (e) {
-    throw new CheckConversionError('audit', { data }, e)
+    throw new CheckConversionError('audit', { data }, e as Error)
   }
 }

@@ -33,7 +33,7 @@ export async function isPidRunning(pid: number): Promise<boolean> {
     process.kill(pid, 0)
     return true
   } catch (e) {
-    return e.code === 'EPERM'
+    return (e as NodeJS.ErrnoException).code === 'EPERM'
   }
 }
 
@@ -65,7 +65,7 @@ export async function stopPid(pid: number, sigKillTimeout = 3000): Promise<boole
       }
     }
   } catch (e) {
-    if (isNoProcessForPidError(e)) {
+    if (isNoProcessForPidError(e as Error)) {
       return false
     }
     throw e
@@ -78,6 +78,7 @@ export async function writePidFile(pidFile: string, acquireTries = 10): Promise<
     try {
       await fsWriteFileAsync(pidFile, Buffer.from(process.pid.toString(), 'utf8'), { flag: 'wx' })
       return
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       const pid = await readPidFile(pidFile)
       if (pid && (await isPidRunning(pid))) {
@@ -101,6 +102,7 @@ export async function whereIs(cmd: string): Promise<string | null> {
     }
     try {
       await fsAccessAsync(fullPath, fs.constants.X_OK)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       continue
     }

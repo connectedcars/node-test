@@ -145,7 +145,7 @@ describe('run-process', () => {
 
   it(`should detach and fork a new process`, async () => {
     await commandEmulation.registerCommand('sleeping', () => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const childProcess = require('child_process')
       const child = childProcess.spawn('sh', ['-c', 'echo hello; sleep 3'], {
         detached: true,
@@ -174,10 +174,10 @@ describe('run-process', () => {
   })
 
   it('should not hang on waitForExit(), if the timeout is longer than the process runtime', async () => {
-    await commandEmulation.registerCommand('hangingTooLongTimeout', async () => {
-      console.log(`started`)
+    await commandEmulation.registerCommand('hangingTooLongTimeout', () => {
+      console.log('started')
       setTimeout(() => {
-        console.log(`hello`)
+        console.log('hello')
       }, 100)
     })
     processCleanup.push()

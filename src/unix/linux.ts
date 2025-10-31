@@ -10,9 +10,10 @@ export async function isDockerOverlay2(): Promise<boolean> {
   if (!fs.existsSync(`/proc/1/cgroup`)) {
     return false
   }
-  const cGroups = fs.readFileSync(`/proc/1/cgroup`).toString()
+  const cGroups = fs.readFileSync('/proc/1/cgroup').toString()
   if (cGroups.match(/^\d+:[^:]+:\/docker/)) {
-    const mounts = splitLines((await execAsync(`mount`)).toString())
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string
+    const mounts = splitLines((await execAsync('mount')).toString())
     if (mounts.some(mount => mount.match(/overlay.*overlay2/) !== null)) {
       return true
     }

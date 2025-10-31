@@ -1,4 +1,4 @@
-export { Json, TypedSinonSpy, TypedSinonStub } from './common'
+export { Json, splitLines, TypedSinonSpy, TypedSinonStub } from './common'
 export { EnvStub } from './env/env-stub'
 export {
   HttpIncomingMessage,
@@ -20,11 +20,17 @@ export {
   ExitBeforeOutputMatchError,
   ExitInformation,
   isDockerOverlay2,
+  isFileExecutable,
   isPidFileRunning,
   isPidRunning,
   readPidFile,
   RunProcess,
   StopBecauseOfOutputError,
+  stopPid,
   TimeoutError,
-  touchFiles
+  touchFiles,
+  whereIs,
+  writePidFile
 } from './unix'
+export { isFileNotFoundError } from './unix/errors'
+export { pathExists } from './unix/process'

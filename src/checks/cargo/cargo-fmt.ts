@@ -20,7 +20,7 @@ export function cargoFmtCheck({ data, sha }: CargoFmtInput): CheckRunCompleted {
     return cargoUnexpectedOutput('cargo-fmt', sha)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, prefer-const
+  // eslint-disable-next-line prefer-const
   let [annotations, stats] = collectAnnotations(data, (item, annotations, stats) => {
     collectCargoManifestParseErrors(item, annotations, stats)
     collectCargoFmtIssues(item, annotations, stats)
@@ -45,7 +45,6 @@ export function collectCargoFmtIssues(
     return
   }
 
-  // eslint-disable-next-line no-param-reassign
   cwd = cwd ?? `${process.cwd()}/`
 
   for (const mismatch of item.mismatches) {

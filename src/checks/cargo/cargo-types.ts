@@ -22,7 +22,7 @@ export interface CargoTestMessage {
   stdout?: string
 }
 
-export type TestEvent = 'ok' | 'failed' | 'ignored' | 'started' | string
+export type TestEvent = 'ok' | 'failed' | 'ignored' | 'started'
 
 export type CargoSuiteMessage = CargoSuiteStartedMessage | CargoSuiteFinishedMessage
 
@@ -42,7 +42,7 @@ export interface CargoSuiteStartedMessage {
 export interface CargoSuiteFinishedMessage {
   type: 'suite'
   reason?: undefined
-  event: 'ok' | 'failed' | string
+  event: 'ok' | 'failed'
   passed: number
   failed: number
   allowed_fail: number

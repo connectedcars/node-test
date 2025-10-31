@@ -66,7 +66,7 @@ export function createRustTargetPath(
 export type CargoRunCommand<T> = (
   command: string,
   args: string[],
-  options?: SpawnOptions | undefined
+  options?: SpawnOptions
 ) => Promise<[ExitInformation, T[]]>
 
 export async function runCargo<T>(
