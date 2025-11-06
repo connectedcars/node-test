@@ -12,7 +12,6 @@ export {
 export { HttpServer, HttpServerOptions } from './http/http-server'
 export { HttpsServer, HttpsServerOptions } from './http/https-server'
 export { WebServer, WebServerOptions } from './http/web-server'
-export { Migrate, Migration, MigrationResult, MySQLClient, MySQLServer, SchemaMigrationResult } from './mysql'
 export { findFreePort } from './net'
 export {
   CommandEmulation,
