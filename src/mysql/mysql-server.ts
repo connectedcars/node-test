@@ -139,10 +139,25 @@ export class MySQLServer {
       this.mysqldPath = await realPath(foundMysqldPath)
     }
 
-    // Generate unique cache key based on mysql version
     const mysqlVersion = await getMySQLVersionString(this.mysqldPath)
+    // Load or generate the base my.cnf configuration used for this server
+    const myCnf = await getMySQLServerBaseConfig(this.mysqldPath)
+    const configObj = { ...myCnf, ...this.myCnfCustom }
+
+    // Create a stable, deterministic string representation of the configuration
+    const configString = Object.entries(configObj)
+      .toSorted(([a], [b]) => a.localeCompare(b)) // ensure stable order
+      .map(([key, value]) => `${key}=${typeof value === 'string' ? value : JSON.stringify(value)}`)
+      .join('\n')
+
+    // Combine both into one hash input
     const hash = crypto.createHash('sha1')
-    const cacheCheckSum = hash.update(mysqlVersion).digest('hex') // TODO: Also add calculation for myCnf
+    hash.update(mysqlVersion)
+    hash.update(configString)
+
+    // Generate unique cache key based on mysql version
+    const cacheCheckSum = hash.digest('hex')
+
     this.cleanInitializeDataTarGz = path.resolve(
       path.join(this.cachePath, `clean-initialization-data-${cacheCheckSum}.tar.gz`)
     )
