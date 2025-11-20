@@ -1,11 +1,5 @@
-import fs from 'fs'
+import fs from 'fs/promises'
 import path from 'path'
-import { promisify } from 'util'
-
-const unlinkAsync = promisify(fs.unlink)
-const rmdirAsync = promisify(fs.rmdir)
-const writeFileAsync = promisify(fs.writeFile)
-const chmodAsync = promisify(fs.chmod)
 
 import { Json } from '../common'
 import { createTempDirectory } from './fs'
@@ -70,8 +64,8 @@ export class CommandEmulation {
     }
 
     const fullScript = `#!${interpreter}\n\n${script}\n`
-    await writeFileAsync(path, Buffer.from(fullScript, 'utf8'))
-    await chmodAsync(path, '755')
+    await fs.writeFile(path, Buffer.from(fullScript, 'utf8'))
+    await fs.chmod(path, '755')
     return fullScript
   }
 
@@ -80,7 +74,7 @@ export class CommandEmulation {
     while (this.commands.length > 0) {
       const command = this.commands.shift()
       if (command) {
-        await unlinkAsync(command).catch(() => {
+        await fs.unlink(command).catch(() => {
           // Ignore
         })
       }
@@ -91,7 +85,7 @@ export class CommandEmulation {
     await this.initPromise // Make sure init has finished
     await this.cleanup()
     process.env.PATH = process.env.PATH === this.tmpdir ? '' : process.env.PATH?.replace(`${this.tmpdir}:`, '')
-    await rmdirAsync(this.tmpdir, { recursive: true })
+    await fs.rm(this.tmpdir, { recursive: true })
     this.initPromise = Promise.reject(new Error(`Need to run setup again`)).catch(() => {
       // Do nothing as we will throw at later calls
     })
