@@ -11,7 +11,6 @@
     "test": "TZ=UTC jest",
     "build": "build src bin",
     "build:js": "build --skip-typings -- src bin",
-    "local-mysql": "npm run build:js && build/dist/bin/local-mysql.js",
     "build:types": "tsc --emitDeclarationOnly",
     "lint": "eslint './src/**/*.{ts,tsx}' './bin/**/*.{ts,tsx}'",
     "lint:fix": "eslint --fix './src/**/*.{ts,tsx}' './bin/**/*.{ts,tsx}'",
