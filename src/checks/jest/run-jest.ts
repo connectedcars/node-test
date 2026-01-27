@@ -5,7 +5,7 @@ export async function runJest(command = 'jest', extraArgs: string[] = []): Promi
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [exitInfo, json] = await runJsonCommand<FormattedTestResults>(
     command,
-    [...extraArgs, '--silent', '--no-color', '--json', '--testLocationInResults'],
+    [...extraArgs, '--silent', '--no-color', '--json', '--testLocationInResults', '--workerIdleMemoryLimit=500MB'],
     {
       env: { ...process.env, TZ: 'UTC' }
     }
