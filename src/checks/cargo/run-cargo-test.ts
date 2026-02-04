@@ -26,6 +26,8 @@ export async function runCargoDocTest(args: string[] = [], ci = true): Promise<C
   try {
     return await runCargo(
       [
+        // Getting the output in JSON requires an "unstable" feature that's only available on nightly
+        // This only applies to the testing not the code that is shipped
         '+nightly',
         'test',
         '--doc',
