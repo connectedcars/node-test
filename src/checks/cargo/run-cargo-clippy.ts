@@ -8,6 +8,7 @@ export async function runCargoClippy(args: string[] = [], ci = true, releaseBuil
 
   return runCargo(
     [
+      '+nightly',
       'clippy',
       releaseBuild ? '--release' : '',
       '--all-targets',
