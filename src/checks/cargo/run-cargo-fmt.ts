@@ -6,6 +6,8 @@ export async function runCargoFmt(args: string[] = [], ci = true): Promise<Cargo
   // While cargo and clippy emits individual json objects, rustfmt does not
 
   return runCargo<CargoFmtFile>(
+    // To get the output in JSON requires an "unstable" feature that's only available on nightly
+    // This only applies to the formatting not the code that is shipped
     ['+nightly', 'fmt', '--', '--emit=json', '--color', 'never', ...args],
     ci,
     true,
