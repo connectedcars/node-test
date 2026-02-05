@@ -90,6 +90,7 @@ export async function runCargo<T>(
   const isAllFeatures = args.indexOf('--all-features') !== -1
 
   const fullCommand = `cargo ${args.join(' ')}`
+  // eslint-disable-next-line no-console
   console.log(`Running: ${fullCommand}`)
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
