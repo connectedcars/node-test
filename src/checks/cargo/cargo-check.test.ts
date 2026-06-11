@@ -23,4 +23,14 @@ describe('checks/cargo-check', () => {
       completed_at: expect.any(String)
     })
   })
+  it('reports failure when build-finished is false but no file-level errors', () => {
+    const result = cargoCheckCheck({
+      data: [{ reason: 'build-finished', success: false } as any],
+      sha: '11963e3cb7ecbb9247f638cc0fb047173a62cf7a'
+    })
+    expect(result).toMatchSnapshot({
+      completed_at: expect.any(String)
+    })
+    expect(result.conclusion).toBe('failure')
+  })
 })
