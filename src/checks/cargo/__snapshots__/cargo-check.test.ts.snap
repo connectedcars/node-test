@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`checks/cargo-check converts buggy cargo-check 1`] = `
 Object {
@@ -485,6 +485,21 @@ Object {
     "annotations": Array [],
     "summary": "Found no issues",
     "title": "Found no issues",
+  },
+  "status": "completed",
+}
+`;
+
+exports[`checks/cargo-check reports failure when build-finished is false but no file-level errors 1`] = `
+Object {
+  "completed_at": Any<String>,
+  "conclusion": "failure",
+  "head_sha": "11963e3cb7ecbb9247f638cc0fb047173a62cf7a",
+  "name": "cargo-check",
+  "output": Object {
+    "annotations": Array [],
+    "summary": "The build failed but produced no file-level errors. This may indicate a linker error or an error in a dependency.",
+    "title": "Build failed",
   },
   "status": "completed",
 }

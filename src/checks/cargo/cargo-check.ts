@@ -1,6 +1,7 @@
 import { filterDuplicates } from '../../common'
 import { CheckAnnotation, CheckRunCompleted } from '../checks-common'
 import {
+  cargoBuildFailed,
   CargoCheckStats,
   cargoFoundIssues,
   cargoFoundNoIssues,
@@ -9,7 +10,8 @@ import {
   collectCargoManifestParseErrors,
   filterClippyLints,
   filterNone,
-  getPrimaryOrFirstSpan
+  getPrimaryOrFirstSpan,
+  isCargoBuildSuccessful
 } from './cargo'
 import { CargoCompilerMessage, CargoMessage } from './cargo-types'
 
@@ -35,9 +37,13 @@ export function cargoCheckCheck({ data, sha }: CargoCheckInput, skipOtherLints =
     annotations = filterDuplicates(annotations)
 
     return cargoFoundIssues('cargo-check', sha, annotations, stats)
-  } else {
-    return cargoFoundNoIssues('cargo-check', sha)
   }
+
+  if (!isCargoBuildSuccessful(data)) {
+    return cargoBuildFailed('cargo-check', sha)
+  }
+
+  return cargoFoundNoIssues('cargo-check', sha)
 }
 
 export function collectCargoCheckLints(

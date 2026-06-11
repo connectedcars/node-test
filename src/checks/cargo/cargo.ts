@@ -116,6 +116,22 @@ export function getPrimaryOrFirstSpan(spans: DiagnosticSpan[]): DiagnosticSpan |
   return primarySpan ?? spans[0]
 }
 
+export function cargoBuildFailed(name: string, sha: string): CheckRunCompleted {
+  return {
+    name,
+    head_sha: sha,
+    conclusion: 'failure',
+    status: 'completed',
+    completed_at: new Date().toISOString(),
+    output: {
+      title: 'Build failed',
+      summary:
+        'The build failed but produced no file-level errors. This may indicate a linker error or an error in a dependency.',
+      annotations: []
+    }
+  }
+}
+
 export function cargoUnexpectedOutput(name: string, sha: string): CheckRunCompleted {
   return {
     name,
