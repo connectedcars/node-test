@@ -116,7 +116,25 @@ export function getPrimaryOrFirstSpan(spans: DiagnosticSpan[]): DiagnosticSpan |
   return primarySpan ?? spans[0]
 }
 
-export function cargoBuildFailed(name: string, sha: string): CheckRunCompleted {
+export function cargoBuildFailed(name: string, sha: string, data?: CargoMessage[]): CheckRunCompleted {
+  let text = ''
+  if (data) {
+    const messages = data
+      .filter((msg): msg is CargoCompilerMessage => msg.reason === 'compiler-message')
+      .filter(
+        msg =>
+          msg.message.level === 'error' ||
+          msg.message.level === 'failure-note' ||
+          msg.message.level === 'error: internal compiler error'
+      )
+      .map(msg => msg.message.rendered)
+      .filter((rendered): rendered is string => !!rendered)
+
+    if (messages.length > 0) {
+      text = messages.join('\n')
+    }
+  }
+
   return {
     name,
     head_sha: sha,
@@ -127,6 +145,7 @@ export function cargoBuildFailed(name: string, sha: string): CheckRunCompleted {
       title: 'Build failed',
       summary:
         'The build failed but produced no file-level errors. This may indicate a linker error or an error in a dependency.',
+      ...(text ? { text } : {}),
       annotations: []
     }
   }

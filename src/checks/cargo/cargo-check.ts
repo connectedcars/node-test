@@ -40,7 +40,7 @@ export function cargoCheckCheck({ data, sha }: CargoCheckInput, skipOtherLints =
   }
 
   if (!isCargoBuildSuccessful(data)) {
-    return cargoBuildFailed('cargo-check', sha)
+    return cargoBuildFailed('cargo-check', sha, data)
   }
 
   return cargoFoundNoIssues('cargo-check', sha)
