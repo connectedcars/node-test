@@ -29,7 +29,7 @@ describe('run-cargo-fmt', () => {
       null,
       cargoFmtFailedOutput as any
     )
-    const cargoJson = await runCargoFmt()
+    const [cargoJson] = await runCargoFmt()
     expect(cargoJson).toEqual(cargoFmtFailedOutput)
   })
 })

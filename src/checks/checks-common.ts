@@ -107,10 +107,10 @@ export async function runJsonCommand<T = Json>(
   command: string,
   args: string[],
   options?: ConstructorParameters<typeof RunProcess>[2]
-): Promise<[ExitInformation, T]> {
+): Promise<[ExitInformation, T, string]> {
   const { exitInfo, stdout, stderr } = await runCommand(command, args, options)
   try {
-    return [exitInfo, JSON.parse(stdout)]
+    return [exitInfo, JSON.parse(stdout), stderr]
   } catch (e) {
     throw new CommandJSONConversionError(command, args, stdout, stderr, e as Error)
   }
@@ -120,13 +120,13 @@ export async function runJsonLinesCommand<T = Json>(
   command: string,
   args: string[],
   options?: ConstructorParameters<typeof RunProcess>[2]
-): Promise<[ExitInformation, T[]]> {
+): Promise<[ExitInformation, T[], string]> {
   const { exitInfo, stdout, stderr } = await runCommand(command, args, options)
   try {
     // Trimming whitespace from the ends, as otherwise an empty line
     // would result in `Unexpected end of JSON input`
     const blobs = splitLines(stdout.trim()).map(line => JSON.parse(line) as T)
-    return [exitInfo, blobs]
+    return [exitInfo, blobs, stderr]
   } catch (e) {
     throw new CommandJSONConversionError(command, args, stdout, stderr, e as Error)
   }
@@ -137,8 +137,26 @@ export function printSummary(checkResult: CheckRun, ci?: boolean): void {
 
   const { output } = checkResult
 
-  // Skip the 'human readable' output if we have ci flag
   if (ci) {
+    // In CI mode, stdout must stay as clean JSON for the cloudbuilder-wrapper to parse
+    // and post to the GitHub Checks API (it uses JSONExtract on the Docker RUN step output).
+    // Print human-readable details to stderr so it reads as actual newlines
+    // (rather than '\n' literals embedded in JSON strings) in the build log.
+    const conclusion = 'conclusion' in checkResult ? checkResult.conclusion : undefined
+    if (conclusion && conclusion !== 'success' && conclusion !== 'neutral' && conclusion !== 'skipped' && output) {
+      const parts: string[] = [`=== ${checkResult.name}: ${conclusion} ===`, output.summary]
+      if (output.text) {
+        parts.push('', output.text)
+      }
+      for (const annotation of output.annotations ?? []) {
+        const { annotation_level, message, start_line, end_line, path } = annotation
+        parts.push(`\n  [${annotation_level}] ${path}:${start_line}-${end_line}`)
+        for (const line of message.split('\n')) {
+          parts.push(`    ${line}`)
+        }
+      }
+      process.stderr.write('\n' + parts.join('\n') + '\n\n')
+    }
     return
   }
 

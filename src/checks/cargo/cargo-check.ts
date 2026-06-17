@@ -20,9 +20,10 @@ import { CargoCompilerMessage, CargoMessage } from './cargo-types'
 export interface CargoCheckInput {
   sha: string
   data: CargoMessage[]
+  stderr?: string
 }
 
-export function cargoCheckCheck({ data, sha }: CargoCheckInput, skipOtherLints = true): CheckRunCompleted {
+export function cargoCheckCheck({ data, sha, stderr }: CargoCheckInput, skipOtherLints = true): CheckRunCompleted {
   if (!Array.isArray(data)) {
     return cargoUnexpectedOutput('cargo-check', sha)
   }
@@ -40,7 +41,7 @@ export function cargoCheckCheck({ data, sha }: CargoCheckInput, skipOtherLints =
   }
 
   if (!isCargoBuildSuccessful(data)) {
-    return cargoBuildFailed('cargo-check', sha, data)
+    return cargoBuildFailed('cargo-check', sha, data, stderr)
   }
 
   return cargoFoundNoIssues('cargo-check', sha)

@@ -67,14 +67,14 @@ export type CargoRunCommand<T> = (
   command: string,
   args: string[],
   options?: SpawnOptions
-) => Promise<[ExitInformation, T[]]>
+) => Promise<[ExitInformation, T[], string]>
 
 export async function runCargo<T>(
   args: string[] = [],
   ci = true,
   skipTouching = false,
   runCommand: CargoRunCommand<T> = runJsonLinesCommand
-): Promise<T[]> {
+): Promise<[T[], string]> {
   if (!skipTouching) {
     const version = await getRustVersion()
     if (isTouchingWorkspaceRequired(version)) {
@@ -94,27 +94,33 @@ export async function runCargo<T>(
   console.log(`Running: ${fullCommand}`)
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [exitInfo, json] = await runCommand('cargo', args, {
+  const [exitInfo, json, stderr] = await runCommand('cargo', args, {
     env: getRustEnv(workspacePath, isReleaseBuild, isAllFeatures, ci)
   })
-  return json
+  return [json, stderr]
 }
 
-export async function tryCargoRun<T>(exec: () => Promise<T[][]>): Promise<(T | CargoManifestParseError)[]> {
+export async function tryCargoRun<T>(
+  exec: () => Promise<[T[], string][]>
+): Promise<[(T | CargoManifestParseError)[], string]> {
   try {
-    const outputs = await exec()
-    const output = ([] as T[]).concat(...outputs)
-    return output
+    const results = await exec()
+    const data = ([] as (T | CargoManifestParseError)[]).concat(...results.map(([d]) => d))
+    const stderr = results
+      .map(([, s]) => s)
+      .filter(Boolean)
+      .join('\n')
+    return [data, stderr]
   } catch (err: unknown) {
     if (err instanceof CommandJSONConversionError) {
       if (isParseManifestError(err.stderr)) {
         const msg = parseCargoManifestParseError(err.stderr)
-        return [msg]
+        return [[msg], err.stderr]
       }
     } else if (err instanceof CargoLocateWorkspaceError) {
       if (isParseManifestError(err.stderr)) {
         const msg = parseCargoManifestParseError(err.stderr)
-        return [msg]
+        return [[msg], err.stderr]
       }
     }
 

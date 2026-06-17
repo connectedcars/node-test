@@ -51,7 +51,7 @@ describe('run-cargo-check', () => {
       },
       null
     )
-    const cargoJson = await runCargoCheck()
+    const [cargoJson] = await runCargoCheck()
     expect(cargoJson).toEqual(cargoCheckFailedOutput)
   })
 })

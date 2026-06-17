@@ -2,7 +2,7 @@ import { CommandJSONConversionError } from '../checks-common'
 import { CargoMessage } from './cargo-types'
 import { runCargo } from './run-cargo'
 
-export async function runCargoTest(args: string[] = [], ci = true): Promise<CargoMessage[]> {
+export async function runCargoTest(args: string[] = [], ci = true): Promise<[CargoMessage[], string]> {
   return runCargo(
     [
       '+nightly',
@@ -22,7 +22,7 @@ export async function runCargoTest(args: string[] = [], ci = true): Promise<Carg
 }
 
 // Issue: https://github.com/rust-lang/cargo/issues/6669
-export async function runCargoDocTest(args: string[] = [], ci = true): Promise<CargoMessage[]> {
+export async function runCargoDocTest(args: string[] = [], ci = true): Promise<[CargoMessage[], string]> {
   try {
     return await runCargo(
       [
@@ -46,7 +46,7 @@ export async function runCargoDocTest(args: string[] = [], ci = true): Promise<C
     if (e instanceof CommandJSONConversionError) {
       if (e.stderr.trimLeft().startsWith('error: no library targets found in package')) {
         // Executing `cargo test --doc` for non-library crates is not supported
-        return []
+        return [[], '']
       }
     }
 
