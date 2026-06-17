@@ -137,8 +137,26 @@ export function printSummary(checkResult: CheckRun, ci?: boolean): void {
 
   const { output } = checkResult
 
-  // Skip the 'human readable' output if we have ci flag
   if (ci) {
+    // In CI mode, stdout must stay as clean JSON for the cloudbuilder-wrapper to parse
+    // and post to the GitHub Checks API (it uses JSONExtract on the Docker RUN step output).
+    // Print human-readable details to stderr so it reads as actual newlines
+    // (rather than '\n' literals embedded in JSON strings) in the build log.
+    const conclusion = 'conclusion' in checkResult ? checkResult.conclusion : undefined
+    if (conclusion && conclusion !== 'success' && conclusion !== 'neutral' && conclusion !== 'skipped' && output) {
+      const parts: string[] = [`=== ${checkResult.name}: ${conclusion} ===`, output.summary]
+      if (output.text) {
+        parts.push('', output.text)
+      }
+      for (const annotation of output.annotations ?? []) {
+        const { annotation_level, message, start_line, end_line, path } = annotation
+        parts.push(`\n  [${annotation_level}] ${path}:${start_line}-${end_line}`)
+        for (const line of message.split('\n')) {
+          parts.push(`    ${line}`)
+        }
+      }
+      process.stderr.write('\n' + parts.join('\n') + '\n\n')
+    }
     return
   }
 
