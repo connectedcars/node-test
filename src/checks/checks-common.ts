@@ -107,10 +107,10 @@ export async function runJsonCommand<T = Json>(
   command: string,
   args: string[],
   options?: ConstructorParameters<typeof RunProcess>[2]
-): Promise<[ExitInformation, T]> {
+): Promise<[ExitInformation, T, string]> {
   const { exitInfo, stdout, stderr } = await runCommand(command, args, options)
   try {
-    return [exitInfo, JSON.parse(stdout)]
+    return [exitInfo, JSON.parse(stdout), stderr]
   } catch (e) {
     throw new CommandJSONConversionError(command, args, stdout, stderr, e as Error)
   }
@@ -120,13 +120,13 @@ export async function runJsonLinesCommand<T = Json>(
   command: string,
   args: string[],
   options?: ConstructorParameters<typeof RunProcess>[2]
-): Promise<[ExitInformation, T[]]> {
+): Promise<[ExitInformation, T[], string]> {
   const { exitInfo, stdout, stderr } = await runCommand(command, args, options)
   try {
     // Trimming whitespace from the ends, as otherwise an empty line
     // would result in `Unexpected end of JSON input`
     const blobs = splitLines(stdout.trim()).map(line => JSON.parse(line) as T)
-    return [exitInfo, blobs]
+    return [exitInfo, blobs, stderr]
   } catch (e) {
     throw new CommandJSONConversionError(command, args, stdout, stderr, e as Error)
   }

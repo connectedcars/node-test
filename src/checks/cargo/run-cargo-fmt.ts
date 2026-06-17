@@ -2,7 +2,7 @@ import { runJsonCommand } from '../checks-common'
 import { CargoFmtFile } from './cargo-types'
 import { runCargo } from './run-cargo'
 
-export async function runCargoFmt(args: string[] = [], ci = true): Promise<CargoFmtFile[]> {
+export async function runCargoFmt(args: string[] = [], ci = true): Promise<[CargoFmtFile[], string]> {
   // While cargo and clippy emits individual json objects, rustfmt does not
 
   return runCargo<CargoFmtFile>(

@@ -51,7 +51,7 @@ describe('run-cargo-clippy', () => {
       },
       null
     )
-    const cargoJson = await runCargoClippy()
+    const [cargoJson] = await runCargoClippy()
     expect(cargoJson).toEqual(cargoClippyFailedOutput)
   })
 })

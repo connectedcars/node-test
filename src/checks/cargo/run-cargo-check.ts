@@ -6,7 +6,7 @@ export async function runCargoCheck(
   allFeatures = false,
   ci = true,
   releaseBuild = false
-): Promise<CargoMessage[]> {
+): Promise<[CargoMessage[], string]> {
   return runCargo(
     [
       'check',

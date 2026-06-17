@@ -22,10 +22,10 @@ interface CargoSortCheckError {
 
 type CargoSortPrintCrates = { [key: string]: string }
 
-export async function runCargoSort(args: string[] = []): Promise<CargoSortMessage[]> {
+export async function runCargoSort(args: string[] = []): Promise<[CargoSortMessage[], string]> {
   const errors = await runCargoSortCheck(args)
   if (errors.length == 0) {
-    return []
+    return [[], '']
   }
 
   // Needs two passes, as `--check` emits which manifests have issues,
@@ -41,7 +41,7 @@ export async function runCargoSort(args: string[] = []): Promise<CargoSortMessag
     })
   }
 
-  return output
+  return [output, '']
 }
 
 export async function runCargoSortCheck(args: string[] = []): Promise<CargoSortCheckError[]> {

@@ -116,7 +116,7 @@ export function getPrimaryOrFirstSpan(spans: DiagnosticSpan[]): DiagnosticSpan |
   return primarySpan ?? spans[0]
 }
 
-export function cargoBuildFailed(name: string, sha: string, data?: CargoMessage[]): CheckRunCompleted {
+export function cargoBuildFailed(name: string, sha: string, data?: CargoMessage[], stderr?: string): CheckRunCompleted {
   let text = ''
   if (data) {
     const messages = data
@@ -133,6 +133,10 @@ export function cargoBuildFailed(name: string, sha: string, data?: CargoMessage[
     if (messages.length > 0) {
       text = messages.join('\n')
     }
+  }
+
+  if (stderr?.trim()) {
+    text = text ? `${text}\n\n${stderr.trim()}` : stderr.trim()
   }
 
   return {

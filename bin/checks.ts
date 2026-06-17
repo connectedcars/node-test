@@ -373,7 +373,7 @@ async function lookupConvertFunction(
         // then `cargo check` needs to be executed twice, both with and
         // without `--all-features`.
         // See more at https://github.com/connectedcars/node-test/pull/55
-        const output = await tryCargoRun(async () => [
+        const [output, stderr] = await tryCargoRun(async () => [
           // Debug build
           await runCargoCheck(args, false, flags.ci),
           // Debug build - all features
@@ -389,7 +389,8 @@ async function lookupConvertFunction(
           cargoCheckCheck(
             {
               data: output,
-              sha: commitSha
+              sha: commitSha,
+              stderr
             },
             command !== cliCommand
           )
@@ -401,7 +402,7 @@ async function lookupConvertFunction(
         return null
       }
       return async () => {
-        const output = await tryCargoRun(async () => [
+        const [output] = await tryCargoRun(async () => [
           // Debug build
           await runCargoClippy(args, flags.ci, false),
           // Release build
@@ -424,7 +425,7 @@ async function lookupConvertFunction(
         return null
       }
       return async () => {
-        const output = await tryCargoRun(async () => [
+        const [output] = await tryCargoRun(async () => [
           // Run unit tests and integration tests
           await runCargoTest(args, flags.ci),
           // Run doc tests
@@ -444,7 +445,7 @@ async function lookupConvertFunction(
         return null
       }
       return async () => {
-        const output = await tryCargoRun(async () => [await runCargoFmt(args, flags.ci)])
+        const [output] = await tryCargoRun(async () => [await runCargoFmt(args, flags.ci)])
         return [
           false,
           cargoFmtCheck({
@@ -459,7 +460,7 @@ async function lookupConvertFunction(
         return null
       }
       return async () => {
-        const output = await tryCargoRun(async () => [await runCargoSort(args)])
+        const [output] = await tryCargoRun(async () => [await runCargoSort(args)])
         return [
           false,
           await cargoSortCheck({
