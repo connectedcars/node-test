@@ -100,7 +100,9 @@ export async function runCargo<T>(
   return [json, stderr]
 }
 
-export async function tryCargoRun<T>(exec: () => Promise<[T[], string][]>): Promise<[(T | CargoManifestParseError)[], string]> {
+export async function tryCargoRun<T>(
+  exec: () => Promise<[T[], string][]>
+): Promise<[(T | CargoManifestParseError)[], string]> {
   try {
     const results = await exec()
     const data = ([] as (T | CargoManifestParseError)[]).concat(...results.map(([d]) => d))
