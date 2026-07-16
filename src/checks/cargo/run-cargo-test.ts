@@ -1,8 +1,40 @@
-import { CommandJSONConversionError } from '../checks-common'
+import { CommandJSONConversionError, runJsonLinesCommand } from '../checks-common'
 import { CargoMessage } from './cargo-types'
 import { runCargo } from './run-cargo'
 
-export async function runCargoTest(args: string[] = [], ci = true): Promise<[CargoMessage[], string]> {
+export async function runCargoTest(
+  args: string[] = [],
+  ci = true,
+  useNextest?: boolean
+): Promise<[CargoMessage[], string]> {
+  const nextest = useNextest ?? process.env['CC_USE_NEXTEST'] === '1'
+
+  if (nextest) {
+    // cargo nextest run replaces the libtest harness, so --message-format=libtest-json
+    // controls the test output format, and --cargo-message-format=json controls the
+    // build/compiler messages (same as --message-format=json in cargo test).
+    // Doc tests are not supported by nextest; use runCargoDocTest for those.
+    return runCargo<CargoMessage>(
+      [
+        'nextest',
+        'run',
+        '--all-targets',
+        '--no-fail-fast',
+        '--locked',
+        '--cargo-message-format=json',
+        '--message-format=libtest-json',
+        ...args
+      ],
+      ci,
+      false,
+      (command, nexttestArgs, options) =>
+        runJsonLinesCommand<CargoMessage>(command, nexttestArgs, {
+          ...options,
+          env: { ...(options?.env ?? {}), NEXTEST_EXPERIMENTAL_LIBTEST_JSON: '1' }
+        })
+    )
+  }
+
   return runCargo(
     [
       '+nightly',
