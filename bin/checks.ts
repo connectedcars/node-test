@@ -54,6 +54,10 @@ async function main(argv: string[]): Promise<number> {
       hardFail: {
         boolean: true,
         describe: 'Return non zero exit code when conclusion is not success, natural or skipped'
+      },
+      nextest: {
+        boolean: true,
+        describe: 'Use cargo nextest run instead of cargo test'
       }
     })
     .command('jest', 'Runs Jest with CI output', yargs => {
@@ -95,6 +99,7 @@ async function main(argv: string[]): Promise<number> {
   // to `false` if undefined.
   flags.ci = flags.ci || false
   flags.hardFail = flags.hardFail || false
+  flags.nextest = flags.nextest || false
 
   const [command, ...args] = commandAndArgs.map(a => a.toString())
 
@@ -159,7 +164,7 @@ async function main(argv: string[]): Promise<number> {
         args,
         COMMIT_SHA,
         command === 'auto',
-        { ci: flags.ci, name },
+        { ci: flags.ci, name, nextest: flags.nextest as boolean | undefined },
         command
       )
       if (convertFunction === null) {
@@ -233,7 +238,7 @@ async function lookupConvertFunction(
   args: string[],
   commitSha: string,
   detect = false,
-  flags: { ci: boolean; name?: string } = { ci: true },
+  flags: { ci: boolean; name?: string; nextest?: boolean } = { ci: true },
   cliCommand?: string
 ): Promise<(() => Promise<[boolean, CheckRunCompleted]>) | null> {
   switch (command) {
@@ -427,8 +432,8 @@ async function lookupConvertFunction(
       return async () => {
         const [output] = await tryCargoRun(async () => [
           // Run unit tests and integration tests
-          await runCargoTest(args, flags.ci),
-          // Run doc tests
+          await runCargoTest(args, flags.ci, flags.nextest),
+          // Run doc tests (nextest does not support doc tests; always uses cargo test)
           await runCargoDocTest(args, flags.ci)
         ])
         return [

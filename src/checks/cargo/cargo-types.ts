@@ -13,12 +13,13 @@ export type CargoMessage =
 // JSON output from `cargo test` is currently
 // unstable, so the format is undocumented,
 // and this is entirely inferred.
+// `cargo nextest run --message-format=libtest-json` emits the same shape.
 export interface CargoTestMessage {
   type: 'test'
   reason?: undefined
   name: string
   event: TestEvent
-  // exec_time?: string
+  exec_time?: number
   stdout?: string
 }
 
@@ -45,10 +46,11 @@ export interface CargoSuiteFinishedMessage {
   event: 'ok' | 'failed'
   passed: number
   failed: number
-  allowed_fail: number
+  allowed_fail?: number
   ignored: number
   measured: number
   filtered_out: number
+  exec_time?: number
 }
 
 export interface CargoBuildFinishedMessage {
