@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`checks/jest processes failing jest output to checks structure 1`] = `
 Object {
@@ -140,6 +140,41 @@ Object {
     ],
     "summary": "8 of 9 tests passed",
     "title": "8 of 9 tests passed",
+  },
+  "status": "completed",
+}
+`;
+
+exports[`checks/jest should handle todo tests 1`] = `
+Object {
+  "completed_at": StringMatching /\\^\\\\d\\{4\\}/,
+  "conclusion": "success",
+  "head_sha": "1234567890",
+  "name": "jest",
+  "output": Object {
+    "annotations": Array [
+      Object {
+        "annotation_level": "notice",
+        "end_line": 1,
+        "message": "TODO test",
+        "path": "src/tests/integration/insert-ignore.test.ts",
+        "raw_details": "{
+  \\"ancestorTitles\\": [
+    \\"Tests INSERT IGNORE warnings\\"
+  ],
+  \\"failureMessages\\": [],
+  \\"fullName\\": \\"Tests INSERT IGNORE warnings inserts a non-faulty batch\\",
+  \\"location\\": null,
+  \\"status\\": \\"todo\\",
+  \\"title\\": \\"inserts a non-faulty batch\\",
+  \\"file\\": \\"/Users/tlb/git/connectedcars/data/src/tests/integration/insert-ignore.test.ts\\"
+}",
+        "start_line": 1,
+        "title": "Tests INSERT IGNORE warnings - inserts a non-faulty batch",
+      },
+    ],
+    "summary": "1 of 2 tests passed",
+    "title": "1 of 2 tests passed",
   },
   "status": "completed",
 }

@@ -88,7 +88,7 @@ interface CreateCheckAnnotationOptions {
   file: string
   message: string
   title: string
-  status: string
+  status: FormattedAssertionResult['status']
   rawDetails: string
   location?: Location | null
 }
@@ -151,7 +151,7 @@ function createCheckAnnotation({
     end_line: start_line,
     annotation_level,
     title,
-    message: message || 'unknown issue',
+    message: status === 'todo' ? 'TODO test' : message || 'unknown issue',
     path: relPath,
     raw_details: rawDetails
   }

@@ -5,7 +5,8 @@ import {
   jestHugeOutput,
   jestPassedOutput,
   jestSkippedOutput,
-  jestSnapshotFailed
+  jestSnapshotFailed,
+  jestTodoOutput
 } from './resources/jest-help-text'
 
 describe('checks/jest', () => {
@@ -55,6 +56,14 @@ describe('checks/jest', () => {
 
   it('should handle skipped tests', () => {
     const output = jestCheck({ data: jestSkippedOutput, sha: '1234567890' })
+    expect(output).toMatchSnapshot({
+      completed_at: expect.stringMatching(/^\d{4}/)
+    })
+  })
+
+  it('should handle todo tests', () => {
+    const output = jestCheck({ data: jestTodoOutput, sha: '1234567890' })
+
     expect(output).toMatchSnapshot({
       completed_at: expect.stringMatching(/^\d{4}/)
     })

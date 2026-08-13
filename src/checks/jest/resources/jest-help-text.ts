@@ -1001,6 +1001,67 @@ export const jestSkippedOutput: FormattedTestResults = {
   wasInterrupted: false
 }
 
+export const jestTodoOutput: FormattedTestResults = {
+  numFailedTestSuites: 0,
+  numFailedTests: 0,
+  numPassedTestSuites: 1,
+  numPassedTests: 1,
+  numPendingTestSuites: 0,
+  numPendingTests: 1,
+  numRuntimeErrorTestSuites: 0,
+  numTodoTests: 0,
+  numTotalTestSuites: 1,
+  numTotalTests: 2,
+  openHandles: [],
+  snapshot: {
+    added: 0,
+    didUpdate: false,
+    failure: false,
+    filesAdded: 0,
+    filesRemoved: 0,
+    filesRemovedList: [],
+    filesUnmatched: 0,
+    filesUpdated: 0,
+    matched: 0,
+    total: 0,
+    unchecked: 0,
+    uncheckedKeysByFile: [],
+    unmatched: 0,
+    updated: 0
+  },
+  startTime: 1610318015361,
+  success: true,
+  testResults: [
+    {
+      assertionResults: [
+        {
+          ancestorTitles: ['Tests INSERT IGNORE warnings'],
+          failureMessages: [],
+          fullName: 'Tests INSERT IGNORE warnings duplicates are equal to warnings when there are no errors',
+          location: null,
+          status: 'passed',
+          title: 'duplicates are equal to warnings when there are no errors'
+        },
+        {
+          ancestorTitles: ['Tests INSERT IGNORE warnings'],
+          failureMessages: [],
+          fullName: 'Tests INSERT IGNORE warnings inserts a non-faulty batch',
+          location: null,
+          status: 'todo',
+          title: 'inserts a non-faulty batch'
+        }
+      ],
+      endTime: 1610318017998,
+      message: '',
+      name: '/Users/tlb/git/connectedcars/data/src/tests/integration/insert-ignore.test.ts',
+      startTime: 1610318015398,
+      status: 'passed',
+      summary: ''
+    }
+  ],
+  wasInterrupted: false
+}
+
 export const jestSnapshotFailed: FormattedTestResults = {
   numFailedTestSuites: 0,
   numFailedTests: 0,
